@@ -1,0 +1,88 @@
+
+
+
+.template-blog .collection-banner {
+  margin-bottom: 35px; }
+
+.collection-banner--inner {
+  display: flex;
+  flex-direction: column;
+  position: relative; }
+
+.collection-banner--image {
+  width: 100%; }
+  @media only screen and (min-width: 768px) {
+    .collection-banner--image {
+      max-width: 600px;
+      margin-left: auto;
+      margin-top: 0; } }
+
+.collection-banner--content {
+  display: grid;
+  padding: 20px 0;
+  position: relative;
+  z-index: 5;
+  gap: 20px;
+  font-size: 0.875rem;
+  justify-content: space-between; }
+  @media only screen and (min-width: 768px) {
+    .collection-banner--content {
+      gap: 40px; } }
+  .collection-banner--content-inner > *:last-child {
+    margin-bottom: 0; }
+  @media only screen and (min-width: 768px) {
+    .collection-banner--content {
+      grid-template-columns: 1fr 1fr;
+      font-size: 1rem; } }
+  @media only screen and (min-width: 768px) {
+    .collection-banner--content-width-standard {
+      grid-template-columns: 1fr 400px; } }
+  @media only screen and (min-width: 768px) {
+    .collection-banner--content-width-small {
+      grid-template-columns: 1fr 200px; } }
+  .collection-banner--content .searchform {
+    margin-top: 20px; }
+  .collection-banner--content p {
+    font-size: inherit;
+    color: inherit;
+    margin-bottom: 5px; }
+
+.collection-banner--description > *:last-child {
+  margin-bottom: 0; }
+
+.collection-banner .max-height {
+  margin-top: 0;
+  padding: 0;
+  background: none;
+  font-size: 1rem; }
+  .collection-banner .max-height--active {
+    padding-bottom: 35px; }
+  .collection-banner .max-height--toggle {
+    left: 0;
+    right: 0;
+    padding-bottom: 0; }
+
+.collection-banner--title {
+  margin-bottom: 10px; }
+  .collection-banner--title span {
+    margin-right: 15px; }
+
+.collection-banner--count {
+  font-size: 0.875rem;
+  opacity: 0.6; }
+
+.collection-banner scroll-shadow {
+  max-width: 100%; }
+
+.collection-banner--subcollections {
+  display: flex;
+  overflow-x: auto;
+  gap: 12px;
+  padding-bottom: 2px;
+  margin-bottom: 20px; }
+  .collection-banner--subcollections .text-button {
+    flex-shrink: 0;
+    color: var(--color-body); }
+
+.collection-banner hr {
+  margin: 0; }

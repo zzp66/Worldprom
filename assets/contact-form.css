@@ -1,0 +1,36 @@
+
+
+
+.contact-form .section-header {
+  padding: 0;
+  margin-left: 0;
+  text-align: left; }
+
+.contact-form .contact-form {
+  max-width: 800px; }
+  .contact-form .contact-form .form-notification {
+    margin-bottom: 15px; }
+  .contact-form .contact-form.contact-form--has-no-blocks {
+    margin: 0 auto; }
+
+.contact-form--form-column {
+  margin-bottom: 30px; }
+  @media only screen and (min-width: 768px) {
+    .contact-form--form-column {
+      margin-bottom: 0; } }
+
+.contact-form--text-column strong {
+  display: block;
+  font-weight: var(--font-body-medium-weight, 500);
+  margin-bottom: 10px;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1; }
+
+.contact-form--text-column .rte {
+  font-size: 0.9375rem;
+  line-height: 1.5rem; }
+
+.contact-form--text-column .contact-form-block {
+  margin-bottom: 35px; }

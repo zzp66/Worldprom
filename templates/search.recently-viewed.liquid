@@ -1,0 +1,12 @@
+{% layout none %}
+{%- if search.performed -%}
+  <div class="products carousel">
+    {%- for item in search.results -%}
+      {%- if item.object_type == 'product' -%}
+			<div class="carousel__slide">
+        {% render 'product-card', product_card_product: item, index: forloop.index %}
+			</div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+{%- endif -%}

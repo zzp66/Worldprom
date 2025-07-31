@@ -1,0 +1,96 @@
+
+
+
+.product-card-promotion {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-body, #fff);
+  color: var(--color-body);
+  position: relative;
+  min-height: 100%; }
+  .product-card-promotion--image {
+    width: 100%;
+    height: 100%;
+    pointer-events: none; }
+    .product-card-promotion--image img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      object-fit: cover; }
+    .product-card-promotion--image:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+      background: rgba(var(--overlay-color-rgb), var(--overlay-opacity)); }
+  .product-card-promotion--heading {
+    font-weight: var(--font-body-medium-weight, 500);
+    margin-bottom: 10px;
+    color: var(--color-body); }
+  .product-card-promotion p {
+    font-size: 0.875rem;
+    color: inherit;
+    margin-bottom: 10px; }
+  .product-card-promotion--link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10; }
+  .product-card-promotion--content {
+    padding: 15px;
+    display: flex;
+    flex: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 5; }
+    @media only screen and (min-width: 768px) {
+      .product-card-promotion--content {
+        padding: 30px; } }
+    .product-card-promotion--content.content-top-left {
+      justify-content: flex-start;
+      align-items: flex-start; }
+    .product-card-promotion--content.content-top-center {
+      justify-content: center;
+      align-items: flex-start; }
+    .product-card-promotion--content.content-top-right {
+      justify-content: flex-end;
+      align-items: flex-start; }
+    .product-card-promotion--content.content-middle-left {
+      justify-content: flex-start;
+      align-items: center; }
+    .product-card-promotion--content.content-middle-center {
+      justify-content: center;
+      align-items: center; }
+    .product-card-promotion--content.content-middle-right {
+      justify-content: flex-end;
+      align-items: center; }
+    .product-card-promotion--content.content-bottom-left {
+      justify-content: flex-start;
+      align-items: flex-end; }
+    .product-card-promotion--content.content-bottom-center {
+      justify-content: center;
+      align-items: flex-end; }
+    .product-card-promotion--content.content-bottom-right {
+      justify-content: flex-end;
+      align-items: flex-end; }
+  .product-card-promotion--button {
+    margin-top: auto; }
+  .product-card-promotion--image {
+    flex: 1; }
+  .product-card-promotion--width-2 {
+    grid-column: span 2; }
+  .product-card-promotion .button {
+    margin-top: 10px; }

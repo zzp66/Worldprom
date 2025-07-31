@@ -1,0 +1,69 @@
+
+
+
+.blog-header {
+  text-align: center; }
+  .blog-header__inner {
+    padding: 30px 0; }
+    @media only screen and (min-width: 768px) {
+      .blog-header__inner {
+        padding: 50px 0; } }
+    .blog-header__inner h1 {
+      margin-bottom: 0;
+      line-height: 1; }
+    .blog-header__inner .rte {
+      max-width: 550px;
+      margin: 10px auto 0; }
+      .blog-header__inner .rte > *:last-child {
+        margin-bottom: 0; }
+      @media only screen and (min-width: 768px) {
+        .blog-header__inner .rte {
+          margin: 20px auto 0; } }
+  .blog-header__date {
+    display: block;
+    margin: 10px 0 0 0;
+    opacity: 0.6;
+    font-weight: 400; }
+  .blog-header__tags {
+    line-height: 1;
+    border-top: 1px solid var(--color-border); }
+    .blog-header__tags scroll-shadow {
+      width: calc(100% + 30px);
+      margin: 0 -15px; }
+    .blog-header__tags--inner {
+      display: block;
+      text-align: center;
+      padding: 13px 15px;
+      overflow-x: scroll;
+      line-height: 1;
+      width: 100%;
+      white-space: nowrap;
+      scrollbar-width: none; }
+      .blog-header__tags--inner::-webkit-scrollbar {
+        display: none; }
+    .blog-header__tags a {
+      display: inline-block;
+      font-size: 0.9375rem;
+      color: rgba(var(--color-body-rgb), 0.4);
+      font-weight: var(--font-body-medium-weight, 500);
+      margin: 0 16px; }
+      .blog-header__tags a:before {
+        display: block;
+        width: 4px;
+        height: 4px;
+        border-radius: 2px;
+        background-color: rgba(var(--color-body-rgb), 0.4);
+        position: absolute;
+        top: 50%;
+        margin-top: -2px;
+        left: -18px; }
+      .blog-header__tags a:hover {
+        color: var(--color-body); }
+      .blog-header__tags a.active {
+        color: var(--color-body);
+        text-decoration: underline;
+        text-underline-offset: 3px; }
+      .blog-header__tags a + a {
+        position: relative; }
+        .blog-header__tags a + a:before {
+          content: ''; }

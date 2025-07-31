@@ -1,0 +1,61 @@
+{%- if paginate.pages > 1 -%}
+{{ 'pagination.css' | asset_url | stylesheet_tag }}
+<pagination-theme class="pagination pagination-type--{{ pagination_type }}" data-section="{{ id }}">
+	<div class="row">
+		<div class="small-12 columns">
+			{%- if pagination_type == 'paginated' -%}
+				<ul class="page-numbers nav-links">
+					<li class="prev{% if paginate.previous == blank %} disabled{%- endif -%}">
+						<a href="{{ paginate.previous.url }}" aria-label="Previous" {% unless paginate.previous %}disabled{% endunless %}>
+							{% render 'svg-icons' with 'thb-pagination-prev' %}
+						</a>
+					</li>
+					{%- for part in paginate.parts -%}
+						{%- capture li_classes -%}
+							{%- if part.title == paginate.current_page -%}
+								current
+							{%- elsif part.title == "&hellip;" -%}
+								ellip
+							{%- elsif forloop.index == active_page_index -%}
+								page
+							{%- else -%}
+								page
+							{%- endif -%}
+						{%- endcapture -%}
+
+						<li class="{{ li_classes }}">
+							{%- if part.is_link == true -%}
+								<a href="{{ part.url }}">
+									{{ part.title }}
+								</a>
+							{%- else -%}
+								<span class="page">{{ part.title }}</span>
+							{%- endif -%}
+						</li>
+					{%- endfor -%}
+					<li class="next{% if paginate.next == blank %} disabled{%- endif -%}">
+						<a href="{{ paginate.next.url }}" aria-label="Next" {% unless paginate.next %}disabled{% endunless %}>
+							{% render 'svg-icons' with 'thb-pagination-next' %}
+						</a>
+					</li>
+				</ul>
+			{%- else -%}
+			<button class="load-more button" aria-label="{{ 'sections.collection_template.load_more' | t | escape }}">
+				<span>{{ 'sections.collection_template.load_more' | t }}</span>
+				<span class="loading-overlay">
+					{% render 'svg-icons' with 'thb-loading' %}
+				</span>
+			</button>
+			{%- endif -%}
+		</div>
+	</div>
+	{%- if pagination_type != 'paginated' -%}
+		{%- if pagination_type == 'infinite' -%}
+			<span class="loading-overlay">
+				{% render 'svg-icons' with 'thb-loading' %}
+			</span>
+		{%- endif -%}
+	<script src="{{ 'pagination.js' | asset_url }}" defer></script>
+	{%- endif -%}
+</pagination-theme>
+{%- endif -%}

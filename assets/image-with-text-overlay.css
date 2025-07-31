@@ -1,0 +1,133 @@
+
+
+
+
+.inline-badge {
+  font-size: 0.6875rem;
+  background-color: rgba(var(--badge-bg-rgb, var(--bg-body-rgb)), 0.6);
+  color: var(--badge-text, var(--color-body));
+  backdrop-filter: blur(10px);
+  display: inline-flex;
+  margin-bottom: 20px;
+  padding: 4px 12px;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  min-height: 24px;
+  border-radius: 12px;
+  z-index: 20; }
+
+.image-with-text-overlay {
+  position: relative;
+  display: flex;
+  width: 100%;
+  background: rgba(var(--color-body-rgb), 0.05);
+  padding: 50px 0;
+  overflow: hidden; }
+  .image-with-text-overlay .row {
+    width: 100%; }
+  .image-with-text-overlay--mobile {
+    display: block; }
+    @media only screen and (min-width: 768px) {
+      .image-with-text-overlay--mobile {
+        display: none; } }
+  .image-with-text-overlay--desktop {
+    display: none; }
+    @media only screen and (min-width: 768px) {
+      .image-with-text-overlay--desktop {
+        display: block; } }
+  .image-with-text-overlay--bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none; }
+    .image-with-text-overlay--bg.parallax--true {
+      top: -5%;
+      height: 110%; }
+    .image-with-text-overlay--bg svg,
+    .image-with-text-overlay--bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; }
+    .image-with-text-overlay--bg:after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 11;
+      background-color: rgba(var(--color-overlay-rgb), var(--overlay-opacity));
+      pointer-events: none; }
+  .image-with-text-overlay--heading {
+    color: var(--color-body); }
+  .image-with-text-overlay .button {
+    margin-bottom: 5px; }
+  .image-with-text-overlay--content {
+    display: flex;
+    padding: 0 15px;
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    margin: 0 auto; }
+    @media only screen and (min-width: 768px) {
+      .image-with-text-overlay--content {
+        padding: 0 50px; } }
+    .image-with-text-overlay--content-inner {
+      max-width: 650px;
+      width: 100%;
+      background-color: var(--color-bg); }
+      .animations-true .image-with-text-overlay--content-inner {
+        visibility: hidden; }
+      .image-with-text-overlay--content-inner.content-width-small {
+        max-width: 480px; }
+      .image-with-text-overlay--content-inner.content-width-medium {
+        max-width: 650px; }
+      .image-with-text-overlay--content-inner.content-width-large {
+        max-width: 900px; }
+      .image-with-text-overlay--content-inner-has-padding--true {
+        padding: 25px; }
+        @media only screen and (min-width: 768px) {
+          .image-with-text-overlay--content-inner-has-padding--true {
+            padding: 50px; } }
+      .image-with-text-overlay--content-inner > *:last-child {
+        margin-bottom: 0; }
+    .image-with-text-overlay--content.content-top-left {
+      justify-content: flex-start;
+      align-items: flex-start; }
+    .image-with-text-overlay--content.content-top-center {
+      justify-content: center;
+      align-items: flex-start; }
+    .image-with-text-overlay--content.content-top-right {
+      justify-content: flex-end;
+      align-items: flex-start; }
+    .image-with-text-overlay--content.content-middle-left {
+      justify-content: flex-start;
+      align-items: center; }
+    .image-with-text-overlay--content.content-middle-center {
+      justify-content: center;
+      align-items: center; }
+    .image-with-text-overlay--content.content-middle-right {
+      justify-content: flex-end;
+      align-items: center; }
+    .image-with-text-overlay--content.content-bottom-left {
+      justify-content: flex-start;
+      align-items: flex-end; }
+    .image-with-text-overlay--content.content-bottom-center {
+      justify-content: center;
+      align-items: flex-end; }
+    .image-with-text-overlay--content.content-bottom-right {
+      justify-content: flex-end;
+      align-items: flex-end; }
+  .image-with-text-overlay.text-center .button {
+    margin-right: 5px;
+    margin-left: 5px; }
+    .image-with-text-overlay.text-center .button + .button {
+      margin-left: 0; }
+  .image-with-text-overlay.text-left .button {
+    margin-right: 5px; }
+  .image-with-text-overlay.text-right .button {
+    margin-left: 5px; }

@@ -1,0 +1,25 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-list-collections",
+      "settings": {
+        "subheading": "Add a tagline",
+        "heading": "SHOP BY CATEGORY",
+        "heading_left": false,
+        "description": "<p>Add a short description for your collections</p>",
+        "full_width": true,
+        "sort": "date",
+        "image_ratio": "adapt",
+        "style": "style1",
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "collection_list_pagination_num": 4,
+        "disable_top_spacing": false,
+        "disable_bottom_spacing": false
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

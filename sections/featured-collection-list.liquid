@@ -1,0 +1,384 @@
+{%- liquid
+
+	assign desktop_height = section.settings.desktop_height
+	assign mobile_height = section.settings.mobile_height
+	assign full_width = section.settings.full_width
+	assign section_subheading = section.settings.subheading
+	assign heading_size = section.settings.heading_size
+	assign direction = section.settings.direction
+	assign speed = section.settings.speed
+	assign outline_collections = section.settings.outline_collections
+	assign display_descriptions = section.settings.display_descriptions
+	assign truncate_description_count = section.settings.truncate_description_count
+	assign button_label = section.settings.button_label
+
+	assign disable_top_spacing = section.settings.disable_top_spacing
+	assign disable_bottom_spacing = section.settings.disable_bottom_spacing
+
+	assign color_text = section.settings.color_text
+	assign overlay_color = section.settings.overlay_color
+	assign overlay_opacity = section.settings.overlay_opacity
+
+	case mobile_height
+		when 'mobile-height-350'
+			assign mobile_image_height = 350
+		when 'mobile-height-400'
+			assign mobile_image_height = 400
+		when 'mobile-height-450'
+			assign mobile_image_height = 450
+		when 'mobile-height-500'
+			assign mobile_image_height = 500
+		else
+			assign mobile_image_height = 600
+	endcase
+
+	assign solid_button_label = color_bg
+	assign brightness = color_text | color_brightness
+	if brightness < 128
+		assign solid_button_label = color_text | color_lighten: 80
+	else
+		assign solid_button_label = color_text | color_darken: 80
+	endif
+	assign color_button_hover = color_text | color_darken: 7
+-%}
+<div class="row{% if full_width %} full-width-row{% endif %}">
+	<div class="small-12 columns">
+		<featured-collection-list
+			class="featured-collection-list section-spacing{% if disable_top_spacing %} section-spacing--disable-top{% endif %}{% if disable_bottom_spacing %} section-spacing--disable-bottom{% endif %}"
+			style="--color-body:{{ color_text }}; --color-heading: {{ color_text }}; --color-accent: {{ color_text }}; --overlay-color-rgb: {{ overlay_color.rgb | replace: ' ' , ',' }}; --overlay-opacity: {{ overlay_opacity | divided_by: 100.0 }};  --solid-button-label: {{ solid_button_label }}; --solid-button-background: {{ color_text }}; --solid-button-background-hover: {{ color_button_hover }};">
+			<div class="featured-collection-list--bg">
+				{%- for block in section.blocks -%}
+					{%- liquid
+						assign image = block.settings.collection.featured_image
+						assign class = 'featured-collection-list--img'
+						assign master_width = image.src.width | append: 'x' | append: image.src.height
+						assign width = '375x' | append: mobile_image_height | append: ',' | append: master_width
+						if forloop.index == 1
+							assign class = class | append: ' active'
+						endif
+						if block.settings.image != blank
+							assign image = block.settings.image
+							assign master_width = image.src.width | append: 'x' | append: image.src.height
+    					assign width = '375x' | append: mobile_image_height | append: ',' | append: master_width
+						endif
+					-%}
+					{%- if image != blank -%}
+						{%- render 'responsive-image', image: image | image_url, sizes: width, class: class -%}
+					{%- else -%}
+						{%- assign index = forloop.index | modulo: 2 | plus: 1 -%}
+						{{ 'hero-apparel-' | append: index | placeholder_svg_tag: class }}
+					{%- endif -%}
+				{%- endfor -%}
+			</div>
+			<div class="featured-collection-list--inner {{ mobile_height }} {{ desktop_height }}">
+				<div class="featured-collection-list--inner--content">
+					{%- if section_subheading != blank -%}
+						<p class="subheading featured-collection-list--subheading">{{ section_subheading }}</p>
+					{%- endif -%}
+					<div class="featured-collection-list--collections direction-{{ direction }}" style="--marquee-speed: {{ speed }}">
+						{%- capture collection_titles -%}
+							<div>
+								{%- for block in section.blocks -%}
+									{%- liquid
+										assign active = ''
+										if forloop.index == 1
+											assign active = 'active'
+										endif
+									-%}
+									{%- if block.settings.collection != blank -%}
+									<a href="{{ block.settings.collection.url }}" class="featured-collection-list--button featured-collection-list--button-outline-{{ outline_collections }} {{ active }}" data-index="{{ forloop.index }}" {{ block.shopify_attributes }}><span class="{{ heading_size }}">{{ block.settings.collection.title }}</span></a><span class="{{ heading_size }}">&mdash;</span>
+									{%- else -%}
+									<a href="#" class="featured-collection-list--button featured-collection-list--button-outline-{{ outline_collections }} heading-size--{{ heading_size }} {{ active }}" data-index="{{ forloop.index }}" {{ block.shopify_attributes }}><span class="{{ heading_size }}">{{ 'onboarding.collection_title' | t }}</span></a><span class="{{ heading_size }}">&mdash;</span>
+									{%- endif -%}
+								{%- endfor -%}
+							</div>
+						{%- endcapture -%}
+						{{- collection_titles -}}
+						{{- collection_titles -}}
+						{{- collection_titles -}}
+					</div>
+					{%- for block in section.blocks -%}
+						{%- liquid
+							assign active = ''
+							if forloop.index == 1
+								assign active = 'active'
+							endif
+
+							assign description = 'Collection description'
+							assign button_link = '#'
+
+							if block.settings.collection != blank 
+								assign description = block.settings.collection.description | strip_html | truncatewords: truncate_description_count
+								assign button_link = block.settings.collection.url
+							endif
+						-%}
+							<div class="featured-collection-list--description {{ active }}" data-index="{{ forloop.index }}">
+								{%- if display_descriptions -%}<p>{{ description }}</p>{%- endif -%}
+								{%- if button_label != blank -%}<a href="{{ button_link }}" class="button">{{ button_label }}</a>{%- endif -%}
+							</div>
+					{%- endfor -%}
+				</div>
+			</div>
+		</featured-collection-list>
+	</div>
+</div>
+{{ 'featured-collection-list.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'featured-collection-list.js' | asset_url }}" defer="defer"></script>
+{% schema %}
+  {
+    "name": "Featured collection list",
+		"class": "section-featured-collection-list",
+    "settings": [
+			{
+				"type": "select",
+				"id": "desktop_height",
+				"label": "Desktop height",
+				"options": [
+					{
+						"value": "desktop-height-auto",
+						"label": "Adapt to content"
+					},
+					{
+						"value": "desktop-height-450",
+						"label": "450px"
+					},
+					{
+						"value": "desktop-height-550",
+						"label": "550px"
+					},
+					{
+						"value": "desktop-height-650",
+						"label": "650px"
+					},
+					{
+						"value": "desktop-height-750",
+						"label": "750px"
+					},
+					{
+						"value": "desktop-height-full",
+						"label": "Full screen"
+					}
+				],
+				"default": "desktop-height-550"
+			},
+			{
+				"type": "select",
+				"id": "mobile_height",
+				"label": "Mobile height",
+				"options": [
+					{
+						"value": "mobile-height-auto",
+						"label": "Adapt to content"
+					},
+					{
+						"value": "mobile-height-350",
+						"label": "350px"
+					},
+					{
+						"value": "mobile-height-400",
+						"label": "400px"
+					},
+					{
+						"value": "mobile-height-450",
+						"label": "450px"
+					},
+					{
+						"value": "mobile-height-500",
+						"label": "500px"
+					},
+					{
+						"value": "mobile-height-full",
+						"label": "Full screen"
+					}
+				],
+				"default": "mobile-height-500"
+			},
+			{
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Make section full width",
+        "default": true
+      },
+			{
+        "type": "text",
+        "id": "subheading",
+        "label": "Subheading",
+        "default": "Add a tagline"
+      },
+			{
+				"type": "select",
+				"id": "heading_size",
+				"label": "Heading size",
+				"options": [
+					{
+						"value": "h2",
+						"label": "Small"
+					},
+					{
+						"value": "h1",
+						"label": "Medium"
+					},
+					{
+						"value": "h1-large",
+						"label": "Large"
+					},
+					{
+						"value": "h1-xlarge",
+						"label": "Extra large"
+					}
+				],
+				"default": "h1"
+			},
+			{
+				"type": "select",
+				"id": "direction",
+				"options": [
+					{
+						"value": "left",
+						"label": "Left"
+					},
+					{
+						"value": "right",
+						"label": "Right"
+					}
+				],
+				"default": "left",
+				"label": "Direction"
+			},
+			{
+				"type": "select",
+				"id": "speed",
+				"options": [
+					{
+						"value": "10s",
+						"label": "Fast"
+					},
+					{
+						"value": "20s",
+						"label": "Normal"
+					},
+					{
+						"value": "30s",
+						"label": "Slow"
+					},
+					{
+						"value": "50s",
+						"label": "Very slow"
+					}
+				],
+				"default": "30s",
+				"label": "Speed"
+			},
+			{
+        "type": "checkbox",
+        "id": "outline_collections",
+        "label": "Make inactive collections outline",
+        "default": true
+      },
+			{
+        "type": "checkbox",
+        "id": "display_descriptions",
+        "label": "Display collection descriptions",
+        "default": true
+      },
+			{
+				"type": "range",
+				"id": "truncate_description_count",
+				"min": 1,
+				"max": 100,
+				"step": 1,
+				"default": 20,
+				"label": "Words to show"
+			},
+			{
+				"id": "button_label",
+				"type": "text",
+				"label": "Button label",
+				"default": "Shop now",
+				"info": "Leave the label blank to hide the button."
+			},
+			{
+				"type": "header",
+				"content": "Colors"
+			},
+			{
+        "type": "color",
+        "id": "color_text",
+        "label": "Text",
+        "default": "#ffffff"
+      },
+			{
+				"type": "color",
+				"id": "overlay_color",
+				"label": "Overlay",
+				"default": "#000000"
+			},
+			{
+				"type": "range",
+				"id": "overlay_opacity",
+				"min": 0,
+				"max": 100,
+				"step": 1,
+				"unit": "%",
+				"label": "Overlay opacity",
+				"default": 20
+			},
+			{
+        "type": "header",
+        "content": "Spacing"
+      },
+			{
+				"type": "checkbox",
+				"id": "disable_top_spacing",
+				"default": false,
+				"label": "Remove top spacing"
+			},
+			{
+				"type": "checkbox",
+				"id": "disable_bottom_spacing",
+				"default": false,
+				"label": "Remove bottom spacing"
+			}
+    ],
+		"blocks": [
+      {
+        "type": "collection",
+        "name": "Collection",
+        "settings": [
+          {
+            "type": "collection",
+            "id": "collection",
+            "label": "Collection"
+          },
+					{
+						"type": "image_picker",
+						"id": "image",
+						"label": "Custom image",
+						"info": "Optional image to use for this collection."
+					}
+				]
+			}
+		],
+    "presets": [
+      {
+        "name": "Featured collection list",
+				"blocks": [
+					{
+						"type": "collection"
+					},
+					{
+						"type": "collection"
+					},
+					{
+						"type": "collection"
+					}
+				]
+      }
+    ],
+		"disabled_on": {
+    "groups": [
+      "custom.overlay"
+    ]
+  }
+}
+{% endschema %}

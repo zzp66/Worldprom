@@ -1,0 +1,207 @@
+
+
+.signup-container button {
+  transition: all 0.25s cubic-bezier(0.104, 0.204, 0.492, 1); }
+
+
+.footer {
+  display: block;
+  background: var(--color-footer-bg);
+  padding: 35px 0;
+  font-size: 0.8125rem;
+  color: var(--color-footer-text, --color-body);
+  --color-header-text: var(--color-footer-text);
+  --color-body: var(--color-footer-text);
+  --color-text: var(--color-footer-text);
+  --color-body-rgb: var(--color-footer-text-rgb);
+  --color-border: rgba(var(--color-footer-text-rgb), 0.1);
+  --bg-body: var(--color-footer-bg); }
+  @media only screen and (min-width: 768px) {
+    .footer {
+      padding: 50px 0; } }
+  .footer a {
+    color: rgba(var(--color-body-rgb), 0.8); }
+    .footer a:hover {
+      color: rgba(var(--color-body-rgb), 1); }
+  .footer .widget {
+    display: block;
+    margin-bottom: 30px; }
+    .footer .widget img {
+      margin-bottom: 20px; }
+    @media only screen and (max-width: 767px) {
+      .footer .widget--menu {
+        margin-bottom: 0;
+        border-top: 1px solid var(--color-border); } }
+    .footer .widget--menu details[open] summary span {
+      transform: rotateZ(180deg); }
+    .footer .widget--menu details[open] ul {
+      padding-bottom: 10px; }
+    @media only screen and (max-width: 767px) {
+      .footer .widget--menu-column + .columns:not(.widget--menu-column) {
+        margin-top: 40px; } }
+    .footer .widget--text .text-button {
+      margin-bottom: 20px; }
+    .footer .widget--text .text-size--medium {
+      font-size: 0.9375rem; }
+    .footer .widget--text .text-size--large {
+      font-size: 1.1875rem; }
+    .footer .widget--text .rte {
+      max-width: 450px; }
+      .footer .widget--text .rte.text-size--large {
+        max-width: 600px; }
+    .footer .widget--text p {
+      font-size: inherit;
+      line-height: inherit; }
+    .footer .widget--text .social-links li {
+      display: inline-flex; }
+      .footer .widget--text .social-links li a {
+        justify-content: flex-start; }
+      .footer .widget--text .social-links li span {
+        display: none; }
+    .footer .widget--social .social-links li a {
+      height: auto;
+      width: auto; }
+    .footer .widget--image img,
+    .footer .widget--image svg {
+      height: var(--widget-image-height, 30px);
+      width: auto; }
+  .footer .thb-widget-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    line-height: 1;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+    font-weight: var(--font-body-medium-weight, 500);
+    width: 100%;
+    color: inherit;
+    text-transform: uppercase; }
+    @media only screen and (max-width: 767px) {
+      .footer .thb-widget-title.collapsible {
+        margin: 0;
+        padding: 15px 0; } }
+    @media only screen and (min-width: 768px) {
+      .footer .thb-widget-title.collapsible {
+        pointer-events: none; }
+        .footer .thb-widget-title.collapsible span {
+          display: none; } }
+  .footer .thb-widget-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; }
+    @media only screen and (min-width: 768px) {
+      .footer .thb-widget-menu {
+        padding: 0;
+        display: block !important; } }
+    .footer .thb-widget-menu li {
+      margin-bottom: 5px; }
+      .footer .thb-widget-menu li:last-child {
+        margin-bottom: 0; }
+      .footer .thb-widget-menu li.menu-item-has-children a {
+        display: inline-flex;
+        vertical-align: middle; }
+      .footer .thb-widget-menu li.menu-item-has-children:focus-within > .sub-menu {
+        display: block; }
+  .footer .signup-container {
+    max-width: 360px; }
+    .footer .signup-container input {
+      color: var(--color-footer-text, --color-body);
+      border-color: var(--color-border);
+      background-color: transparent; }
+      .footer .signup-container input:focus + label,
+      .footer .signup-container input:not(:placeholder-shown) + label {
+        background: var(--color-footer-bg, --bg-body);
+        color: var(--color-footer-text, --color-body); }
+    .footer .signup-container .field label {
+      color: var(--color-footer-text, --color-body); }
+
+.sub-footer {
+  margin-top: 40px;
+  color: var(--color-footer-text, --color-body); }
+  .sub-footer a {
+    color: var(--color-footer-text, --color-body); }
+    .sub-footer a:focus, .sub-footer a:hover {
+      color: var(--color-footer-text, --color-body); }
+  .sub-footer p {
+    font-size: 0.8125rem;
+    opacity: 0.7; }
+    .sub-footer p a {
+      text-decoration: underline;
+      text-underline-offset: 2px; }
+  .sub-footer .thb-localization-forms {
+    margin-bottom: 25px;
+    text-align: left; }
+    [dir="rtl"] .sub-footer .thb-localization-forms {
+      text-align: right; }
+
+.payment-icons {
+  margin-bottom: 35px; }
+  .payment-icons figure {
+    display: inline-flex;
+    margin-left: 5px; }
+    .payment-icons figure:first-child {
+      margin-left: 0; }
+    .payment-icons figure svg {
+      height: 20px; }
+
+.footer .payment-icons {
+  margin-bottom: 35px; }
+  @media only screen and (min-width: 768px) {
+    .footer .payment-icons {
+      text-align: right;
+      margin-bottom: 25px; }
+      [dir="rtl"] .footer .payment-icons {
+        text-align: left; } }
+
+.signup-container {
+  margin-bottom: 0; }
+  .signup-container .form-notification {
+    margin-bottom: 10px; }
+  .signup-container fieldset {
+    position: relative; }
+  .signup-container input {
+    padding-right: 40px;
+    width: 100%;
+    margin-bottom: 0; }
+  .signup-container button {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    height: 100%;
+    width: 24px;
+    height: 24px;
+    margin-top: -12px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(var(--color-body-rgb), 0.2); }
+    .signup-container button:hover {
+      background-color: var(--color-body); }
+  .signup-container--terms {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 10px; }
+    .signup-container--terms input {
+      width: auto;
+      margin-right: 8px; }
+
+.social-links {
+  list-style: none;
+  margin: 0;
+  padding: 0; }
+  .social-links li {
+    margin-bottom: 5px; }
+    .social-links li a {
+      display: inline-flex;
+      align-items: center;
+      width: 44px;
+      height: 44px;
+      justify-content: center; }
+  .social-links svg {
+    width: 16px;
+    height: auto; }
+  .social-links span {
+    margin-left: 15px; }

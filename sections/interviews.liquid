@@ -1,0 +1,228 @@
+{{- 'interviews.css' | asset_url | stylesheet_tag -}}
+{%- liquid
+	
+	assign section_width = section.settings.section_width
+	assign image = section.settings.image
+	assign image_mobile = section.settings.image_mobile
+  assign image_link = section.settings.image_link
+	assign desktop_layout = section.settings.layout
+  assign interviewee_name = section.settings.interviewee_name
+  assign interviewee_job = section.settings.interviewee_job
+
+  assign color_bg = section.settings.color_bg
+	assign color_text = section.settings.color_text
+
+	assign disable_top_spacing = section.settings.disable_top_spacing
+	assign disable_bottom_spacing = section.settings.disable_bottom_spacing
+-%}
+<div class="row {{ section_width }}">
+	<div class="small-12 columns">
+    <div class="interviews {{ desktop_layout }} section-spacing{% if disable_top_spacing %} section-spacing--disable-top{% endif %}{% if disable_bottom_spacing %} section-spacing--disable-bottom{% endif %}" style="--color-accent: {{ color_text }}; --color-heading: {{ color_text }}; --color-text: {{ color_text }}; --color-body: {{ color_text }}; --color-body-rgb: {{ color_text.rgb | replace: ' ' , ',' }}; --bg-body: {{ color_bg }}">
+      <div class="interviews--image">
+        <div class="interviews--image-inner">
+          {%- if image_link -%}<a href="{{ image_link }}">{%- endif -%}
+          {% if image %}
+            {%- liquid
+              assign small_width = image.src.height | times: '375' | divided_by: image.src.width
+              assign master_width = image.src.width | append: 'x' | append: image.src.height
+              assign width = '375x0' | append: small_width | append: ',' | append: master_width
+
+              if image_mobile
+                assign class = 'interviews--desktop'
+              endif
+            -%}
+            {%- render 'responsive-image', image: image, sizes: width, class: class -%}
+          {% else %}
+            {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder_svg_tag' }}
+          {% endif %}
+          {%- if image_mobile -%}
+            {%- liquid
+              assign master_width = image_mobile.src.width | append: 'x' | append: image_mobile.src.height
+              assign width = '375x0' | append: ',' | append: master_width
+
+              assign class = 'interviews--mobile'
+              render 'responsive-image', image: image_mobile, sizes: width, class: class
+            -%}
+          {%- endif -%}
+          {%- if image_link -%}</a>{%- endif -%}
+        </div>
+        {%- if interviewee_name != blank  -%}
+        <div class="interviews--badge">
+          <figure class="interviews--badge-figure">{{ interviewee_name | capitalize | slice: 0  }}</figure>
+          <div class="interviews--badge-inner">
+          <span class="interviews--badge-name">{{ interviewee_name }}</span>
+          {%- if interviewee_job != blank  -%}<span class="interviews--badge-job">{{ interviewee_job }}</span>{%- endif -%}
+          </div>
+        </div>
+        {%- endif -%}
+      </div>
+      <div class="interviews--slider">
+        <div class="interviews--slider-inner">
+          <slide-show class="carousel row" data-dots="true">
+            {%- for block in section.blocks -%}
+              <div class="small-12 columns carousel__slide">
+                <div class="interviews--interview">
+                  <div class="interviews--interview-question h3 body-font">{{ block.settings.question }}</div>
+                  <div class="interviews--interview-answer"><div class="rte">{{ block.settings.text }}</div></div>
+                </div>
+              </div>
+            {%- endfor -%}
+          </slide-show>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{ 'slideshow-vendor.js' | asset_url | script_tag }}
+<script src="{{ 'slideshow.js' | asset_url }}" defer></script>
+{% schema %}
+  {
+    "name": "Interviews",
+		"class": "section-interviews",
+    "settings": [
+      {
+				"type": "image_picker",
+				"id": "image",
+				"label": "Image",
+				"info": "1440 x 1440 .jpg recommended."
+			},
+			{
+				"type": "image_picker",
+				"id": "mobile_image",
+				"label": "Mobile image (optional)",
+				"info": "750x x 750 .jpg recommended."
+			},
+      {
+        "id": "image_link",
+        "type": "url",
+        "label": "Image link"
+      },
+      {
+        "type": "select",
+        "id": "section_width",
+        "options": [
+          {
+            "value": "grid",
+            "label": "Grid"
+          },
+          {
+            "value": "full-width-row",
+            "label": "Full width"
+          },
+          {
+            "value": "full-width-row-full",
+            "label": "Full width, no spacing"
+          }
+        ],
+        "default": "full-width-row",
+        "label": "Section width"
+      },
+      {
+	      "type": "select",
+	      "id": "layout",
+	      "options": [
+	        {
+	          "value": "image_first",
+	          "label": "Image first"
+	        },
+	        {
+	          "value": "text_first",
+	          "label": "Image second"
+	        }
+	      ],
+	      "default": "image_first",
+	      "label": "Desktop image placement",
+	      "info": "Image first is the default mobile layout."
+	    },
+      {
+	      "type": "header",
+	      "content": "Interviewee"
+	    },
+      {
+        "type": "text",
+        "id": "interviewee_name",
+        "label": "Name",
+        "default": "Fuel themes"
+      },
+      {
+        "type": "text",
+        "id": "interviewee_job",
+        "label": "Job",
+        "default": "Theme developer at Shopify"
+      },
+      {
+	      "type": "header",
+	      "content": "Colors"
+	    },
+			{
+        "type": "color",
+        "id": "color_bg",
+        "label": "Background",
+        "default": "#ffffff"
+      },
+			{
+        "type": "color",
+        "id": "color_text",
+        "label": "Text",
+        "default": "#151515"
+      },
+			{
+	      "type": "header",
+	      "content": "Spacing"
+	    },
+			{
+				"type": "checkbox",
+				"id": "disable_top_spacing",
+				"default": false,
+				"label": "Remove top spacing"
+			},
+			{
+				"type": "checkbox",
+				"id": "disable_bottom_spacing",
+				"default": false,
+				"label": "Remove bottom spacing"
+			}
+    ],
+    "blocks": [
+      {
+        "type": "question",
+        "name": "Question",
+        "settings": [
+          {
+            "type": "text",
+            "id": "question",
+            "label": "Content",
+            "default": "What is your favorite Shopify theme?"
+          },
+          {
+            "type": "richtext",
+            "id": "text",
+            "label": "Content",
+            "default": "<p>Well of course, my favorite Shopify theme is Ascension.</p>"
+          }
+				]
+			}
+		],
+    "presets": [
+      {
+        "name": "Interviews",
+				"blocks": [
+					{
+						"type": "question"
+					},
+					{
+						"type": "question"
+					},
+					{
+						"type": "question"
+					}
+				]
+      }
+    ],
+		"disabled_on": {
+    "groups": [
+      "custom.overlay"
+    ]
+  }
+  }
+{% endschema %}

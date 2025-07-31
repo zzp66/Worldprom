@@ -1,0 +1,30 @@
+{%- if section_subheading != blank or section_heading != blank or section_description != blank -%}
+	<div class="section-header section-header-left--{{ section_heading_left }}">
+		<div class="section-header--content">
+			{%- if section_subheading != blank -%}
+				<p class="subheading">{{ section_subheading }}</p>
+			{%- endif -%}
+			{%- if section_heading != blank  -%}
+				<h2 class="h3">{{ section_heading }}</h2>
+			{%- endif -%}
+			{%- if section_description != blank -%}
+				<div class="rte">
+					{{ section_description }}
+				</div>
+			{%- endif -%}
+			{%- if blocks -%}
+			<scroll-shadow>
+				<collection-tabs class="collection-tabs__list" data-target="product-grid-{{ section_id }}">
+					{%- for block in blocks -%}
+						{%- if block.settings.collection != blank -%}
+							<button type="button" data-collection="collection-{{ block.id }}" class="collection-tabs__list-link{% if forloop.first == true %} active{% endif %}" {{ block.shopify_attributes }}>{{ block.settings.collection.title }}</button>
+						{%- else -%}
+							<button type="button" data-collection="collection-{{ block.id }}" class="collection-tabs__list-link{% if forloop.first == true %} active{% endif %}" {{ block.shopify_attributes }}>Collection {{ forloop.index }}</button>
+						{%- endif -%}
+					{%- endfor -%}
+				</collection-tabs>
+			</scroll-shadow>
+			{%- endif -%}
+		</div>
+	</div>
+{%- endif -%}

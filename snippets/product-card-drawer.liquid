@@ -1,0 +1,66 @@
+{%- if product_card_product and product_card_product != empty -%}
+{%- liquid
+	assign product_aspect_ratio = settings.product_aspect_ratio
+	assign featured_media = product_card_product.featured_media
+	assign ratio = 1
+	assign sizes = '220x0'
+	assign is_video = false
+	assign use_video = settings.products_use_video
+
+	if featured_media.media_type != 'image'
+		if featured_media.media_type == 'video' and use_video
+			assign is_video = true
+			assign featured_media = featured_media
+		else
+			assign featured_media = featured_media.preview_image
+		endif
+	endif
+	if product_aspect_ratio == 'adapt'
+		if featured_media
+			assign ratio = featured_media.aspect_ratio
+		endif
+		assign sizes = '220x0'
+	elsif product_aspect_ratio == 'portrait'
+		assign ratio = 1 | divided_by: 1.25
+	elsif product_aspect_ratio == 'landscape'
+		assign ratio = 1 | divided_by: 0.75
+	endif
+	assign product_content_alignment = settings.product_content_alignment
+-%}
+<product-card class="product-card product-card--drawer cart-drawer--recommendations--product text-{{ product_content_alignment }}">
+	<div class="product-card--image-wrapper">
+		<a href="{{ product_card_product.url | within: collection }}" title="{{ product_card_product.title | escape }}" class="product-card--image-link"></a>
+		<div class="product-card--image">
+			<div class="product-card--image-inner" style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;">
+				{%- if featured_media -%}
+					<figure class="aspect-ratio aspect-ratio--{{ settings.product_aspect_ratio }}">
+					{%- if is_video and use_video -%}
+						{{ featured_media | video_tag: controls: false, loading: 'lazy', loop: true, autoplay: true, image_size: '770x' }}
+					{%- else -%}
+						{%- render 'responsive-image', class: 'product-primary-image', image: featured_media, sizes: sizes -%}
+					{%- endif -%}
+					</figure>
+				{%- else -%}
+					<figure class="aspect-ratio aspect-ratio--{{ settings.product_aspect_ratio }}">
+						<div class="thb-placeholder">
+							{{ 'product-apparel-' | append: index_c | placeholder_svg_tag }}
+						</div>
+					</figure>
+				{%- endif -%}
+			</div>
+		</div>
+		{%- if settings.enable_quick_add -%}
+		<quick-view class="product-card--quickview-small" data-product-handle="{{ product_card_product.handle }}">
+			{%- render 'svg-icons' with 'thb-quick-view' %}
+			<div class="loading-overlay">{% render 'svg-icons' with 'thb-loading' %}</div>
+		</quick-view>
+		{%- endif -%}
+	</div>
+	<div class="product-card-info">
+		<div class="product-card-info--inner">
+			<a href="{{ product_card_product.url | within: collection }}" title="{{ product_card_product.title | escape }}" class="product-card-title">{{ product_card_product.title }}</a>
+			{% render 'product-price', product: product_card_product %}
+		</div>
+  </div>
+</product-card>
+{%- endif -%}

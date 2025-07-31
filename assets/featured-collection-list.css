@@ -1,0 +1,141 @@
+
+
+.featured-collection-list--bg img,
+.featured-collection-list--bg svg {
+  transition: all 1s cubic-bezier(0.104, 0.204, 0.492, 1); }
+
+.featured-collection-list--button, .featured-collection-list--button span {
+  transition: all 0.25s cubic-bezier(0.104, 0.204, 0.492, 1); }
+
+
+.section-featured-collection-list .row.full-width-row {
+  padding: 0; }
+  .section-featured-collection-list .row.full-width-row > .columns {
+    padding: 0; }
+
+.featured-collection-list {
+  display: block;
+  position: relative;
+  overflow: hidden; }
+  .featured-collection-list--bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+    pointer-events: none; }
+    .featured-collection-list--bg img,
+    .featured-collection-list--bg svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      object-fit: cover;
+      opacity: 0;
+      transform: scale(1.05);
+      will-change: transform, opacity; }
+      .featured-collection-list--bg img.active,
+      .featured-collection-list--bg svg.active {
+        opacity: 1;
+        transform: scale(1); }
+    .featured-collection-list--bg:after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 11;
+      background: rgba(var(--overlay-color-rgb), var(--overlay-opacity)); }
+  .featured-collection-list--inner {
+    display: flex;
+    position: relative;
+    z-index: 20;
+    align-items: center;
+    justify-content: center;
+    padding: 15px; }
+    @media only screen and (min-width: 768px) {
+      .featured-collection-list--inner {
+        padding: 50px; } }
+    .featured-collection-list--inner--content {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      position: relative;
+      text-align: center; }
+  .featured-collection-list--subheading {
+    color: var(--color-body);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 20px; }
+    @media only screen and (min-width: 768px) {
+      .featured-collection-list--subheading {
+        margin-bottom: 40px; } }
+  .featured-collection-list--collections {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    white-space: nowrap; }
+    .featured-collection-list--collections.direction-left > div {
+      animation: marquee-left var(--marquee-speed) linear infinite; }
+    .featured-collection-list--collections.direction-right > div {
+      animation: marquee-right var(--marquee-speed) linear infinite; }
+    .featured-collection-list--collections:hover > div {
+      animation-play-state: paused; }
+  .featured-collection-list--description {
+    display: none;
+    max-width: 520px;
+    width: 100%;
+    padding: 0 15px;
+    opacity: 0;
+    pointer-events: none;
+    text-align: center;
+    margin: 20px auto 0;
+    color: var(--color-body);
+    white-space: normal; }
+    @media only screen and (min-width: 768px) {
+      .featured-collection-list--description {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-top: 40px;
+        font-size: 1.0625rem; } }
+    @media only screen and (min-width: 1068px) {
+      .featured-collection-list--description {
+        margin-top: 40px; } }
+    .featured-collection-list--description.active {
+      display: block;
+      opacity: 1;
+      pointer-events: all; }
+  .featured-collection-list--button {
+    font-weight: var(--font-body-bold-weight, 600);
+    display: inline-flex;
+    line-height: 1.1; }
+    .featured-collection-list--button div {
+      color: inherit;
+      margin-bottom: 0; }
+    .featured-collection-list--button span {
+      color: inherit;
+      transform-origin: left bottom;
+      margin: 5px 20px; }
+      @media only screen and (min-width: 768px) {
+        .featured-collection-list--button span {
+          margin: 5px 40px; } }
+    .featured-collection-list--button:hover, .featured-collection-list--button.active {
+      opacity: 1; }
+      .featured-collection-list--button:hover span, .featured-collection-list--button.active span {
+        color: inherit; }
+    .featured-collection-list--button:not(.active) {
+      opacity: 0.6; }
+    .featured-collection-list--button-outline-true:not(.active) {
+      -webkit-text-fill-color: transparent;
+      -webkit-text-stroke-width: 1px;
+      -webkit-text-stroke-color: var(--color-body); }

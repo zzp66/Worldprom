@@ -1,0 +1,9 @@
+<search-form class="searchform searchform--inline thb-quick-search thb-quick-search--desktop">
+  <form role="search" method="get" action="{{ routes.search_url }}">
+    <fieldset>
+      <figure class="searchform--icon">{%- render 'svg-icons' with 'search' -%}</figure>
+      <label for="searchform--input" class="visually-hidden">{{ 'sections.header.search' | t }}</label>
+      <input id="searchform--input" type="search" class="search-field" placeholder="{{ 'sections.header.search' | t | escape }}" value="{{ search.terms | replace: '*', '' }}" name="q" autocomplete="off">
+    </fieldset>
+  </form>
+</search-form>

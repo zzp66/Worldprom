@@ -1,0 +1,44 @@
+
+
+.back-to-top, .back-to-top path {
+  transition: all 0.25s cubic-bezier(0.104, 0.204, 0.492, 1); }
+
+
+
+.back-to-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: var(--bg-body, #fff);
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 30;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px rgba(var(--color-body-rgb), 0.1);
+  transform: translateY(70px); }
+  @media only screen and (min-width: 1068px) {
+    .back-to-top {
+      bottom: 30px;
+      right: 30px; } }
+  .back-to-top.back-to-top--active {
+    transform: translateY(0px); }
+  .back-to-top svg {
+    overflow: visible;
+    pointer-events: none;
+    transform: translateY(1px); }
+  .back-to-top--handle {
+    transform: translateY(4px); }
+  .back-to-top--bar {
+    opacity: 0;
+    transform-origin: bottom center;
+    transform: scale(1, 0) translateY(8px); }
+  .back-to-top:hover .back-to-top--handle, .back-to-top:focus .back-to-top--handle {
+    transform: translateY(0px); }
+  .back-to-top:hover .back-to-top--bar, .back-to-top:focus .back-to-top--bar {
+    opacity: 1;
+    transform-origin: top center;
+    transform: scale(1, 1) translateY(0); }

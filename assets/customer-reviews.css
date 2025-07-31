@@ -1,0 +1,146 @@
+@charset "UTF-8";
+
+
+
+
+
+.star-rating {
+  --star-percent: calc(var(--star-rating) / 5 * 100%);
+  display: inline-block;
+  font-size: 1rem;
+  font-family: Times;
+  line-height: 1; }
+  .star-rating:before {
+    content: "★★★★★";
+    background: linear-gradient(90deg, var(--color-star) var(--star-percent), #e1e1e1 var(--star-percent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; }
+  .star-rating.simple {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px; }
+    .star-rating.simple:before {
+      content: "★"; }
+
+.rating {
+  display: inline-block;
+  margin: 0; }
+
+.rating-star {
+  --letter-spacing: 0.3;
+  --font-size: 1.5;
+  --percent: calc((var(--rating) / var(--rating-max) + var(--rating-decimal) * var(--font-size) / (var(--rating-max) * (var(--letter-spacing) + var(--font-size)))) * 100%);
+  letter-spacing: calc(var(--letter-spacing) * 1rem);
+  font-size: calc(var(--font-size) * 1rem);
+  line-height: 1;
+  display: inline-block;
+  font-family: Times;
+  margin: 0; }
+
+.rating-star:before {
+  content: "\2605\2605\2605\2605\2605";
+  background: linear-gradient(90deg, var(--color-reviews) var(--percent), rgba(var(--color-foreground), 0.15) var(--percent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; }
+
+.rating-text {
+  display: none; }
+
+.rating-count {
+  display: none;
+  margin: 0; }
+
+@media (forced-colors: active) {
+  .rating {
+    display: none; }
+  .rating-text {
+    display: block; } }
+
+
+.customer-reviews {
+  display: block; }
+  .customer-reviews--grid {
+    --column-gap: 10px;
+    display: grid;
+    column-gap: var(--column-gap);
+    grid-template-columns: repeat(var(--mobile-columns), 1fr);
+    grid-auto-flow: column;
+    overflow: hidden;
+    grid-template-columns: unset;
+    grid-auto-columns: calc((100% - (var(--column-gap) * calc(var(--mobile-columns) - 1))) / var(--mobile-columns)); }
+    @media only screen and (min-width: 768px) {
+      .customer-reviews--grid {
+        --column-gap: 15px;
+        --mobile-columns: var(--tablet-columns); } }
+    @media only screen and (min-width: 1068px) {
+      .customer-reviews--grid {
+        --column-gap: 20px;
+        --mobile-columns: var(--desktop-columns); } }
+    .customer-reviews--grid--container {
+      scroll-snap-type: x mandatory; }
+  .customer-reviews--product {
+    overflow: hidden;
+    position: relative; }
+    .customer-reviews--product + .customer-reviews--content {
+      border-top: 0; }
+  .customer-reviews--content {
+    padding: 15px;
+    border: 1px solid var(--color-border); }
+    @media only screen and (min-width: 768px) {
+      .customer-reviews--content {
+        padding: 25px; } }
+  .customer-reviews--quick-view {
+    background-color: rgba(var(--badge-bg-rgb, var(--bg-body-rgb)), 0.6);
+    backdrop-filter: blur(10px);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    position: absolute;
+    bottom: 14px;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    cursor: pointer; }
+    .customer-reviews--quick-view .loading-overlay {
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center; }
+      .customer-reviews--quick-view .loading-overlay svg {
+        width: 16px; }
+    .customer-reviews--quick-view.loading > svg {
+      visibility: hidden; }
+    .customer-reviews--quick-view.loading .loading-overlay {
+      display: flex; }
+  .customer-reviews--review {
+    scroll-snap-align: center; }
+    .customer-reviews--review .star-rating {
+      font-size: 1rem;
+      margin-bottom: 10px; }
+    .customer-reviews--review p {
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      margin-bottom: 15px; }
+    .customer-reviews--review > *:last-child {
+      margin-bottom: 0; }
+    .customer-reviews--review:hover .customer-reviews--quick-view {
+      opacity: 1; }
+  .customer-reviews--heading {
+    margin-bottom: 5px;
+    font-size: 1.125rem;
+    font-weight: var(--font-body-medium-weight, 500); }
+  .customer-reviews--author {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    font-size: 0.8125rem;
+    font-weight: var(--font-body-medium-weight, 500);
+    line-height: 1; }
+    .customer-reviews--author span {
+      opacity: 0.7; }
+    .customer-reviews--author img {
+      border-radius: 50%;
+      width: 32px;
+      height: 32px; }

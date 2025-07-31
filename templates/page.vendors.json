@@ -1,0 +1,29 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "show_page_title": true,
+        "disable_top_spacing": false,
+        "disable_bottom_spacing": false
+      }
+    },
+    "vendor_list_6fi4eF": {
+      "type": "vendor-list",
+      "settings": {
+        "heading_left": false,
+        "full_width": true,
+        "vendor_layout": "grid",
+        "letters": "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z",
+        "columns_desktop": 6,
+        "disable_top_spacing": false,
+        "disable_bottom_spacing": false
+      }
+    }
+  },
+  "order": [
+    "main",
+    "vendor_list_6fi4eF"
+  ]
+}

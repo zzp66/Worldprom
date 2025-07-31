@@ -1,0 +1,80 @@
+
+
+.page-numbers .page a:after,
+.page-numbers .next a:after,
+.page-numbers .prev a:after,
+.page-numbers .ellip:after,
+.page-numbers .current:after {
+  transition: all 0.25s cubic-bezier(0.104, 0.204, 0.492, 1); }
+
+
+.pagination {
+  display: block;
+  text-align: center;
+  min-height: 42px;
+  position: relative;
+  margin-top: 40px; }
+  .pagination.pagination-type--infinite .button {
+    display: none; }
+  .pagination.pagination-type--infinite[loading="true"] .loading-overlay {
+    display: block; }
+
+.page-numbers {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  display: inline-flex;
+  flex-wrap: wrap; }
+  .page-numbers span {
+    display: inline-flex;
+    vertical-align: middle; }
+  .page-numbers svg {
+    width: 6px; }
+  .page-numbers .page a,
+  .page-numbers .next a,
+  .page-numbers .prev a,
+  .page-numbers .ellip,
+  .page-numbers .current {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 38px;
+    padding: 0 5px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.8125rem;
+    line-height: 0;
+    color: var(--color-body);
+    position: relative; }
+    .page-numbers .page a:after,
+    .page-numbers .next a:after,
+    .page-numbers .prev a:after,
+    .page-numbers .ellip:after,
+    .page-numbers .current:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background-color: var(--color-body);
+      opacity: 0; }
+  .page-numbers .page a:not(:disabled):hover,
+  .page-numbers .next a:not(:disabled):hover,
+  .page-numbers .prev a:not(:disabled):hover {
+    border-color: var(--color-body); }
+    .page-numbers .page a:not(:disabled):hover:after,
+    .page-numbers .next a:not(:disabled):hover:after,
+    .page-numbers .prev a:not(:disabled):hover:after {
+      opacity: 1; }
+  .page-numbers .disabled a {
+    cursor: not-allowed; }
+    .page-numbers .disabled a svg {
+      opacity: 0.4; }
+  .page-numbers .current {
+    border-color: var(--color-accent);
+    color: var(--color-accent); }
+    .page-numbers .current:after {
+      opacity: 1;
+      background-color: var(--color-accent); }

@@ -1,0 +1,55 @@
+
+
+.signup-container button {
+  transition: all 0.25s cubic-bezier(0.104, 0.204, 0.492, 1); }
+
+
+.email-signup--inner {
+  padding: 0 15px;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto; }
+  @media only screen and (min-width: 768px) {
+    .email-signup--inner {
+      padding: 0 50px; } }
+
+
+.signup-container {
+  margin-bottom: 0; }
+  .signup-container .form-notification {
+    margin-bottom: 10px; }
+  .signup-container fieldset {
+    position: relative; }
+  .signup-container input {
+    padding-right: 40px;
+    width: 100%;
+    margin-bottom: 0; }
+  .signup-container button {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    height: 100%;
+    width: 24px;
+    height: 24px;
+    margin-top: -12px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(var(--color-body-rgb), 0.2); }
+    .signup-container button:hover {
+      background-color: var(--color-body); }
+  .signup-container--terms {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 10px; }
+    .signup-container--terms input {
+      width: auto;
+      margin-right: 8px; }
+
+.email-signup {
+  background: var(--bg-body, #fff);
+  color: var(--color-body); }
+  .email-signup .signup-container {
+    max-width: 510px;
+    margin: 0 auto; }

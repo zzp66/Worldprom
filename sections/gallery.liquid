@@ -1,0 +1,459 @@
+{{- 'gallery.css' | asset_url | stylesheet_tag -}}
+{%- liquid
+	assign columns_desktop = section.settings.columns_desktop
+	assign section_width = section.settings.section_width
+	assign column_spacing = section.settings.column_spacing
+	assign content_position = section.settings.content_position
+	assign text_alignment = section.settings.text_alignment
+	assign mobile_swipe = section.settings.mobile_swipe
+	assign image_ratio = section.settings.image_ratio
+	assign heading_size = section.settings.heading_size
+
+	assign overlay_color = section.settings.overlay_color
+	assign overlay_opacity = section.settings.overlay_opacity
+	assign overlay_gradient = section.settings.overlay_gradient
+
+	assign disable_top_spacing = section.settings.disable_top_spacing
+	assign disable_bottom_spacing = section.settings.disable_bottom_spacing
+
+	assign columns_tablet = columns_desktop | minus: 2 | at_most: 4 | at_least: 2
+	
+-%}
+<div class="row {{ section_width }}">
+	<div class="small-12 columns">
+		<theme-gallery class="gallery--wrapper section-spacing{% if disable_top_spacing %} section-spacing--disable-top{% endif %}{% if disable_bottom_spacing %} section-spacing--disable-bottom{% endif %}">
+			<theme-scroll
+				class="theme-scroll gallery gallery-spacing--{{ column_spacing }} text-{{ text_alignment }}"
+				style="--desktop-columns: {{ columns_desktop }}; --tablet-columns: {{ columns_tablet }}; --overlay-color-rgb: {{ overlay_color.rgb | replace: ' ' , ',' }}; --overlay-opacity: {{ overlay_opacity | divided_by: 100.0 }};{%- if overlay_gradient != blank %} --overlay-gradient: {{ overlay_gradient }};{%- endif -%}"
+			>
+				<div class="theme-scroll--inner gallery--inner{% if mobile_swipe %} swipe-on-mobile{% endif %}">
+					{%- for block in section.blocks -%}
+						<div class="gallery-item" {{ block.shopify_attributes }}>
+							{%- liquid
+								assign index_c = forloop.index | default: 1 | modulo: 4 | plus: 1
+								assign ratio = 1
+								if image_ratio == 'adapt' and block.settings.image
+									assign ratio = block.settings.image.aspect_ratio
+								endif
+								
+								assign product_list = block.settings.product_list
+							-%}
+							<figure class="aspect-ratio aspect-ratio--{{ image_ratio }}" style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;">
+								{%- if block.settings.enable_gallery_video -%}
+									{%- if block.settings.video_hosted -%}
+										{%- liquid
+											assign video = block.settings.video_hosted
+											assign autoplay = true
+											if block.settings.enable_hover_play
+												assign autoplay = false
+											endif
+										-%}
+										<div class="gallery--video-hosted gallery--video{% if block.settings.enable_hover_play %} hover-play{% endif %}" data-provider="hosted" data-video-id="{{ video.id }}" >
+											{{ video | video_tag: autoplay: autoplay, loop: true, controls: false, muted: true, image_size: '750x', class: 'gallery-item--image' }}
+										</div>
+									{%- endif -%}
+								{%- else -%}
+									{%- if block.settings.image -%}
+										{%- liquid
+											assign sizes = '375x0,750x0'
+
+											unless section_width == 'grid'
+												assign sizes = sizes | append: ',1125x0'
+											endunless
+										-%}
+										{%- render 'responsive-image', image: block.settings.image, sizes: sizes, class: 'gallery-item--image' -%}
+									{%- else -%}
+										{{ 'product-apparel-' | append: index_c | placeholder_svg_tag: 'placeholder_svg_tag gallery-item--image' }}
+									{%- endif -%}
+								{%- endif -%}
+								<div class="gallery-item--content content-{{ content_position }}">
+									<div>
+										{% if block.settings.subheading != blank %}
+											<p class="subheading">{{ block.settings.subheading }}</p>
+										{% endif %}
+										{% if block.settings.title != blank %}
+											<div class="gallery-item--heading {{ heading_size }}">{{ block.settings.title }}</div>
+										{% endif %}
+										{% if block.settings.text != blank %}
+											<p>{{ block.settings.text }}</p>
+										{% endif %}
+										<div class="gallery-item--buttons">
+											{% if block.settings.link_label != blank %}
+												{% liquid
+													assign button_class = 'button'
+													if block.settings.use_text_button
+														assign button_class = 'text-button'
+													endif
+												-%}
+												<a class="{{ button_class }}"{% if block.settings.link == blank %} role="link" aria-disabled="true"{% else %} href="{{ block.settings.link }}"{% endif %} aria-label="{{ block.settings.link_label }}"><span>{{ block.settings.link_label }}</span></a>
+											{% endif %}
+											{% if block.settings.link_label_2 != blank and block.settings.link_2 != blank %}
+												{% liquid
+													assign button_class_2 = 'button'
+													if block.settings.use_text_button_2
+														assign button_class_2 = 'text-button'
+													endif
+												-%}
+												<a class="{{ button_class_2 }}"{% if block.settings.link_2 == blank %} role="link" aria-disabled="true"{% else %} href="{{ block.settings.link_2 }}"{% endif %} aria-label="{{ block.settings.link_label_2 }}"><span>{{ block.settings.link_label_2 }}</span></a>
+											{% endif %}
+										</div>
+										{% if block.settings.block_link != blank %}
+											<a href="{{ block.settings.block_link }}" class="gallery-item--content-link"></a>
+										{% endif %}
+									</div>
+								</div>
+								{%- if product_list.count > 0 -%}
+									<view-products class="view-products" data-target="#View-Products-{{ section.id }}-{{ block.id }}" style="--color-body: {{ settings.color_body }}">{%- render 'svg-icons' with 'cart' %}<span>{{ 'general.shop_the_look' | t }}</span></view-products>
+								{% endif %}
+							</figure>
+						</div>
+					{%- endfor -%}
+				</div>
+			</theme-scroll>
+		</theme-gallery>
+	</div>
+</div>
+{%- for block in section.blocks -%}
+	{%- if block.settings.product_list.count > 0 -%}
+		<div class="side-panel view-products-panel" id="View-Products-{{ section.id }}-{{ block.id }}" inert>
+			<div class="side-panel-inner">
+				<div class="side-panel-header">
+					<div class="side-panel-header--inner">
+						<span class="side-panel-heading">{{ 'general.shop_the_look' | t }}</span>
+						<side-panel-close class="side-panel-close" tabindex="0">{%- render 'svg-icons' with 'close' -%}</side-panel-close>
+					</div>
+				</div>
+				<div class="side-panel-content">
+					{%- for item in block.settings.product_list -%}
+						{%- render 'product-card-small', product_small: item, quick_add: true, class: 'product-card-small--smaller' -%}
+					{%- endfor -%}
+				</div>
+			</div>
+		</div>
+		<script src="{{ 'product.js' | asset_url }}" defer="defer"></script>
+		<script src="{{ 'view-products.js' | asset_url }}" defer="defer"></script>
+	{%- endif -%}
+{%- endfor -%}
+<script src="{{ 'gallery.js' | asset_url }}" defer="defer"></script>
+{% schema %}
+  {
+    "name": "Gallery",
+		"class": "section-gallery",
+    "settings": [
+			{
+				"type": "select",
+				"id": "section_width",
+				"options": [
+					{
+						"value": "grid",
+						"label": "Grid"
+					},
+					{
+						"value": "full-width-row",
+						"label": "Full width"
+					},
+					{
+						"value": "full-width-row-full",
+						"label": "Full width, no spacing"
+					}
+				],
+				"default": "grid",
+				"label": "Section width"
+			},
+			{
+				"type": "range",
+				"id": "columns_desktop",
+				"min": 1,
+				"max": 6,
+				"step": 1,
+				"default": 3,
+				"label": "Number of columns on desktop"
+			},
+			{
+	      "type": "checkbox",
+	      "id": "mobile_swipe",
+	      "default": true,
+	      "label": "Enable swipe on mobile"
+	    },
+			{
+	      "type": "select",
+	      "id": "image_ratio",
+	      "options": [
+	        {
+	          "value": "adapt",
+	          "label": "Adapt to image"
+	        },
+	        {
+	          "value": "portrait",
+	          "label": "Portrait"
+	        },
+					{
+	          "value": "landscape",
+	          "label": "Landscape"
+	        },
+	        {
+	          "value": "square",
+	          "label": "Square"
+	        }
+	      ],
+	      "default": "adapt",
+	      "label": "Image ratio"
+	    },
+			{
+				 "type": "select",
+				 "id": "content_position",
+				 "label": "Content position",
+				 "options": [
+					 { "value": "top-left", "label": "Top left" },
+					 { "value": "top-center", "label": "Top center" },
+					 { "value": "top-right", "label": "Top right" },
+					 { "value": "middle-left", "label": "Middle left" },
+					 { "value": "middle-center", "label": "Middle center" },
+					 { "value": "middle-right", "label": "Middle right" },
+					 { "value": "bottom-left", "label": "Bottom left" },
+					 { "value": "bottom-center", "label": "Bottom center" },
+					 { "value": "bottom-right", "label": "Bottom right" }
+				 ],
+				 "default": "bottom-left"
+			},
+			{
+				"type": "select",
+				"id": "text_alignment",
+				"options": [
+					{
+						"value": "left",
+						"label": "Left"
+					},
+					{
+						"value": "center",
+						"label": "Center"
+					},
+					{
+						"value": "right",
+						"label": "Right"
+					}
+				],
+				"default": "left",
+				"label": "Content alignment"
+			},
+			{
+	      "type": "select",
+	      "id": "column_spacing",
+	      "options": [
+					{
+						"value": "none",
+						"label": "None"
+					},
+	        {
+	          "value": "small",
+	          "label": "Small"
+	        },
+					{
+	          "value": "medium",
+	          "label": "Medium"
+	        },
+	        {
+	          "value": "large",
+	          "label": "Large"
+	        }
+	      ],
+	      "default": "small",
+	      "label": "Column spacing"
+	    },
+			{
+				"type": "select",
+				"id": "heading_size",
+				"label": "Heading size",
+				"options": [
+					{
+						"value": "h2",
+						"label": "Large"
+					},
+					{
+						"value": "h3",
+						"label": "Medium"
+					},
+					{
+						"value": "h4",
+						"label": "Small"
+					}
+				],
+				"default": "h4"
+			},
+			{
+	      "type": "header",
+	      "content": "Colors"
+	    },
+			{
+				"type": "color",
+				"id": "overlay_color",
+				"label": "Overlay",
+				"default": "#000000"
+			},
+			{
+				"type": "range",
+				"id": "overlay_opacity",
+				"min": 0,
+				"max": 100,
+				"step": 1,
+				"unit": "%",
+				"label": "Overlay opacity",
+				"default": 70
+			},
+			{
+				"type": "color_background",
+				"id": "overlay_gradient",
+				"label": "Overlay gradient",
+				"default": "linear-gradient(180deg, rgba(0,0,0, 0.1), rgba(0, 0, 0, 0.4) 100%)",
+				"info": "Overlay gradient setting overrides overlay color and opacity."
+			},
+			{
+	      "type": "header",
+	      "content": "Spacing"
+	    },
+			{
+				"type": "checkbox",
+				"id": "disable_top_spacing",
+				"default": false,
+				"label": "Remove top spacing"
+			},
+			{
+				"type": "checkbox",
+				"id": "disable_bottom_spacing",
+				"default": false,
+				"label": "Remove bottom spacing"
+			}
+    ],
+    "blocks": [
+      {
+        "type": "image",
+        "name": "Image",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image",
+						"info": "720 x 550 .jpg recommended."
+          },
+					{
+						"type": "header",
+						"content": "Video"
+					},
+					{
+					  "type": "checkbox",
+					  "id": "enable_gallery_video",
+					  "label": "Use video instead of image",
+					  "default": false
+					},
+					{
+					  "type": "video",
+					  "id": "video_hosted",
+					  "label": "A Shopify-hosted video"
+					},
+					{
+					  "type": "checkbox",
+					  "id": "enable_hover_play",
+					  "label": "Play on hover",
+					  "default": false
+					},
+					{
+						"type": "header",
+						"content": "Content"
+					},
+					{
+						"type": "text",
+						"id": "subheading",
+						"label": "Subheading"
+					},
+					{
+						"type": "text",
+						"id": "title",
+						"default": "Gallery column",
+						"label": "Heading"
+					},
+					{
+						"type": "textarea",
+						"id": "text",
+						"label": "Description"
+					},
+					{
+            "id": "block_link",
+            "type": "url",
+            "label": "Image link",
+						"info": "This will allow you to set a link to whole image."
+          },
+					{
+			      "type": "header",
+			      "content": "Buttons"
+			    },
+					{
+            "id": "link_label",
+            "type": "text",
+            "label": "Button label",
+            "default": "Explore",
+						"info": "Leave the label blank to hide the button."
+          },
+          {
+            "id": "link",
+            "type": "url",
+            "label": "Button link"
+          },
+					{
+						 "type": "checkbox",
+						 "id": "use_text_button",
+						 "label": "Use text button",
+						 "default": false
+					},
+					{
+            "id": "link_label_2",
+            "type": "text",
+            "label": "Button 2 label",
+            "default": "Explore",
+						"info": "Leave the label blank to hide the button."
+          },
+          {
+            "id": "link_2",
+            "type": "url",
+            "label": "Button 2 link"
+          },
+					{
+						 "type": "checkbox",
+						 "id": "use_text_button_2",
+						 "label": "Use text button",
+						 "default": false
+					},
+					{
+			      "type": "header",
+			      "content": "Shop the look"
+			    },
+					{
+						"type": "product_list",
+						"id": "product_list",
+						"label": "Select products"
+					}
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Gallery",
+				"blocks": [
+					{
+						"type": "image"
+					},
+					{
+						"type": "image"
+					},
+					{
+						"type": "image"
+					}
+				]
+      }
+    ],
+		"disabled_on": {
+    "groups": [
+      "custom.overlay"
+    ]
+  }
+  }
+{% endschema %}

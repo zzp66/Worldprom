@@ -1,0 +1,82 @@
+{%- if predictive_search.performed -%}
+	{%- liquid
+		assign predictive_search_products = predictive_search.resources.products
+		assign predictive_search_pages = predictive_search.resources.pages
+		assign predictive_search_articles = predictive_search.resources.articles
+		assign predictive_search_collections = predictive_search.resources.collections
+		assign predictive_search_queries = predictive_search.resources.queries
+		-%}
+		{%- if predictive_search_queries.size > 0 -%}
+		<div class="search-drawer--popular">
+			<span class="search-drawer--label">{{ 'sections.header.suggestions' | t }}</span>
+			<div>
+				{%- for query in predictive_search_queries -%}
+				<a href="{{ query.url }}" tabindex="-1">{{ query.styled_text }}</a>
+				{%- endfor -%}
+			</div>
+		</div>
+		{%- endif -%}
+		<side-panel-content-tabs class="side-panel-content--tabs">
+			{%- if predictive_search_products.size != 0 -%}
+			<button class="tab-active">{{ 'sections.header.search_products' | t }}</button>
+			{%- endif -%}
+			{%- if predictive_search_collections.size != 0 -%}
+			<button>{{ 'sections.header.collections' | t }}</button>
+			{%- endif -%}
+			{%- if predictive_search_articles.size != 0 -%}
+			<button>{{ 'sections.header.articles' | t }}</button>
+			{%- endif -%}
+			{%- if predictive_search_pages.size != 0 -%}
+			<button>{{ 'sections.header.pages' | t }}</button>
+			{%- endif -%}
+		</side-panel-content-tabs>
+		{%- if predictive_search_products.size != 0 -%}
+			<div class="side-panel-content--tab-panel tab-active">
+				<theme-scroll class="theme-scroll" data-overlayscrollbars-initialize>
+					<div class="search-drawer--products theme-scroll--inner">
+						{%- for predictive_product in predictive_search_products -%}
+							{% render 'product-card', product_card_product: predictive_product %}
+						{%- endfor -%}
+					</div>
+				</theme-scroll>
+			</div>
+		{%- endif -%}
+		{%- if predictive_search_collections.size != 0 -%}
+			<div class="side-panel-content--tab-panel">
+				<theme-scroll class="theme-scroll" data-overlayscrollbars-initialize>
+					<div class="search-drawer--collections theme-scroll--inner">
+						{%- for predictive_collection in predictive_search_collections -%}
+							{% render 'collection-card', grid_collection: predictive_collection, media_aspect_ratio: 'square', index: forloop.index, first_product_image: true, collection_product_count: true, style: 'style1' %}
+						{%- endfor -%}
+					</div>
+				</theme-scroll>
+			</div>
+		{{- 'list-collections.css' | asset_url | stylesheet_tag -}}
+		{%- endif -%}
+		{%- if predictive_search_articles.size != 0 -%}
+			<div class="side-panel-content--tab-panel">
+				{%- for predictive_article in predictive_search_articles -%}
+					<div class="product-card-small">
+						<div class="product-card-small--image">
+							{% if predictive_article.image %}
+								{%- render 'responsive-image', image: predictive_article.image, sizes: '96x96' -%}
+							{% endif %}
+						</div>
+						<div>
+							<a href="{{ predictive_article.url }}" title="{{ predictive_article.title | escape }}" class="product-card-small--link">{{ predictive_article.title | highlight: predictive_search.terms }}</a>
+						</div>
+					</div>
+				{%- endfor -%}
+			</div>
+		{%- endif -%}
+		{%- if predictive_search_pages.size != 0 -%}
+			<div class="side-panel-content--tab-panel">
+				{%- for predictive_page in predictive_search_pages -%}
+					<a href="{{ predictive_page.url }}" title="{{ predictive_page.title | escape }}">{{ predictive_page.title | highlight: predictive_search.terms }}</a>{%- unless forloop.last %}, {% endunless -%}
+				{%- endfor -%}
+			</div>
+		{%- endif -%}
+		<span class="loading-overlay small">
+			{%- render 'svg-icons' with 'thb-loading' -%}
+		</span>
+{%- endif -%}

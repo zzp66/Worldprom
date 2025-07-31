@@ -1,0 +1,94 @@
+
+
+
+.interviews {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-body, #fff);
+  color: var(--color-body, var(--color-body)); }
+  @media only screen and (min-width: 768px) {
+    .interviews {
+      flex-direction: row;
+      align-items: center; } }
+  @media only screen and (min-width: 768px) {
+    .interviews.text_first {
+      flex-direction: row-reverse; } }
+  .interviews--badge {
+    position: absolute;
+    display: block;
+    bottom: 10px;
+    left: 10px;
+    max-width: calc(100% - 20px);
+    font-size: 0.8125rem;
+    color: var(--color-body);
+    background: var(--bg-body, #fff);
+    display: grid;
+    grid-template-columns: 70px auto; }
+    @media only screen and (min-width: 768px) {
+      .interviews--badge {
+        max-width: 280px; } }
+    .interviews--badge-figure {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--color-accent);
+      color: var(--bg-body, #fff);
+      font-size: 2.5rem;
+      font-weight: var(--font-body-medium-weight, 500); }
+    .interviews--badge-inner {
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+      gap: 4px; }
+      @media only screen and (min-width: 768px) {
+        .interviews--badge-inner {
+          padding: 18px 20px; } }
+    .interviews--badge-job {
+      opacity: 0.4; }
+  @media only screen and (min-width: 768px) {
+    .interviews--interview .rte {
+      font-size: 1.0625rem; } }
+  .interviews--image, .interviews--slider {
+    width: 100%;
+    flex-basis: 100%; }
+    @media only screen and (min-width: 768px) {
+      .interviews--image, .interviews--slider {
+        width: 50%;
+        flex-basis: 50%; } }
+  .interviews--image {
+    position: relative; }
+    .interviews--image .placeholder_svg_tag {
+      width: 100%; }
+    .interviews--image-inner {
+      line-height: 0; }
+  .interviews--slider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+    overflow: hidden; }
+    @media only screen and (min-width: 768px) {
+      .interviews--slider {
+        padding: 40px; } }
+    .interviews--slider-inner {
+      width: 100%;
+      max-width: 400px; }
+  .interviews .carousel {
+    padding: 0; }
+    .interviews .carousel__slide {
+      width: 100%; }
+  .interviews .flickity-page-dots {
+    position: static;
+    margin: 10px auto 0;
+    transform: none; }
+  .interviews--mobile {
+    display: block; }
+    @media only screen and (min-width: 768px) {
+      .interviews--mobile {
+        display: none; } }
+  .interviews--desktop {
+    display: none; }
+    @media only screen and (min-width: 768px) {
+      .interviews--desktop {
+        display: block; } }

@@ -1,0 +1,385 @@
+/* 色卡排序*/
+.product-form__input-wrapper input[value="Black"] + label {
+  order: 1; 
+}
+.product-form__input-wrapper input[value="Taupe"] + label {
+  order: 2; 
+}
+.product-form__input-wrapper input[value="Grey"] + label {
+  order: 3; 
+}
+.product-form__input-wrapper input[value="Silver"] + label {
+  order: 4; 
+}
+.product-form__input-wrapper input[value="Light Grey"] + label {
+  order: 5; 
+}
+.product-form__input-wrapper input[value="Deep Burgundy"] + label {
+  order: 10; 
+}
+.product-form__input-wrapper input[value="Burgundy"] + label {
+  order: 11; 
+}
+.product-form__input-wrapper input[value="Crimson"] + label {
+  order: 12; 
+}
+.product-form__input-wrapper input[value="Red"] + label {
+  order: 13; 
+}
+.product-form__input-wrapper input[value="Watermelon Red"] + label {
+  order: 14; 
+}
+.product-form__input-wrapper input[value="Chocolate"] + label {
+  order: 18; 
+}
+.product-form__input-wrapper input[value="Brown"] + label {
+  order: 19; 
+}
+.product-form__input-wrapper input[value="Rust"] + label {
+  order: 20; 
+}
+.product-form__input-wrapper input[value="Burnt Orange"] + label {
+  order: 21; 
+}
+.product-form__input-wrapper input[value="Marigold"] + label {
+  order: 22; 
+}
+.product-form__input-wrapper input[value="Orange"] + label {
+  order: 23; 
+}
+.product-form__input-wrapper input[value="Bright Orange"]+ label {
+  order: 24; 
+}
+.product-form__input-wrapper input[value="Gold"] + label {
+  order: 25; 
+}
+.product-form__input-wrapper input[value="Goose Yellow"] + label {
+  order: 26; 
+}
+.product-form__input-wrapper input[value="Mustard Yellow"] + label {
+  order: 27; 
+}
+.product-form__input-wrapper input[value="Yellow"] + label {
+  order: 28; 
+}
+.product-form__input-wrapper input[value="Light Yellow"] + label {
+  order: 29; 
+}
+.product-form__input-wrapper input[value="Bean Green"] + label {
+  order: 30; 
+}
+.product-form__input-wrapper input[value="Olive Green"] + label {
+  order: 31; 
+}
+.product-form__input-wrapper input[value="Sage Green"] + label {
+  order: 32; 
+}
+.product-form__input-wrapper input[value="Dark Green"] + label {
+  order: 33; 
+}
+.product-form__input-wrapper input[value="Emerald Green"] + label {
+  order: 34; 
+}
+.product-form__input-wrapper input[value="Teal"] + label {
+  order: 35; 
+}
+.product-form__input-wrapper input[value="Green"] + label {
+  order: 36; 
+}
+.product-form__input-wrapper input[value="Eucalyptus"] + label {
+  order: 37; 
+}
+.product-form__input-wrapper input[value="Mint Green"] + label {
+  order: 38; 
+}
+.product-form__input-wrapper input[value="Fluorescent"] + label {
+  order: 39; 
+}
+.product-form__input-wrapper input[value="Dark Blue"] + label {
+  order: 50; 
+}
+.product-form__input-wrapper input[value="Navy Blue"] + label {
+  order: 51; 
+}
+.product-form__input-wrapper input[value="Royal Blue"] + label {
+  order: 52; 
+}
+.product-form__input-wrapper input[value="Blue"] + label {
+  order: 53; 
+}
+.product-form__input-wrapper input[value="Acid Blue"] + label {
+  order: 54; 
+}
+.product-form__input-wrapper input[value="Peacock Blue"] + label {
+  order: 55; 
+}
+.product-form__input-wrapper input[value="Stormy Blue"] + label {
+  order: 56; 
+}
+.product-form__input-wrapper input[value="Sky Blue"] + label {
+  order: 57; 
+}
+.product-form__input-wrapper input[value="Baby Blue"] + label {
+  order: 58; 
+}
+.product-form__input-wrapper input[value="Light Ocean Green"] + label {
+  order: 59; 
+}
+.product-form__input-wrapper input[value="Dusty Blue"] + label {
+  order: 60; 
+}
+.product-form__input-wrapper input[value="Light Blue"] + label {
+  order: 61; 
+}
+.product-form__input-wrapper input[value="Aqua Blue"] + label {
+  order: 62; 
+}
+.product-form__input-wrapper input[value="Turquoise"] + label {
+  order: 70; 
+}
+.product-form__input-wrapper input[value="Cyan"] + label {
+  order: 71; 
+}
+.product-form__input-wrapper input[value="Grape"] + label {
+  order: 75; 
+}
+.product-form__input-wrapper input[value="Purple"] + label {
+  order: 76; 
+}
+.product-form__input-wrapper input[value="Deep Lavender"] + label {
+  order: 77; 
+}
+.product-form__input-wrapper input[value="Plum"] + label {
+  order: 78; 
+}
+.product-form__input-wrapper input[value="Purple Grey"] + label {
+  order: 79; 
+}
+.product-form__input-wrapper input[value="Dusty Purple"] + label {
+  order: 80; 
+}
+.product-form__input-wrapper input[value="Light Purple"] + label {
+  order: 81; 
+}
+.product-form__input-wrapper input[value="Wisteria"] + label {
+  order: 82; 
+}
+.product-form__input-wrapper input[value="Lilac"] + label {
+  order: 83; 
+}
+.product-form__input-wrapper input[value="Mauve"] + label {
+  order: 84; 
+}
+.product-form__input-wrapper input[value="Lavender"] + label {
+  order: 85; 
+}
+.product-form__input-wrapper input[value="Desert Rose"] + label {
+  order: 89; 
+}
+.product-form__input-wrapper input[value="Coral"] + label {
+  order: 90; 
+}
+.product-form__input-wrapper input[value="Rose Gold"] + label {
+  order: 91; 
+}
+.product-form__input-wrapper input[value="Dusty Rose"] + label {
+  order: 92; 
+}
+.product-form__input-wrapper input[value="Dusty Pink"] + label {
+  order: 93; 
+}
+.product-form__input-wrapper input[value="Hot Pink"] + label {
+  order: 94; 
+}
+.product-form__input-wrapper input[value="Candy Pink"] + label {
+  order: 95; 
+}
+.product-form__input-wrapper input[value="Fuchsia"] + label {
+  order: 96; 
+}
+.product-form__input-wrapper input[value="Blush Pink"] + label {
+  order: 97; 
+}
+.product-form__input-wrapper input[value="Pink"] + label {
+  order: 98; 
+}
+.product-form__input-wrapper input[value="Light Pink"] + label {
+  order: 99; 
+}
+.product-form__input-wrapper input[value="Peach"] + label {
+  order: 100; 
+}
+.product-form__input-wrapper input[value="Champagne"] + label {
+  order: 109; 
+}
+.product-form__input-wrapper input[value="Light Champagne"] + label {
+  order: 110; 
+}
+.product-form__input-wrapper input[value="Champagne Gold"] + label {
+  order: 111; 
+}
+.product-form__input-wrapper input[value="Beige"] + label {
+  order: 112; 
+}
+.product-form__input-wrapper input[value="Ivory"] + label {
+  order: 113; 
+}
+.product-form__input-wrapper input[value="White"] + label {
+  order: 114; 
+}
+
+/* 主页文字阴影*/
+.layered-images-with-text__content,
+.layered-images-with-text__inner,
+.layered-images-with-text__content--inner,
+.layered-images-with-text__content--inner p,
+.layered-images-with-text__content--inner h3,
+.layered-images-with-text__content--inner .rte{
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 添加阴影 */
+}
+
+.slideshow__slide-content h1,
+.slideshow__slide-content p,
+.slideshow__slide-content .slideshow__slide-content--heading,
+.slideshow__slide-content .split-text  {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* 添加阴影 */
+}
+
+.image-with-text-overlay--content p,
+.image-with-text-overlay--content .subheading,
+.image-with-text-overlay--content .h1,
+.image-with-text-overlay--content .h1-large,
+.image-with-text-overlay--content .rte {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+.product-card-promotion--heading, 
+.product-card-promotion--content p {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* About Us颜色*/
+#shopify-section-template--19131917467903__collapsible_content_ckRAWw {
+  background-color: #f7effd; /* 紫色 */
+}
+
+/* 快捷加购影藏*/
+.product-add-to-cart-sticky {
+  display: none !important;
+}
+
+/* 首页滚动条设计*/
+.testimonials {
+    height: 20px; /* 设置整个模块的高度为20px */
+    padding: 0; /* 移除内间距 */
+    margin: 0; /* 移除外间距 */
+}
+.testimonials__inner {
+    height: 20px; /* 设置内容区域的高度 */
+    padding: 0; /* 移除内间距 */
+    margin: 0; /* 移除外间距 */
+}
+.testimonials__carousel {
+    height: 20px; /* 设置轮播区域的高度 */
+    padding: 0; /* 移除内间距 */
+    margin: 0; /* 移除外间距 */
+}
+.flickity-viewport {
+    height: 20px; /* 设置视口的高度 */
+}
+.flickity-slider {
+    height: 20px; /* 设置滚动区域的高度 */
+}
+.testimonials__testimonial {
+    height: 20px; /* 设置每个测试项的高度 */
+    padding: 0; /* 移除内间距 */
+    margin: 0; /* 移除外间距 */
+}
+.testimonials__testimonial-inner {
+    height: 20px; /* 设置内容的高度 */
+    padding: 0; /* 移除内间距 */
+    margin: 0; /* 移除外间距 */
+    font-size: 15px;
+}
+.flickity-page-dots {
+    margin: 0; /* 移除分页点的外间距 */
+    padding: 0; /* 移除分页点的内间距 */
+}
+
+/* 评论星星*/
+.star-rating-container {
+  display: inline-flex; /* 确保在同一行显示 */
+  align-items: center; /* 垂直居中对齐 */
+}
+.star-rating,
+.star-rating.simple::before {
+  font-size: 20px; /* 星星的大小 */
+}
+.star-rating-container span,
+.star-rating span.body-font {
+  font-family: "Helvetica", serif; 
+  font-size: 13px; 
+  color: #ce7979;
+}
+/* 优惠券部分字体*/
+.product--flash-message-content {
+  font-family: Helvetica, sans-serif;
+}
+
+/* 尺码选项 */
+.po-option--container input::placeholder {
+  color: #cccccc;
+  font-family: Helvetica, sans-serif;  /* 设置字体为 Helvetica 或 sans-serif */
+}
+.po-dropdown-option, .po-value selected, .po-dropdown-selected-option, .po-option__button-value, .swatch_value {
+  font-family: Helvetica, sans-serif;
+  font-size: 12px;
+}
+/* #po_stack734949, #po_stack734966, #po_stack734967, #po_stack734977, #po_stack734973, #po_stack734978{
+  flex: 1 1 calc(50% - 10px);
+  max-width: calc(50% - 10px);
+}*/
+
+.discounts {
+  color: #FA003F;
+  font-size: 0.75rem;
+  font-weight: bold;
+  font-family: Helvetica, sans-serif;  /* 设置字体为 Helvetica 或 sans-serif */
+}
+.tabbed-content {
+  margin: 20px;
+}
+.badge{
+  font-family: Helvetica, sans-serif;  /* 设置字体为 Helvetica 或 sans-serif */
+}
+
+.product-card-swatches--remaining {
+  font-family: "Jost", sans-serif !important;
+  size: 15px;
+}
+
+/* 推荐商品布局 */
+.theme-scroll--inner.complementary-products--inner {
+    display: flex;
+    flex-wrap: nowrap;  /* 允许子元素换行 */
+    gap: 5px;  /* 为卡片之间添加间距 */
+    justify-content: space-between;  /* 如果需要，调整卡片的对齐方式 */
+}
+
+.product-card-small--smaller {
+    min-width: calc(50% - 10px);
+}
+@media (max-width: 768px) {
+    .product-card-small--smaller {
+        min-width: 80%;  /* 在小屏设备上每行显示一个商品 */
+    }
+}
+
+/* 分类页品牌字体 */
+.product-card-info .product-card-vendor a{
+    font-family: "Playfair", sans-serif;
+}
+
+.product-card-vendor a {
+    font-size: 15px;
+}

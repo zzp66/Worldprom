@@ -1,0 +1,24 @@
+{%- liquid
+	# Product card size options
+	assign size_options_variant_name = settings.size_options_variant_name
+	assign size_options_limit = settings.size_options_limit
+-%}
+{%- capture option_values -%}{%- for option in product_card_product.options_with_values -%}
+  {%- if option.selected_value -%}{{ option.selected_value }}{% unless forloop.last %},{%- endunless -%}{%- endif -%}
+{%- endfor -%}{%- endcapture -%}
+{%- for option in product_card_product.options_with_values -%}
+  {%- if option.name == size_options_variant_name -%}
+    <div class="product-card-sizes--container">
+      <div class="product-card-sizes" data-options="{{ option_values | escape }}" data-index="{{ forloop.index0 }}">
+        {%- for value in option.values limit: size_options_limit -%}
+          <button class="product-card-sizes--size">
+            <span>{{ value }}</span><div class="loading-overlay">{% render 'svg-icons' with 'thb-loading' %}</div>
+          </button>
+        {%- endfor -%}
+      </div>
+      <script type="application/json">
+        {{ product_card_product.variants | json }}
+      </script>
+    </div>
+  {%- endif -%}
+{%- endfor -%}

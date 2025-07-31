@@ -1,0 +1,95 @@
+
+
+
+.countdown-banner--inner {
+  padding: 0 15px;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto; }
+  @media only screen and (min-width: 768px) {
+    .countdown-banner--inner {
+      padding: 0 50px; } }
+
+.countdown-banner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  background: var(--bg-body, #fff);
+  color: var(--color-body);
+  --color-accent: $body-text;
+  padding: 20px 0; }
+  .countdown-banner--inner {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+    max-width: none;
+    margin: 0; }
+    @media only screen and (min-width: 768px) {
+      .countdown-banner--inner.layout--horizontal {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between; } }
+    .countdown-banner--inner.layout--horizontal .countdown-banner--timer {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center; }
+      @media only screen and (min-width: 768px) {
+        .countdown-banner--inner.layout--horizontal .countdown-banner--timer {
+          flex-direction: row;
+          align-items: center;
+          justify-content: flex-end; } }
+    @media only screen and (min-width: 768px) {
+      .countdown-banner--inner.layout--horizontal .countdown-banner--content {
+        text-align: left; }
+        .countdown-banner--inner.layout--horizontal .countdown-banner--content > *:last-child {
+          margin-bottom: 0; } }
+  .countdown-banner--heading {
+    display: inline;
+    font-size: 0.9375rem;
+    font-weight: var(--font-body-medium-weight, 500);
+    color: inherit;
+    margin-right: 30px;
+    vertical-align: middle; }
+  .countdown-banner--content, .countdown-banner--timer {
+    position: relative;
+    z-index: 5; }
+  .countdown-banner .countdown-timer {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center; }
+    .countdown-banner .countdown-timer--column {
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 7px; }
+      .countdown-banner .countdown-timer--column--number {
+        font-size: 1.5rem;
+        line-height: 1; }
+      .countdown-banner .countdown-timer--column--text {
+        font-size: 0.625rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        opacity: 0.8;
+        margin-top: 3px; }
+      .countdown-banner .countdown-timer--column + .countdown-timer--column .countdown-timer--column--number {
+        position: relative; }
+        .countdown-banner .countdown-timer--column + .countdown-timer--column .countdown-timer--column--number:before {
+          content: ":";
+          display: inline-flex;
+          justify-content: center;
+          width: 14px;
+          font-size: 1.3rem;
+          margin-top: -2px;
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          left: -14px; }
+          [dir="rtl"] .countdown-banner .countdown-timer--column + .countdown-timer--column .countdown-timer--column--number:before {
+            left: auto;
+            right: -14px; }

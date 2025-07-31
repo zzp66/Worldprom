@@ -1,0 +1,46 @@
+{%- liquid
+	assign block_image = block.settings.image
+	
+	assign title = block.settings.title
+	assign text = block.settings.text
+	assign link_label = block.settings.link_label
+	assign link = block.settings.link
+	assign heading_size = block.settings.heading_size
+	assign promotion_width = block.settings.promotion_width
+	assign content_position = block.settings.content_position
+	assign text_alignment = block.settings.text_alignment
+
+	assign color_text = block.settings.color_text
+	assign color_bg = block.settings.color_bg
+	assign overlay_color = block.settings.overlay_color
+	assign overlay_opacity = block.settings.overlay_opacity
+	assign color_button_hover = color_text | color_darken: 7
+	assign color_button_text = block.settings.color_button_text
+
+	assign ratio = block_image.aspect_ratio
+-%}
+<div class="product-card-promotion product-card-promotion--width-{{ promotion_width }} text-{{ text_alignment }}" {{ block.shopify_attributes }} style="--color-body: {{ color_text }}; --bg-body: {{ color_bg }}; --solid-button-background: {{ color_text }}; --solid-button-background-hover: {{ color_button_hover }}; --solid-button-label: {{ color_button_text }}; --overlay-color-rgb: {{ overlay_color.rgb | replace: ' ' , ',' }}; --overlay-opacity: {{ overlay_opacity | divided_by: 100.0 }};">
+	{%- if block_image -%}
+		<figure class="product-card-promotion--image aspect-ratio" style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;">
+		{%- render 'responsive-image', image: block_image -%}
+		</figure>
+	{%- endif -%}
+	<div class="product-card-promotion--content content-{{ content_position }}">
+		<div class="product-card-promotion--content--inner">
+			{% if title != blank %}
+				<div class="product-card-promotion--heading {{ heading_size }}">{{ title }}</div>
+			{% endif %}
+			{% if text != blank %}
+				<p>{{ text }}</p>
+			{% endif %}
+			{% if link_label != blank %}
+			<div class="product-card-promotion--button">
+				<a class="button"{% if link == blank %} role="link" aria-disabled="true"{% else %} href="{{ link }}"{% endif %}>{{ link_label }}</a>
+			</div>
+			{% endif %}
+			{% if link != blank and link_label == blank %}
+				<a href="{{ link }}" class="product-card-promotion--link" target="_blank"></a>
+			{% endif %}
+		</div>
+	</div>
+</div>

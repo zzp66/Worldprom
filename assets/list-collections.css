@@ -1,0 +1,91 @@
+
+
+.collection-card--image {
+  transition: all 0.25s cubic-bezier(0.104, 0.204, 0.492, 1); }
+
+
+.section-collection-list {
+  overflow: hidden; }
+
+.collection-grid {
+  --column-gap: 4px;
+  display: grid;
+  row-gap: 15px;
+  column-gap: var(--column-gap);
+  grid-template-columns: repeat(var(--mobile-columns), 1fr); }
+  @media only screen and (min-width: 768px) {
+    .collection-grid {
+      row-gap: 20px;
+      --column-gap: 15px;
+      --mobile-columns: var(--tablet-columns); } }
+  @media only screen and (min-width: 1068px) {
+    .collection-grid {
+      --column-gap: 20px;
+      --mobile-columns: var(--desktop-columns); } }
+  .collection-grid--container {
+    scroll-snap-type: x mandatory; }
+  .collection-grid--scroll {
+    grid-auto-flow: column;
+    grid-template-columns: unset;
+    grid-auto-columns: calc((100% - (var(--column-gap) * calc(var(--mobile-columns) - 1))) / var(--mobile-columns)); }
+  .collection-grid--uppercase-true .collection-card.style1 .collection-card--text-link {
+    text-transform: uppercase; }
+
+.collection-card {
+  width: 100%;
+  position: relative; }
+  .collection-card--link {
+    display: block;
+    transition: none; }
+    .animations-true .collection-card--link {
+      opacity: 0;
+      transform: scale(1.15); }
+  .collection-card--text-link {
+    text-transform: uppercase;
+    font-weight: var(--font-body-medium-weight, 500);
+    font-size: 0.9375rem;
+    letter-spacing: 0.1em; }
+    .collection-card--text-link sup {
+      letter-spacing: normal; }
+  .collection-card--content {
+    word-break: break-word; }
+  .collection-card--image {
+    display: block;
+    will-change: scale, opacity; }
+  .collection-card--wrapper {
+    position: relative;
+    overflow: hidden;
+    z-index: 5; }
+  .collection-card:hover .collection-card--image, .collection-card:focus .collection-card--image {
+    transform: scale(1.05); }
+  .collection-card.style1 .collection-card--wrapper {
+    margin-bottom: 10px; }
+  .collection-card.style1 .collection-card--text-link {
+    text-transform: none;
+    letter-spacing: normal; }
+  .collection-card.style2 .collection-card--link:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 11;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 60%, black 100%); }
+  .collection-card.style2 .collection-card--content {
+    --content-gap: 10px;
+    position: absolute;
+    bottom: var(--content-gap);
+    left: var(--content-gap);
+    right: var(--content-gap);
+    z-index: 10;
+    border-top: 1px solid #fff;
+    padding-top: 10px; }
+    .collection-card.style2 .collection-card--content .collection-card--text-link {
+      color: #fff; }
+    @media only screen and (min-width: 768px) {
+      .collection-card.style2 .collection-card--content {
+        --content-gap: 20px
+      ; } }

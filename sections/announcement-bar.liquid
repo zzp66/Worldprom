@@ -1,0 +1,420 @@
+{%- liquid
+	assign full_width = section.settings.full_width
+	assign menu = section.settings.secondary_menu
+	assign content = section.settings.content
+
+	assign speed = section.settings.speed
+	assign direction = section.settings.direction
+	
+	assign show_language_switcher = section.settings.show_language_switcher
+	assign show_currency_switcher = section.settings.show_currency_switcher
+	assign show_social_media = section.settings.show_social_media
+-%}
+{{- 'announcement-bar.css' | asset_url | stylesheet_tag -}}
+<aside class="announcement-bar{% if content == 'menu' %} announcement-bar--hidden{% endif %}{% if full_width %} announcement-bar--full-width{%- endif %}">
+	<div class="announcement-bar--inner">
+		<div class="announcement-bar--left announcement-bar--left--type-{{ content }}">
+			{% if content == 'menu' %}
+			<ul class="thb-full-menu" role="menubar">
+				{%- for link in menu.links -%}
+					{%- liquid
+						assign has_sub_menu = false
+						assign has_mega_menu = false
+
+						if link.links.size > 0
+							assign has_sub_menu = true
+						endif
+					-%}
+					<li role="menuitem" class="{% if has_sub_menu %}menu-item-has-children{% endif %}{% if has_mega_menu %} menu-item-has-megamenu{% endif %}{% if link.active %} active{% endif %}" {% if has_sub_menu %}data-item-title="{{ link.title | escape }}"{% endif %}>
+						<a href="{{ link.url }}" class="thb-full-menu--link" title="{{ link.title | escape }}"{%- if link.active %} aria-current="page"{% endif -%}>
+							{{- link.title -}}
+							{%- if has_sub_menu -%}{%- render 'svg-icons' with 'thb-dropdown-bottom' -%}{%- endif -%}
+						</a>
+						{%- if has_sub_menu == true -%}
+							<ul class="sub-menu" tabindex="-1">
+								{%- for l in link.links -%}
+									{%- liquid
+										assign has_sub_menu = false
+										assign has_mega_menu = false
+										if l.links.size > 0
+											assign has_sub_menu = true
+										endif
+
+									-%}
+									<li class="{%- if l.active %}active{% endif %}{% if has_sub_menu %} menu-item-has-children{%- endif -%}" role="none" {% if has_sub_menu %}data-item-title="{{ l.title | escape }}"{% endif %}>
+										<a href="{{ l.url }}" class="thb-full-menu--link" title="{{ l.title | escape }}" role="menuitem">
+											{{- l.title -}}
+											{%- if has_sub_menu -%}{%- render 'svg-icons' with 'thb-dropdown-right' -%}{%- endif -%}
+										</a>
+										{%- if has_sub_menu -%}
+											<ul class="sub-menu" role="menu">
+												{%- for sub_link in l.links -%}
+													<li class="{%- if sub_link.active %} active{% endif %}" role="none">
+														<a href="{{ sub_link.url }}" class="thb-full-menu--link" title="{{ sub_link.title | escape }}" role="menuitem">{{- sub_link.title -}}</a>
+													</li>
+												{%- endfor -%}
+											</ul>
+										{%- endif -%}
+									</li>
+								{%- endfor -%}
+							</ul>
+						{%- endif -%}
+					</li>
+				{%- endfor -%}
+			</ul>
+			{% else %}
+				<div class="announcement-bar--marquee direction-{{ direction }}" style="--marquee-speed: {{ speed }};">
+					{%- capture scrolling_text -%}
+						{%- for block in section.blocks -%}
+							<div class="announcement-bar--item" {{ block.shopify_attributes }}>
+								{%- if block.settings.link -%}
+									<a href="{{ block.settings.link }}" target="_blank">
+								{%- endif -%}
+								{%- if block.settings.icon -%}{% render 'svg-icons-inline', icon: block.settings.icon %}{%- endif -%}{{- block.settings.text -}}
+								{%- if block.settings.link -%}
+									</a>
+								{%- endif -%}
+							</div>
+						{%- endfor -%}
+					{%- endcapture -%}
+					{{ scrolling_text }}{{ scrolling_text }}{{ scrolling_text }}
+					{{ scrolling_text }}{{ scrolling_text }}{{ scrolling_text }}
+				</div>
+			{% endif %}
+		</div>
+		<div class="announcement-bar--right">
+			{%- liquid
+				if show_social_media
+					render 'social-links', show_label: false
+				endif
+			-%}
+			<div class="no-js-hidden">
+				{%- render 'localization', id: 'HeaderLocalization', show_language_switcher: show_language_switcher, show_currency_switcher: show_currency_switcher -%}
+			</div>
+		</div>
+	</div>
+</aside>
+
+{% schema %}
+{
+	"name": "Announcement bar",
+	"class": "header-announcement-bar",
+	"settings": [
+		{
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Make section full width",
+      "default": true
+    },
+		{
+			"type": "select",
+			"id": "content",
+			"options": [
+				{
+					"value": "menu",
+					"label": "Menu"
+				},
+				{
+					"value": "text",
+					"label": "Marquee"
+				}
+			],
+			"default": "menu",
+			"label": "Content type"
+		},
+		{
+			"type": "header",
+			"content": "Menu"
+		},
+		{
+			"type": "link_list",
+			"id": "secondary_menu",
+			"label": "Menu",
+			"default": "main-menu"
+		},
+		{
+			"type": "header",
+			"content": "Scrolling text"
+		},
+		{
+			"type": "paragraph",
+			"content": "Please add blocks to use scrolling text"
+		},
+		{
+			"type": "select",
+			"id": "direction",
+			"options": [
+				{
+					"value": "left",
+					"label": "Left"
+				},
+				{
+					"value": "right",
+					"label": "Right"
+				}
+			],
+			"default": "left",
+			"label": "Direction"
+		},
+		{
+			"type": "select",
+			"id": "speed",
+			"options": [
+				{
+					"value": "10s",
+					"label": "Fast"
+				},
+				{
+					"value": "20s",
+					"label": "Normal"
+				},
+				{
+					"value": "30s",
+					"label": "Slow"
+				},
+				{
+					"value": "50s",
+					"label": "Very slow"
+				}
+			],
+			"default": "20s",
+			"label": "Speed"
+		},
+		{
+			"type": "header",
+			"content": "Social media"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_social_media",
+			"label": "Show social media",
+			"default": true
+		},
+		{
+			"type": "header",
+			"content": "Language switcher"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_language_switcher",
+			"label": "Enable language switcher",
+			"default": false,
+			"info": "To add a language, go to your [language settings](/admin/settings/languages)."
+		},
+		{
+			"type": "header",
+			"content": "Currency switcher"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_currency_switcher",
+			"label": "Enable currency switcher",
+			"default": true,
+			"info": "To add a country/region, go to your [payment settings](/admin/settings/payments)."
+		}
+	],
+	"blocks": [
+		{
+			"type": "text",
+			"name": "Text",
+			"settings": [
+				{
+					"type": "select",
+					"id": "icon",
+					"options": [
+						{
+							"value": "none",
+							"label": "None"
+						},
+						{
+							"value": "apple",
+							"label": "Apple"
+						},
+						{
+							"value": "banana",
+							"label": "Banana"
+						},
+						{
+							"value": "bottle",
+							"label": "Bottle"
+						},
+						{
+							"value": "box",
+							"label": "Box"
+						},
+						{
+							"value": "carrot",
+							"label": "Carrot"
+						},
+						{
+							"value": "chat_bubble",
+							"label": "Chat bubble"
+						},
+						{
+							"value": "check_mark",
+							"label": "Check mark"
+						},
+						{
+							"value": "clipboard",
+							"label": "Clipboard"
+						},
+						{
+							"value": "dairy",
+							"label": "Dairy"
+						},
+						{
+							"value": "dairy_free",
+							"label": "Dairy free"
+						},
+						{
+							"value": "dryer",
+							"label": "Dryer"
+						},
+						{
+							"value": "eye",
+							"label": "Eye"
+						},
+						{
+							"value": "fire",
+							"label": "Fire"
+						},
+						{
+							"value": "gluten_free",
+							"label": "Gluten free"
+						},
+						{
+							"value": "heart",
+							"label": "Heart"
+						},
+						{
+							"value": "iron",
+							"label": "Iron"
+						},
+						{
+							"value": "leaf",
+							"label": "Leaf"
+						},
+						{
+							"value": "leather",
+							"label": "Leather"
+						},
+						{
+							"value": "lightning_bolt",
+							"label": "Lightning bolt"
+						},
+						{
+							"value": "lipstick",
+							"label": "Lipstick"
+						},
+						{
+							"value": "lock",
+							"label": "Lock"
+						},
+						{
+							"value": "map_pin",
+							"label": "Map pin"
+						},
+						{
+							"value": "nut_free",
+							"label": "Nut free"
+						},
+						{
+							"value": "pants",
+							"label": "Pants"
+						},
+						{
+							"value": "paw_print",
+							"label": "Paw print"
+						},
+						{
+							"value": "pepper",
+							"label": "Pepper"
+						},
+						{
+							"value": "perfume",
+							"label": "Perfume"
+						},
+						{
+							"value": "plane",
+							"label": "Plane"
+						},
+						{
+							"value": "plant",
+							"label": "Plant"
+						},
+						{
+							"value": "price_tag",
+							"label": "Price tag"
+						},
+						{
+							"value": "question_mark",
+							"label": "Question mark"
+						},
+						{
+							"value": "recycle",
+							"label": "Recycle"
+						},
+						{
+							"value": "return",
+							"label": "Return"
+						},
+						{
+							"value": "ruler",
+							"label": "Ruler"
+						},
+						{
+							"value": "serving_dish",
+							"label": "Serving dish"
+						},
+						{
+							"value": "shirt",
+							"label": "Shirt"
+						},
+						{
+							"value": "shoe",
+							"label": "Shoe"
+						},
+						{
+							"value": "silhouette",
+							"label": "Silhouette"
+						},
+						{
+							"value": "snowflake",
+							"label": "Snowflake"
+						},
+						{
+							"value": "star",
+							"label": "Star"
+						},
+						{
+							"value": "stopwatch",
+							"label": "Stopwatch"
+						},
+						{
+							"value": "truck",
+							"label": "Truck"
+						},
+						{
+							"value": "washing",
+							"label": "Washing"
+						}
+					],
+					"default": "none",
+					"label": "Icon"
+				},
+				{
+					"type": "text",
+					"id": "text",
+					"label": "Content",
+					"default": "Add campaign text here."
+				},
+				{
+					"id": "link",
+					"type": "url",
+					"label": "Link"
+				}
+			]
+		}
+	]
+}
+{% endschema %}

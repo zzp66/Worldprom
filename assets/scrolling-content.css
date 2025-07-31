@@ -1,0 +1,81 @@
+
+
+
+.scrolling-content--grid, .scrolling-content--full-width-row {
+  padding: 0 15px;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto; }
+  @media only screen and (min-width: 768px) {
+    .scrolling-content--grid, .scrolling-content--full-width-row {
+      padding: 0 50px; } }
+
+.scrolling-content {
+  display: block; }
+  .scrolling-content--inner {
+    width: 100%; }
+  .scrolling-content--full-width-row {
+    max-width: 100%; }
+  .scrolling-content--container {
+    display: grid;
+    gap: 30px;
+    position: relative;
+    background: var(--color-bg); }
+    @media only screen and (min-width: 768px) {
+      .scrolling-content--container {
+        grid-template-columns: 1fr 1fr;
+        row-gap: 0;
+        column-gap: 50px; } }
+    @media only screen and (max-width: 767px) {
+      .scrolling-content--container.swipe-on-mobile {
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(var(--mobile-swipe-width), 1fr);
+        overflow-x: auto;
+        overflow-y: hidden;
+        grid-template-columns: repeat(auto-fill, minmax(var(--mobile-swipe-width), 1fr));
+        gap: 12px;
+        padding: 0 15px;
+        scrollbar-width: none;
+        scroll-snap-type: x mandatory;
+        align-items: start; }
+        .scrolling-content--container.swipe-on-mobile::-webkit-scrollbar {
+          display: none; }
+        .scrolling-content--container.swipe-on-mobile .scrolling-content--content {
+          scroll-snap-align: center;
+          scroll-snap-stop: always; }
+          .scrolling-content--container.swipe-on-mobile .scrolling-content--content-text {
+            padding-right: 15px; } }
+  .scrolling-content--image {
+    display: none; }
+    @media only screen and (min-width: 768px) {
+      .scrolling-content--image {
+        display: block;
+        position: sticky;
+        left: 0;
+        top: 0; }
+        .header-sticky--active .scrolling-content--image {
+          top: var(--header-height, 0px); }
+        .scrolling-content--image.active {
+          visibility: visible; } }
+  .scrolling-content--content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; }
+    .scrolling-content--content-image {
+      display: block; }
+      @media only screen and (min-width: 768px) {
+        .scrolling-content--content-image {
+          display: none; } }
+    .scrolling-content--content-text {
+      padding: 15px 15px 0; }
+      @media only screen and (min-width: 768px) {
+        .scrolling-content--content-text {
+          padding: clamp(15px, 10%, 80px); } }
+  @media only screen and (min-width: 768px) {
+    .scrolling-content--section {
+      min-height: 450px;
+      max-height: calc(100vh - var(--header-height, 0px)); } }
+  @supports (height: 100svh) {
+    @media only screen and (min-width: 768px) {
+      .scrolling-content--section {
+        max-height: calc(100svh - var(--header-height, 0px)); } } }

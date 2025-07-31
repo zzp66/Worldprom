@@ -1,0 +1,190 @@
+
+
+.image-with-scrolling-text--scrolling-text--item span {
+  transition: all 0.25s cubic-bezier(0.104, 0.204, 0.492, 1); }
+
+
+
+.inline-badge {
+  font-size: 0.6875rem;
+  background-color: rgba(var(--badge-bg-rgb, var(--bg-body-rgb)), 0.6);
+  color: var(--badge-text, var(--color-body));
+  backdrop-filter: blur(10px);
+  display: inline-flex;
+  margin-bottom: 20px;
+  padding: 4px 12px;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  min-height: 24px;
+  border-radius: 12px;
+  z-index: 20; }
+
+.image-with-scrolling-text {
+  position: relative;
+  display: flex;
+  width: 100%;
+  background: rgba(var(--color-body-rgb), 0.05);
+  padding: 50px 0;
+  overflow: hidden; }
+  .image-with-scrolling-text .row {
+    width: 100%; }
+  .image-with-scrolling-text--mobile {
+    display: block; }
+    @media only screen and (min-width: 768px) {
+      .image-with-scrolling-text--mobile {
+        display: none; } }
+  .image-with-scrolling-text--desktop {
+    display: none; }
+    @media only screen and (min-width: 768px) {
+      .image-with-scrolling-text--desktop {
+        display: block; } }
+  .image-with-scrolling-text--bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none; }
+    .image-with-scrolling-text--bg.parallax--true {
+      top: -5%;
+      height: 110%; }
+    .image-with-scrolling-text--bg svg,
+    .image-with-scrolling-text--bg .image-with-scrolling-text--image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; }
+    .image-with-scrolling-text--bg:after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 11;
+      background-color: rgba(var(--color-overlay-rgb), var(--overlay-opacity));
+      pointer-events: none; }
+  .image-with-scrolling-text--heading {
+    color: var(--color-body); }
+  .image-with-scrolling-text .button {
+    margin-bottom: 5px; }
+  .image-with-scrolling-text--content {
+    display: flex;
+    padding: 0 15px;
+    position: relative;
+    z-index: 12;
+    width: 100%;
+    margin: 0 auto; }
+    @media only screen and (min-width: 768px) {
+      .image-with-scrolling-text--content {
+        padding: 0 50px; } }
+    .image-with-scrolling-text--content-inner {
+      max-width: 650px;
+      width: 100%;
+      background-color: var(--color-bg); }
+      .animations-true .image-with-scrolling-text--content-inner {
+        visibility: hidden; }
+      @media only screen and (max-width: 767px) {
+        .image-with-scrolling-text--content-inner {
+          text-align: center; } }
+      .image-with-scrolling-text--content-inner.content-width-small {
+        max-width: 480px; }
+      .image-with-scrolling-text--content-inner.content-width-medium {
+        max-width: 650px; }
+      .image-with-scrolling-text--content-inner.content-width-large {
+        max-width: 900px; }
+      .image-with-scrolling-text--content-inner-has-padding--true {
+        padding: 25px; }
+        @media only screen and (min-width: 768px) {
+          .image-with-scrolling-text--content-inner-has-padding--true {
+            padding: 50px; } }
+      .image-with-scrolling-text--content-inner > *:last-child {
+        margin-bottom: 0; }
+    .image-with-scrolling-text--content.content-top-left {
+      justify-content: flex-start;
+      align-items: flex-start; }
+    .image-with-scrolling-text--content.content-top-center {
+      justify-content: center;
+      align-items: flex-start; }
+    .image-with-scrolling-text--content.content-top-right {
+      justify-content: flex-end;
+      align-items: flex-start; }
+    .image-with-scrolling-text--content.content-middle-left {
+      justify-content: flex-start;
+      align-items: center; }
+    .image-with-scrolling-text--content.content-middle-center {
+      justify-content: center;
+      align-items: center; }
+    .image-with-scrolling-text--content.content-middle-right {
+      justify-content: flex-end;
+      align-items: center; }
+    .image-with-scrolling-text--content.content-bottom-left {
+      justify-content: flex-start;
+      align-items: flex-end; }
+    .image-with-scrolling-text--content.content-bottom-center {
+      justify-content: center;
+      align-items: flex-end; }
+    .image-with-scrolling-text--content.content-bottom-right {
+      justify-content: flex-end;
+      align-items: flex-end; }
+  .image-with-scrolling-text.text-center .button {
+    margin-right: 5px;
+    margin-left: 5px; }
+    .image-with-scrolling-text.text-center .button + .button {
+      margin-left: 0; }
+  .image-with-scrolling-text.text-left .button {
+    margin-right: 5px; }
+  .image-with-scrolling-text.text-right .button {
+    margin-left: 5px; }
+  .image-with-scrolling-text--scrolling-text {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    transform: translateY(-50%);
+    z-index: 10;
+    overflow: hidden; }
+    .image-with-scrolling-text--scrolling-text-uppercase--true {
+      text-transform: uppercase; }
+    .image-with-scrolling-text--scrolling-text-inner {
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      font-size: var(--font-size, 60px);
+      z-index: 10;
+      color: var(--color-body); }
+      .image-with-scrolling-text--scrolling-text-inner.direction-left {
+        animation: marquee-left var(--marquee-speed) linear infinite; }
+      .image-with-scrolling-text--scrolling-text-inner.direction-right {
+        animation: marquee-right var(--marquee-speed) linear infinite; }
+      .image-with-scrolling-text--scrolling-text-inner > div {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0; }
+    .image-with-scrolling-text--scrolling-text--item {
+      display: inline-flex;
+      align-items: center;
+      padding: 0 30px; }
+      .image-with-scrolling-text--scrolling-text--item.outline-text--true * {
+        -webkit-text-fill-color: transparent;
+        -webkit-text-stroke-width: 1px;
+        -webkit-text-stroke-color: var(--color-body); }
+  .image-with-scrolling-text--overlay-image-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    z-index: 12; }
+
+@keyframes marquee-left {
+  0% {
+    transform: translateX(0%); }
+  100% {
+    transform: translateX(-100%); } }
+
+@keyframes marquee-right {
+  0% {
+    transform: translateX(-100%); }
+  100% {
+    transform: translateX(0%); } }

@@ -1,0 +1,398 @@
+{{- 'facets.css' | asset_url | stylesheet_tag -}}
+{{- 'product-grid.css' | asset_url | stylesheet_tag -}}
+{%- liquid
+	assign has_price_filter = collection.filters | where: "type", "price_range"
+
+	assign full_width = section.settings.full_width
+	assign enable_filtering = section.settings.enable_filtering
+	assign enable_sorting = section.settings.enable_sorting
+	assign show_counts = section.settings.show_counts
+	assign filter_color_swatches = section.settings.filter_color_swatches
+	assign pagination_type = section.settings.pagination_type
+	assign products_per_page = section.settings.products_per_page
+	assign columns_desktop = section.settings.columns_desktop
+	assign facets_desktop = section.settings.facets_desktop
+
+	assign seo_text = section.settings.seo_text
+	assign seo_text_custom_liquid = section.settings.seo_text_custom_liquid
+	assign seo_text_max_height = section.settings.seo_text_max_height
+	assign seo_text_read_more = section.settings.seo_text_read_more
+	assign seo_text_read_less = section.settings.seo_text_read_less
+
+	unless enable_filtering
+		assign facets_desktop = 'drawer'
+	endunless
+
+	assign columns_tablet = columns_desktop | minus: 2 | at_most: 5 | at_least: 3
+-%}
+{%- for filter in collection.filters limit: 1 -%}{%- endfor -%}{%- comment -%} This is just to get rid of the "this theme does not support filters" message in the shopify admin {%- endcomment -%}
+{%- paginate collection.products by products_per_page -%}
+{%- render 'facets-mobile', results: collection, enable_filtering: enable_filtering, enable_sorting: enable_sorting, show_counts: show_counts, filter_color_swatches: filter_color_swatches -%}
+{%- render 'facets-bar', results: collection, enable_filtering: enable_filtering, enable_sorting: enable_sorting, facets_desktop: facets_desktop, filter_color_swatches: filter_color_swatches, products_per_page: products_per_page, paginate: paginate -%}
+{%- if section.blocks.size > 0 -%}
+	<link id="PromotionStyle-{{ section.id }}" rel="stylesheet" href="{{ 'product-card-promotion.css' | asset_url }}" media="print" onload="this.media='all'">
+{%- endif -%}
+<div class="row {% if full_width %}full-width-row{% endif %}">
+	<div class="small-12 columns">
+		<div class="collection-container section-spacing-bottom">
+			<div id="ProductGridContainer">
+				<div class="sidebar-container{% if enable_filtering and facets_desktop == 'sidebar' %} facets--sidebar{% else %} facets--sidebar-false{% endif %} facets--sidebar-open results--{{ collection.products.size }} sticky-scroller--parent" id="Sidebar-Container">
+					{%- if facets_desktop == 'sidebar' -%}
+						{%- render 'facets-desktop', results: collection, enable_filtering: enable_filtering, enable_sorting: enable_sorting, show_counts: show_counts, filter_color_swatches: filter_color_swatches -%}
+					{%- endif -%}
+					<div class="sidebar-container--products  sticky-scroller--compare">
+						{%- if collection.products.size == 0 -%}
+							<div class="collection-empty collection" id="product-grid" data-id="{{ section.id }}">
+								{% render 'svg-icons' with 'thb-no-products' %}
+								<p>
+									{{ 'sections.collection_template.empty' | t }}<br>
+									{%- if collection.terms -%}
+									{{ 'sections.collection_template.use_fewer_filters_html' | t: link: collection.url }}
+									{%- endif -%}
+								</p>
+							</div>
+						{%- else -%}
+							<div id="product-grid" data-id="{{ section.id }}" class="products grid pagination--{{ pagination_type }}" style="--desktop-columns: {{ columns_desktop }}; --tablet-columns: {{ columns_tablet }};">
+								{%- for product in collection.products -%}
+									{%- assign product_loop = forloop -%}
+									{%- for block in section.blocks -%}
+										{%- liquid
+											assign display_promotion = false
+											if product_loop.index == block.settings.promotion_position
+												assign display_promotion = true
+											endif
+
+											if block.settings.promotion_collection != blank
+												if collection.handle == block.settings.promotion_collection.handle and product_loop.index == block.settings.promotion_position
+													assign display_promotion = true
+												else
+													assign display_promotion = false
+												endif
+											endif
+										-%}
+										{%- if display_promotion -%}
+											{%- render 'product-card-promotion', block: block -%}
+										{%- endif -%}
+									{%- endfor -%}
+									<div class="products--column">
+										{%- render 'product-card', product_card_product: product -%}
+									</div>
+								{%- endfor -%}
+								<div class="loading-overlay">
+									<div class="loading-overlay--sticky">
+										{% render 'svg-icons' with 'thb-loading' %}
+									</div>
+								</div>
+							</div>
+							{% render 'pagination', paginate: paginate, pagination_type: pagination_type, id: section.id %}
+						{%- endif -%}
+						{%- if seo_text_custom_liquid != blank or seo_text != blank -%}
+							{%- render 'text-max-height', no_bg: true, content: seo_text, custom_liquid: seo_text_custom_liquid, read_more: seo_text_read_more, read_less: seo_text_read_less, max_height: seo_text_max_height -%}
+						{%- endif -%}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+		{%- endpaginate -%}
+{%- if enable_filtering or enable_sorting -%}
+{%- if enable_filtering and has_price_filter.size > 0 -%}
+{{ 'nouislider.js' | asset_url | script_tag }}
+{%- endif -%}
+<script src="{{ 'facets.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{% schema %}
+  {
+    "name": "Product grid",
+    "settings": [
+			{
+				"type": "checkbox",
+				"id": "full_width",
+				"default": false,
+				"label": "Make section full width"
+			},
+			{
+        "type": "range",
+        "id": "products_per_page",
+        "min": 2,
+        "max": 48,
+        "step": 1,
+        "label": "Number of products",
+        "default": 12
+      },
+			{
+        "type": "range",
+        "id": "columns_desktop",
+        "min": 2,
+        "max": 5,
+        "step": 1,
+        "label": "Number of columns on desktop",
+        "default": 3
+      },
+			{
+	      "type": "select",
+	      "id": "pagination_type",
+	      "options": [
+	        {
+	          "value": "paginated",
+	          "label": "Paginated"
+	        },
+	        {
+	          "value": "loadmore",
+	          "label": "Click to load"
+	        },
+	        {
+	          "value": "infinite",
+	          "label": "Infinite"
+	        }
+	      ],
+	      "default": "paginated",
+	      "label": "Pagination",
+	      "info": "Choose how additional pages of products are navigated."
+	    },
+	    {
+	      "type": "header",
+	      "content": "Filtering and sorting"
+	    },
+	    {
+	      "type": "checkbox",
+	      "id": "enable_filtering",
+	      "default": true,
+	      "label": "Enable filtering",
+	      "info": "Customize [filters](/admin/menus)"
+	    },
+	    {
+	      "type": "checkbox",
+	      "id": "enable_sorting",
+	      "default": true,
+	      "label": "Enable sorting"
+	    },
+			{
+	      "type": "checkbox",
+	      "id": "show_counts",
+	      "default": false,
+	      "label": "Show filter values count"
+	    },
+			{
+				"type": "checkbox",
+				"id": "filter_color_swatches",
+				"default": true,
+				"label": "Show color swatches"
+			},
+			{
+	      "type": "select",
+	      "id": "facets_desktop",
+	      "options": [
+	        {
+	          "value": "sidebar",
+	          "label": "Sidebar"
+	        },
+	        {
+	          "value": "drawer",
+	          "label": "Drawer"
+	        }
+	      ],
+	      "default": "sidebar",
+	      "label": "Desktop position",
+	      "info": "Position of filters on desktop"
+	    },
+			{
+	      "type": "header",
+	      "content": "SEO"
+	    },
+			{
+				"type": "richtext",
+				"id": "seo_text",
+				"default": "<p>Collection <strong>seo text</strong></p>",
+				"label": "Description"
+			},
+			{
+				"type": "liquid",
+				"id": "seo_text_custom_liquid",
+				"label": "Custom liquid",
+				"info": "Add app snippets or other Liquid code to create advanced customizations. For collection description, you can use {{ collection.description }}"
+			},
+			{
+				"type": "text",
+				"id": "seo_text_read_more",
+				"default": "Read more",
+				"label": "Read more label",
+				"info": "Button will be shown when the content exceeds the max height"
+			},
+			{
+				"type": "text",
+				"id": "seo_text_read_less",
+				"default": "Read less",
+				"label": "Read less label",
+				"info": "Button will be shown when the content exceeds the max height"
+			},
+			{
+				"type": "range",
+				"id": "seo_text_max_height",
+				"min": 150,
+				"max": 1000,
+				"step": 50,
+				"label": "Max height",
+				"default": 350,
+				"info": "Displays a read more button after the text height exceeds a certain height."
+			}
+    ],
+		"blocks": [
+      {
+        "type": "promotion",
+        "name": "Promotion",
+        "settings": [
+          {
+            "type": "collection",
+            "id": "promotion_collection",
+            "label": "Collection",
+						"info": "Show on specific collection only"
+          },
+					{
+		        "type": "range",
+		        "id": "promotion_position",
+		        "min": 1,
+		        "max": 24,
+		        "step": 1,
+		        "label": "Show in position",
+		        "default": 1
+		      },
+					{
+			      "type": "select",
+			      "id": "promotion_width",
+			      "options": [
+			        {
+			          "value": "1",
+			          "label": "1 column"
+			        },
+			        {
+			          "value": "2",
+			          "label": "2 columns"
+			        }
+			      ],
+			      "default": "1",
+			      "label": "Width"
+			    },
+					{
+						"type": "header",
+						"content": "Content"
+					},
+					{
+						"type": "image_picker",
+						"id": "image",
+						"label": "Image"
+					},
+					{
+						"type": "text",
+						"id": "title",
+						"default": "Promotion",
+						"label": "Heading"
+					},
+					{
+						"type": "select",
+						"id": "heading_size",
+						"label": "Heading size",
+						"options": [
+							{
+								"value": "h3",
+								"label": "Large"
+							},
+							{
+								"value": "h4",
+								"label": "Medium"
+							},
+							{
+								"value": "h5",
+								"label": "Small"
+							}
+						],
+						"default": "h3"
+					},
+					{
+						"type": "textarea",
+						"id": "text",
+						"default": "Advertise a promotion or a sale",
+						"label": "Description"
+					},
+					{
+						"id": "link_label",
+						"type": "text",
+						"label": "Button label",
+						"default": "Explore",
+						"info": "Leave the label blank to hide the button."
+					},
+					{
+						"id": "link",
+						"type": "url",
+						"label": "Link"
+					},
+					{
+						"type": "header",
+						"content": "Layout"
+					},
+					{
+						"type": "select",
+						"id": "content_position",
+						"label": "Content position",
+						"options": [
+							{ "value": "top-left", "label": "Top left" },
+							{ "value": "top-center", "label": "Top center" },
+							{ "value": "top-right", "label": "Top right" },
+							{ "value": "middle-left", "label": "Middle left" },
+							{ "value": "middle-center", "label": "Middle center" },
+							{ "value": "middle-right", "label": "Middle right" },
+							{ "value": "bottom-left", "label": "Bottom left" },
+							{ "value": "bottom-center", "label": "Bottom center" },
+							{ "value": "bottom-right", "label": "Bottom right" }
+						],
+						"default": "bottom-left"
+					},
+					{
+						"type": "select",
+						"id": "text_alignment",
+						"options": [
+							{
+								"value": "left",
+								"label": "Left"
+							},
+							{
+								"value": "center",
+								"label": "Center"
+							},
+							{
+								"value": "right",
+								"label": "Right"
+							}
+						],
+						"default": "left",
+						"label": "Content alignment"
+					},
+					{
+						"type": "header",
+						"content": "Colors"
+					},
+					{
+						"type": "color",
+						"id": "color_text",
+						"label": "Text",
+						"default": "#4E693D"
+					},
+					{
+						"type": "color",
+						"id": "color_bg",
+						"label": "Background",
+						"default": "#FFF6DF"
+					},
+					{
+						"type": "color",
+						"id": "color_button_text",
+						"label": "Button text",
+						"default": "#FFF6DF"
+					}
+				]
+			}
+		]
+  }
+{% endschema %}

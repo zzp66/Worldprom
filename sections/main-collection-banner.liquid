@@ -1,0 +1,209 @@
+{%- liquid
+	assign show_collection_image = section.settings.show_collection_image
+	assign show_collection_description = section.settings.show_collection_description
+	assign show_subcollections = section.settings.show_subcollections
+
+	assign image = collection.featured_image
+	assign collection_image_ratio = section.settings.collection_image_ratio
+	assign collection_image_width = section.settings.collection_image_width
+	assign title = collection.title
+	assign description = collection.description
+	assign seo_text_max_height = section.settings.seo_text_max_height
+	assign seo_text_read_more = section.settings.seo_text_read_more
+	assign seo_text_read_less = section.settings.seo_text_read_less
+	assign collection_handle = collection.handle
+
+	if section.settings.image and collection.handle == 'all'
+		assign image = section.settings.image
+	endif
+
+	assign ratio = 1
+	if collection_image_ratio == 'adapt'
+		if image
+			assign ratio = image.aspect_ratio
+		endif
+	endif
+-%}
+{%- if template == 'search' -%}
+	{%- liquid
+		assign show_collection_image = false
+		assign show_subcollections = false
+		assign title = 'search.heading' | t
+	-%}
+	{%- capture description %}
+		{% assign search_phrase = search.terms | replace: '*', '' %}
+		{% if '' != search_phrase %}
+			<p>{{ 'search.results_found' | t: count: search.results_count, key: search_phrase }}</p>
+		{% endif %}
+	{%- endcapture -%}
+{%- endif -%}
+<div class="collection-banner">
+	<div class="row full-width-row">
+		<div class="small-12 columns">
+			<div class="collection-banner--content collection-banner--content-width-{{ collection_image_width }}">
+				<div class="collection-banner--content-inner">
+					<h1 class="collection-banner--title h2"><span>{{ title }}</span></h1>
+					{%- if show_subcollections and linklists[collection_handle] != empty -%}
+						{%- capture subcollection_links -%}
+						{%- for link in linklists[collection_handle].links -%}
+							{%- assign link_collection = collections[link.handle] -%}
+							{%- if link_collection != blank -%}
+								<a href="{{ link_collection.url }}" title="{{ link_collection.title | escape }}" class="text-button">{{ link_collection.title }}</a>
+							{%- endif -%}
+						{%- endfor -%}
+						{%- endcapture -%}
+						{%- if subcollection_links != '' -%}
+						<scroll-shadow>
+							<div class="collection-banner--subcollections">
+								{{ subcollection_links }}
+							</div>
+						</scroll-shadow>
+						{%- endif -%}
+					{%- endif -%}
+					{%- if show_collection_description and description != '' -%}
+					<max-height class="max-height collection-banner--description" data-max="{{ seo_text_max_height }}" style="--max-height: {{ seo_text_max_height | append: 'px'}};">
+						<div class="max-height--inner">
+							<div class="max-height--inner-content rte">
+								{{ description }}
+							</div>
+						</div>
+						<button class="max-height--toggle"><span class="text-button text-button--read-more">{{ seo_text_read_more }}</span><span class="text-button text-button--read-less">{{ seo_text_read_less }}</span></button>
+					</max-height>
+					<link rel="stylesheet" href="{{ 'max-height.css' | asset_url }}" media="print" onload="this.media='all'">
+					<script src="{{ 'max-height.js' | asset_url }}" defer="defer"></script>
+					{%- endif -%}
+					
+				</div>
+				{%- if show_collection_image and image -%}
+				<div class="collection-banner--image">
+					<figure class="aspect-ratio aspect-ratio--{{ collection_image_ratio }}" style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%">
+						{%- render 'responsive-image', image: image, sizes: '375x0,600x0,900x0,1200x0', priority: 'high' -%}
+					</figure>
+				</div>
+				{%- endif -%}
+			</div>
+		</div>
+	</div>
+</div>
+{{- 'collection-banner.css' | asset_url | stylesheet_tag -}}
+
+{% schema %}
+  {
+    "name": "Collection banner",
+    "settings": [
+			{
+				"type": "paragraph",
+				"content": "Add a description or image by editing your collection. [Learn more](https://help.shopify.com/en/manual/products/collections/collection-layout)"
+			},
+			{
+				"type": "header",
+				"content": "Collection page"
+			},
+			{
+	      "type": "checkbox",
+	      "id": "show_collection_image",
+	      "default": true,
+	      "label": "Show collection image"
+	    },
+			{
+				"type": "select",
+				"id": "collection_image_ratio",
+				"options": [
+					{
+						"value": "adapt",
+						"label": "Adapt to image"
+					},
+					{
+						"value": "square",
+						"label": "Square"
+					},
+					{
+						"value": "portrait",
+						"label": "Portrait"
+					},
+					{
+						"value": "landscape",
+						"label": "Landscape"
+					}
+				],
+				"default": "adapt",
+				"label": "Collection image ratio"
+			},
+			{
+        "type": "select",
+        "id": "collection_image_width",
+        "label": "Collection image width",
+        "options": [
+					{
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "standard",
+            "label": "Standard"
+          },
+          {
+            "value": "wide",
+            "label": "Wide"
+          }
+        ],
+        "default": "standard"
+      },
+			{
+	      "type": "checkbox",
+	      "id": "show_subcollections",
+	      "default": true,
+	      "label": "Show subcollections",
+				"info": "Links to subcollections from your menu will appear here. [Learn more.](https://documentation.fuelthemes.net/kb/how-do-i-add-sub-category-links-inside-main-collection-banner-in-ascension/)"
+	    },
+			{
+				"type": "header",
+				"content": "Description"
+			},
+			{
+	      "type": "checkbox",
+	      "id": "show_collection_description",
+	      "default": true,
+	      "label": "Show collection description"
+	    },
+			{
+				"type": "text",
+				"id": "seo_text_read_more",
+				"default": "Read more",
+				"label": "Read more label",
+				"info": "Button will be shown when the content exceeds the max height"
+			},
+			{
+				"type": "text",
+				"id": "seo_text_read_less",
+				"default": "Read less",
+				"label": "Read less label",
+				"info": "Button will be shown when the content exceeds the max height"
+			},
+			{
+				"type": "range",
+				"id": "seo_text_max_height",
+				"min": 100,
+				"max": 1000,
+				"step": 50,
+				"label": "Max height",
+				"default": 150,
+				"info": "Displays a read more button after the text height exceeds a certain height."
+			},
+			{
+				"type": "header",
+				"content": "Catalog page"
+			},
+			{
+				"type": "paragraph",
+				"content": "Catalog page is the main collection page, usually with collections/all url. Learn more about [catalog page](https://help.shopify.com/en/manual/online-store/themes/themes-by-shopify/vintage-themes/customizing-vintage-themes/change-catalog-page)"
+			},
+			{
+        "type": "image_picker",
+        "id": "image",
+        "label": "Catalog image",
+	      "info": "Changes the image for the [catalog page](https://help.shopify.com/en/manual/online-store/themes/themes-by-shopify/vintage-themes/customizing-vintage-themes/change-catalog-page). 1920 x 640 px .jpg recommended."
+      }
+    ]
+  }
+{% endschema %}

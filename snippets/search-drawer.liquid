@@ -1,0 +1,34 @@
+<div class="side-panel search-drawer" tabindex="-1" id="Search-Drawer" inert>
+	<div class="search-drawer--inner">
+		<div class="search-drawer--header">
+			<search-form class="searchform">
+				<form role="search" method="get" action="{{ routes.search_url }}">
+					<fieldset>
+						<figure class="searchform--icon">{%- render 'svg-icons' with 'search' -%}</figure>
+						<label for="side-panel-search-input" class="visually-hidden">{{ 'sections.header.search' | t }}</label>
+						<input id="side-panel-search-input" type="search" class="search-field" placeholder="{{ 'sections.header.search' | t | escape }}" value="{{ search.terms | replace: '*', '' }}" name="q" autocomplete="off">
+					</fieldset>
+				</form>
+			</search-form>
+			<side-panel-close class="side-panel-close">{%- render 'svg-icons' with 'close' -%}</side-panel-close>
+		</div>
+		{%- if settings.predictive_search_enabled -%}
+		<div class="search-drawer--content"><span class="loading-overlay small">{%- render 'svg-icons' with 'thb-loading' -%}</span></div>
+		{%- endif -%}
+		{%- if settings.search_menu != blank -%}
+		<div class="search-drawer--popular">
+			<span class="search-drawer--label">{{ 'sections.header.popular_searches' | t }}</span>
+			<div>
+				{%- for link in settings.search_menu.links -%}
+				<a href="{{ link.url }}" title="{{ link.title | escape }}">{{ link.title }}</a>
+				{%- endfor -%}
+			</div>
+		</div>
+		{%- endif -%}
+	</div>
+</div>
+{%- if settings.predictive_search_enabled -%}
+<script src="{{ 'side-panel-content-tabs.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+<link rel="stylesheet" href="{{ 'product-grid.css' | asset_url }}" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="{{ 'predictive-search.css' | asset_url }}" media="print" onload="this.media='all'">
