@@ -56,8 +56,8 @@
         {%- for sib_product in sibs_collection limit: 50 -%}
           {%- liquid
 
-            assign color_value = sib_product.metafields.theme.sibling_color.value | default: sib_product.metafields.theme.sibling_colour.value | default: sib_product.metafields.theme.siblings_color.value | default: sib_product.metafields.theme.siblings_colour.value | default: sib_product.metafields.theme.siblings_colors.value | default: sib_product.metafields.theme.siblings_colours.value
-            assign color_value = color_value | downcase
+            assign color_name = sib_product.metafields.theme.sibling_color.value | default: sib_product.metafields.theme.sibling_colour.value | default: sib_product.metafields.theme.siblings_color.value | default: sib_product.metafields.theme.siblings_colour.value | default: sib_product.metafields.theme.siblings_colors.value | default: sib_product.metafields.theme.siblings_colours.value
+            assign color_value = color_name | downcase
 
             for custom_color in key_array
               if custom_color == color_value
@@ -76,7 +76,7 @@
             endif
           -%}
           <label class="{%- if sib_product.handle == product.handle -%}active{%- endif %}{%- if sib_product.available == false %} sold-out{%- endif %}" style="--option-color: {{ color_value | downcase | escape }}; {%- if bg_value != empty -%} --option-color-image: url('{{ bg_value | escape }}');{%- endif -%}">
-            <a href="{{ sib_product.url }}" title="{{ sib_product.title | escape }}"></a>
+            <a href="{{ sib_product.url }}" title="{{ color_name }}"></a>
           </label>
         {%- endfor -%}
         </div>

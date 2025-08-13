@@ -208,7 +208,7 @@
     .product-card-vendor a {
       color: rgba(var(--color-body-rgb), 0.7);
       text-transform: uppercase;
-      font-size: 0.625rem;
+      font-size: 1rem;
       letter-spacing: 0.05em; }
   .product-card-title {
     font-size: calc(var(--font-product-title-scale, 1) * 1rem);

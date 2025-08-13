@@ -56,7 +56,7 @@
 	# Product card image options
 	assign product_image_fit = settings.product_image_fit
 -%}
-<product-card class="product-card text-{{ product_content_alignment }}">
+<product-card class="112233 product-card text-{{ product_content_alignment }}">
 	<div class="product-card--image-wrapper">
 		{% render 'product-card-badge', product_card_product: product_card_product %}
 		<a href="{{ product_card_product.url | within: collection }}" title="{{ product_card_product.title | escape }}" class="product-card--image-link"></a>
@@ -142,6 +142,19 @@
 				{%- if has_review -%}<div class="star-rating simple" style="--star-rating: {{ product_card_product.metafields.reviews.rating.value.rating }};"><span class="body-font">{{ product_card_product.metafields.reviews.rating.value.rating | round: 2 }}</span></div>{%- endif -%}
 			{%- endunless -%}
 		</div>
+		
+		<!-- Stamped - Begin Collection Star Rating Badge -->
+		<span 
+		class="stamped-product-reviews-badge" 
+		data-id="{{ product.id }}"
+		data-product-sku="{{ product.handle }}" 
+		data-product-type="{{product.type}}" 
+		data-product-title="{{product.title}}" 
+		style="display:block;">
+		</span>
+		<!-- Stamped - End Star Rating Badge -->
+	
+
 		{% render 'product-price', product: product_card_product %}
 		{%- if has_review -%}<div class="star-rating star-rating--mobile simple" style="--star-rating: {{ product_card_product.metafields.reviews.rating.value.rating }};"><span class="body-font">{{ product_card_product.metafields.reviews.rating.value.rating | round: 2 }}</span></div>{%- endif -%}
 		{%- render 'product-card-swatch', product: product_card_product, sizes: sizes -%}
