@@ -186,6 +186,7 @@
           {{- product_card_product.title -}}
         </a>
         {%- unless vendor_displayed -%}
+          {%- comment -%}
           {%- if has_review -%}
             <div
               class="star-rating simple"
@@ -196,16 +197,17 @@
               </span>
             </div>
           {%- endif -%}
+          {%- endcomment -%}
         {%- endunless -%}
       </div>
 
       <!-- Stamped - Begin Collection Star Rating Badge -->
       <span
         class="stamped-product-reviews-badge"
-        data-id="{{ product.id }}"
-        data-product-sku="{{ product.handle }}"
-        data-product-type="{{product.type}}"
-        data-product-title="{{product.title}}"
+        data-id="{{ product_card_product.id }}"
+        data-product-sku="{{ product_card_product.handle }}"
+        data-product-type="{{product_card_product.type}}"
+        data-product-title="{{product_card_product.title}}"
         style="display:block;"
       >
       </span>
