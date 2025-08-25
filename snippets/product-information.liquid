@@ -20,6 +20,12 @@
         <div class="no-js-hidden" id="price-{{ section.id }}" aria-live="polite">
           {% render 'product-price', product: product, use_variant: true, show_badges: true, show_custom_badges: block.settings.show_custom_badges %}
         </div>
+        <!-- Start of Judge.me code --> 
+  <div class='jdgm-widget jdgm-preview-badge' data-id='{{ product.id }}'> 
+    {{ product.metafields.judgeme.badge }} 
+  </div> 
+<!-- End of Judge.me code -->
+
         {%- if section.settings.show_taxes_included != blank -%}
           {%- if cart.taxes_included or shop.shipping_policy.body != blank -%}
             <div class="product__tax caption">
