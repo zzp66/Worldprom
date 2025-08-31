@@ -2403,6 +2403,18 @@ h6,
       display: inline-block;
       padding-top: 5px;
       padding-bottom: 5px; }
+    .thb-full-menu .sub-menu .nav-color-block,
+    .mobile-menu .nav-color-block{
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+    .thb-full-menu .sub-menu .sub-link-li{
+      display: flex;
+      align-items: center;
+    }
     .thb-full-menu .sub-menu .sub-menu {
       top: -19px;
       left: calc(100% + 35px); }
