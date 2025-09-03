@@ -23,6 +23,13 @@
                     style="background-color: {{ collection.metafields.custom.link_color_block }};"
                   ></span>
                 {% endif %}
+                {% if collection and collection.metafields.custom.link_img_block != blank %}
+                  <div
+                    class="nav-img-block"
+                  >
+                    <img src="{{ collection.metafields.custom.link_img_block | image_url: width: master }}" alt="">
+                  </div>
+                {% endif %}
                 <a href="{{ sub_link.url }}" class="thb-full-menu--link 111333" role="menuitem">{{ sub_link.title }}</a>
               </li>
             {%- endfor -%}
