@@ -1,3 +1,4 @@
+{% render "vital" %}
 {%- liquid
   assign og_title = page_title | default: shop.name
   assign og_url = canonical_url | default: shop.url
@@ -27,11 +28,15 @@
   <meta property="og:image:width" content="{{ page_image.width }}">
   <meta property="og:image:height" content="{{ page_image.height }}">
 {%- endif -%}
-
+{% render "essential" %}
 {%- if request.page_type == 'product' -%}
   <meta property="og:price:amount" content="{{ product.price | money_without_currency | strip_html }}">
   <meta property="og:price:currency" content="{{ cart.currency.iso_code }}">
 {%- endif -%}
+
+{% unless template.name == 'product' %}
+  {% render "scripts" %}
+{% endunless %}
 
 {%- if settings.social_twitter_link != blank -%}
   <meta name="twitter:site" content="{{ settings.social_twitter_link | split: 'twitter.com/' | last | prepend: '@' }}">

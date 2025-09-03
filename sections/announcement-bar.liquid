@@ -10,6 +10,8 @@
 	assign show_currency_switcher = section.settings.show_currency_switcher
 	assign show_social_media = section.settings.show_social_media
 -%}
+<link rel="preload" href="{{ 'announcement-bar.css' | asset_url }}" as="style">
+
 {{- 'announcement-bar.css' | asset_url | stylesheet_tag -}}
 <aside class="announcement-bar{% if content == 'menu' %} announcement-bar--hidden{% endif %}{% if full_width %} announcement-bar--full-width{%- endif %}">
 	<div class="announcement-bar--inner">
