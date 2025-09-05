@@ -545,4 +545,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.product-card-vendor a {
+  font-size: 12px;
+  line-height: 14px;
+}
+.jdgm-widget *{
+  font-size: 12px;
+}
     }
