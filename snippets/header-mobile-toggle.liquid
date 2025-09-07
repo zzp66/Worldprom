@@ -1,9 +1,16 @@
 <details class="mobile-toggle-wrapper">
-	<summary class="mobile-toggle">
-		<span></span>
-		<span></span>
-		<span></span>
-	</summary>
-	{%- render 'header-mobile-menu', header_settings: header_settings, blocks: blocks-%}
+  <summary class="mobile-toggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </summary>
+  {% comment %} {%- render 'header-mobile-menu', header_settings: header_settings, blocks: blocks-%} {% endcomment %}
+  {%- render 'header-mobile-menu-new', header_settings: header_settings, blocks: blocks -%}
 </details>
-<a class="thb-secondary-area-item thb-quick-search" href="{{ routes.search_url }}" title="{{ 'sections.header.search' | t }}">{%- render 'svg-icons' with 'search' -%}</a>
+<a
+  class="thb-secondary-area-item thb-quick-search"
+  href="{{ routes.search_url }}"
+  title="{{ 'sections.header.search' | t }}"
+>
+  {%- render 'svg-icons' with 'search' -%}
+</a>
