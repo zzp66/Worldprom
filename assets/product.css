@@ -235,6 +235,9 @@
         position: absolute;
         inset: 0;
         z-index: 40; }
+        .variations .product-form__input--siblings label{
+          box-shadow: 0 0 0 1px #e5e5e5 inset;
+        }
       .variations .product-form__input--siblings label.active {
         z-index: 5;
         box-shadow: 0 0 0 1px var(--color-body) inset; }
