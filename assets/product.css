@@ -2307,6 +2307,11 @@ shopify-payment-terms {
   fill: #e5b3ac;
 }
 
-#faq-delivery-time {
+#faq-delivery-time,
+#expedited-delivery {
   font-weight: bold;
+}
+
+.estimate-time .desc p {
+  margin: 0;
 }

@@ -274,40 +274,67 @@
     const el = document.getElementById('delivery-estimate');
     if (!el) return;
 
-    // 获取 metafield 值
-    const prod = el.dataset.production; // "10-15"
-    const ship = el.dataset.shipping; // "5-10"
+    const prod = el.dataset.production; // e.g. "10-15"
+    const ship = el.dataset.shipping; // e.g. "5-10"
+    const expd = el.dataset.expedited; // e.g. "3-5"
 
-    // 解析区间
+    // 解析 "10-15" / "10 – 15" / "10" 等格式为 {min, max}
     function parseRange(str) {
-      const [min, max] = str.split('-').map((n) => parseInt(n.trim(), 10));
-      return { min, max };
+      if (!str) return null;
+      str = String(str).replace(/\s*[–—]\s*/g, '-'); // 把不同短横替换成 -
+      const m = str.match(/(\d+)\s*-\s*(\d+)/);
+      if (m) return { min: parseInt(m[1], 10), max: parseInt(m[2], 10) };
+      const s = str.match(/(\d+)/);
+      if (s) {
+        const v = parseInt(s[1], 10);
+        return { min: v, max: v };
+      }
+      return null;
     }
 
-    const prodRange = parseRange(prod);
-    const shipRange = parseRange(ship);
+    const prodRange = parseRange(prod) || { min: 0, max: 0 };
+    const shipRange = parseRange(ship) || { min: 0, max: 0 };
+    const expdRange = parseRange(expd); // 允许为空
 
-    // 计算最早 & 最晚到达天数
-    const minDays = prodRange.min + shipRange.min;
-    const maxDays = prodRange.max + shipRange.max;
-
-    // 格式化日期
     function formatDate(date) {
-      const options = { month: 'short', day: 'numeric' };
-      const str = date.toLocaleDateString('en-US', options); // "Oct 13"
-      return str.replace(/^([A-Za-z]+)/, '$1.'); // 变成 "Oct. 13"
+      const options = { month: 'short', day: 'numeric' }; // "Oct 13"
+      const str = date.toLocaleDateString('en-US', options);
+      return str.replace(/^([A-Za-z]+)/, '$1.'); // "Oct." + rest => "Oct. 13"
     }
 
     const today = new Date();
-    const earliest = new Date(today);
-    earliest.setDate(today.getDate() + minDays);
 
-    const latest = new Date(today);
-    latest.setDate(today.getDate() + maxDays);
+    // 正常配送 = production + shipping
+    const normalMinDays = prodRange.min + shipRange.min;
+    const normalMaxDays = prodRange.max + shipRange.max;
 
-    // 填充到页面
-    const deliveryDateText = `${formatDate(earliest)} - ${formatDate(latest)}`;
-    el.querySelector('#faq-delivery-time').textContent = deliveryDateText;
+    const earliest = new Date(today.getTime());
+    earliest.setDate(today.getDate() + normalMinDays);
+    const latest = new Date(today.getTime());
+    latest.setDate(today.getDate() + normalMaxDays);
+
+    const deliveryEl = document.getElementById('faq-delivery-time');
+    if (deliveryEl) deliveryEl.textContent = `${formatDate(earliest)} - ${formatDate(latest)}`;
+
+    // 加急配送 = production + expedited
+    const expEl = document.getElementById('expedited-delivery');
+    if (expEl) {
+      if (expdRange) {
+        const expMinDays = prodRange.min + expdRange.min;
+        const expMaxDays = prodRange.max + expdRange.max;
+
+        const expEarliest = new Date(today.getTime());
+        expEarliest.setDate(today.getDate() + expMinDays);
+        const expLatest = new Date(today.getTime());
+        expLatest.setDate(today.getDate() + expMaxDays);
+
+        expEl.textContent = `${formatDate(expEarliest)} - ${formatDate(expLatest)}`;
+      } else {
+        // 如果没配置加急时间，隐藏那一行（可按需改为显示 "—"）
+        const p = expEl.closest('p');
+        if (p) p.style.display = 'none';
+      }
+    }
   });
 </script>
 
