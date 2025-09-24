@@ -1,0 +1,67 @@
+/* 强制设置容器为Flex布局并增加优先级 */
+.variations .product-form__input-wrapper {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  padding: 10px 0 !important;
+  margin: 0 !important;
+}
+
+/* 重置所有颜色选项的默认排序 */
+.variations .product-form__input-wrapper label {
+  order: 100 !important; /* 默认排在最后 */
+  position: relative !important;
+}
+
+/* 红色系 (1-10) */
+.variations label[title="Red"] { order: 1 !important; }
+.variations label[title="Burgundy"] { order: 2 !important; }
+.variations label[title="Desert Rose"] { order: 3 !important; }
+.variations label[title="Dusty Rose"] { order: 4 !important; }
+.variations label[title="Coral"] { order: 5 !important; }
+
+/* 橙色系 (11-20) */
+.variations label[title="Orange"] { order: 11 !important; }
+.variations label[title="Burnt Orange"] { order: 12 !important; }
+.variations label[title="Peach"] { order: 13 !important; }
+
+/* 黄色系 (21-30) */
+.variations label[title="Yellow"] { order: 21 !important; }
+.variations label[title="Marigold"] { order: 22 !important; }
+.variations label[title="Gold"] { order: 23 !important; }
+.variations label[title="Champagne"] { order: 24 !important; }
+.variations label[title="Ivory"] { order: 25 !important; }
+
+/* 绿色系 (31-40) */
+.variations label[title="Emerald Green"] { order: 31 !important; }
+.variations label[title="Olive Green"] { order: 32 !important; }
+.variations label[title="Sage Green"] { order: 33 !important; }
+.variations label[title="Mint Green"] { order: 34 !important; }
+.variations label[title="Teal"] { order: 35 !important; }
+
+/* 蓝色系 (41-50) */
+.variations label[title="Baby Blue"] { order: 41 !important; }
+.variations label[title="Dusty Blue"] { order: 42 !important; }
+.variations label[title="Blue"] { order: 43 !important; }
+.variations label[title="Royal Blue"] { order: 44 !important; }
+.variations label[title="Peacock Blue"] { order: 45 !important; }
+.variations label[title="Navy Blue"] { order: 46 !important; }
+.variations label[title="Turquoise"] { order: 47 !important; }
+
+/* 靛色系 (51-60) */
+.variations label[title="Grape"] { order: 51 !important; }
+.variations label[title="Wisteria"] { order: 52 !important; }
+
+/* 紫色系 (61-70) */
+.variations label[title="Purple"] { order: 61 !important; }
+.variations label[title="Lilac"] { order: 62 !important; }
+.variations label[title="Fuchsia"] { order: 63 !important; }
+.variations label[title="Blush Pink"] { order: 64 !important; }
+.variations label[title="Pink"] { order: 65 !important; }
+.variations label[title="Dirty Pink"] { order: 66 !important; }
+.variations label[title="Hot Pink"] { order: 67 !important; }
+
+/* 无彩色 (91-100) */
+.variations label[title="Black"] { order: 91 !important; }
+.variations label[title="White"] { order: 92 !important; }
+.variations label[title="Silver"] { order: 93 !important; }
