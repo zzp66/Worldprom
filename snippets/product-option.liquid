@@ -68,6 +68,11 @@
           {{ sizing_link }}
         </div>
       </fieldset>
+      {% if block.settings.show_size_chart_table != false %}
+        {% if option.name == 'Size' %}
+          {% render 'size-chart-table' %}
+        {% endif %}
+      {% endif %}
     </div>
   {%- when 'color' -%}
     {%- liquid

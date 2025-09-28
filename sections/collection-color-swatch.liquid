@@ -1,0 +1,219 @@
+<style>
+  .color-swatch-box {
+    width: 100%;
+  }
+  .color-swatch-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+  .color-family {
+    position: relative;
+    cursor: pointer;
+  }
+  .color-swatch-main-box {
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .color-swatch-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .color-swatch-main span {
+    margin-top: 20px;
+  }
+  .color-swatch-main img,
+  .color-swatch-main .swatch {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .family-img,
+  .family-swatch {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    transform: translateZ(0);
+  }
+  .color-family:hover .family-img,
+  .color-family:hover .family-swatch {
+    transform: scale(1.2);
+    border: 3px solid #333;
+    padding: 4px;
+  }
+  .color-dropdown-box {
+    display: none;
+    position: absolute;
+    left: 48%;
+    top: 100%;
+    transform: translateX(-50%);
+    box-sizing: border-box;
+    width: max-content;
+    z-index: 999999;
+    margin-top: -5px;
+    max-width: 450px;
+    border-radius: 10px;
+  }
+  .color-family:hover .color-dropdown-box {
+    display: block;
+  }
+  .color-dropdown-content {
+    text-align: center;
+    padding: 20px;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    gap: 20px;
+    position: relative;
+    background: #f6f6f6;
+    border-radius: 10px;
+    -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 4px #00000080;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+  }
+  .triangle-box {
+    position: absolute;
+    top: 0;
+    left: 50%;
+  }
+  .triangle-box-1,
+  .triangle-box-2 {
+    display: block;
+    position: absolute;
+    background: #f6f6f6;
+    box-shadow: 0 0 4px #00000080;
+    width: 16px;
+    height: 16px;
+    -webkit-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    left: 50%;
+    top: -8px;
+    border-radius: 2px;
+    z-index: -1;
+    margin: 0;
+    padding: 0;
+  }
+  .triangle-box-2 {
+    z-index: 12;
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0 0);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 0);
+  }
+
+  .sub-color {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 6px 0;
+    text-decoration: none;
+    color: #333;
+  }
+  .sub-color .swatch {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+  }
+  .sub-color .swatch-text {
+    font-size: 14px;
+    line-height: 16px;
+    margin-top: 10px;
+  }
+</style>
+<div class="row">
+  <div class="small-12 columns">
+    <div class="color-swatch-box">
+      <div class="color-swatch-wrapper">
+        {%- assign color_families = shop.metaobjects[section.settings.metaobject_handle].values -%}
+
+        {%- for family in color_families -%}
+          <div class="color-family">
+            <div class="color-swatch-main-box">
+              <div class="color-swatch-main">
+                {% if family.image != blank %}
+                  <div class="family-img">
+                    <img src="{{ family.image | image_url: width:100 }}" alt="{{ family.name }}">
+                  </div>
+                {% else %}
+                  <div class="swatch" style="background:#ccc;"></div>
+                {% endif %}
+                <span class="swatch-text">{{ family.name }}</span>
+              </div>
+            </div>
+
+            <div class="color-dropdown-box">
+              <div class="color-dropdown-content">
+                {% for sub in family.sub_colors.value %}
+                  <a href="{{ sub.collection_link }}" class="sub-color">
+                    <span class="swatch" style="background: {{ sub.swatch_color }}"></span>
+                    <span class="swatch-text">{{ sub.name }}</span>
+                  </a>
+                {% endfor %}
+              </div>
+              <div class="triangle-box-1"></div>
+              <div class="triangle-box-2"></div>
+            </div>
+          </div>
+        {%- endfor -%}
+
+        <!-- ALL 选项 -->
+        <div class="color-family">
+          <div class="color-swatch-main-box">
+            <div class="color-swatch-main">
+              <div class="family-swatch">
+                <div
+                  class="swatch"
+                  style="background: conic-gradient(red, orange, yellow, green, blue, purple, red);"
+                ></div>
+              </div>
+              <span>All</span>
+            </div>
+          </div>
+
+          <div class="color-dropdown-box">
+            <div class="color-dropdown-content">
+              {%- for family in color_families -%}
+                {%- for sub in family.sub_colors.value -%}
+                  <a href="{{ sub.collection_link }}" class="sub-color">
+                    <span class="swatch" style="background: {{ sub.swatch_color }}"></span>
+                    <span>{{ sub.name }}</span>
+                  </a>
+                {%- endfor -%}
+              {%- endfor -%}
+            </div>
+            <div class="triangle-box-1"></div>
+            <div class="triangle-box-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Color Swatch Selector",
+  "settings": [
+    {
+      "type": "text",
+      "id": "metaobject_handle",
+      "label": "Metaobject definition handle",
+      "default": "colorfamily"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Color Swatch Selector",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

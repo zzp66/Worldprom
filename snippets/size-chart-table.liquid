@@ -1,259 +1,293 @@
-<size-chart id="size_detail_show" class="size-detail-show" style="display: block;">
-  <div class="size-unit">
-    <span class="unit">IN</span>
-    <div class="unit-switch" data-name="properties[Unit]"><span class="switch-icon"></span></div>
-    <span class="unit">CM</span>
+<style>
+  .variant-size-table-wrapper {
+    margin-top: 1.2rem;
+    max-width: 640px;
+  }
+  .unit-toggle {
+    margin-bottom: 0.6rem;
+  }
+  .unit-toggle button {
+    margin-right: 0.5rem;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    background: #f7f7f7;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  .unit-toggle button.active {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+  }
+  .variant-size-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .variant-size-table th,
+  .variant-size-table td {
+    border: 1px solid #e6e6e6;
+    padding: 10px;
+    text-align: center;
+  }
+  .variant-row.active {
+    background-color: #fff2cc;
+    font-weight: 600;
+  }
+</style>
+
+<div class="variant-size-table-wrapper">
+  <div class="unit-toggle" aria-hidden="false">
+    <button class="toggle-unit active" data-unit="cm" type="button">CM</button>
+    <button class="toggle-unit" data-unit="in" type="button">IN</button>
   </div>
-  <div class="row-scroll">
-    <table unit="inch" display="none" style="display: table;">
-      <thead>
-        <tr>
-          <td>Size</td>
-          <td style="word-break:break-word;">Bust</td>
-          <td style="word-break:break-word;">Waist</td>
-          <td style="word-break:break-word;">Hips</td>
-          <td style="word-break:break-word;">Hollow to Hem</td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr size="US0" style="display: table-row;" class="selected">
-          <td class="first">US0</td>
-          <td>32 in</td>
-          <td>25½ in</td>
-          <td>35½ in</td>
-          <td>58 in</td>
-        </tr>
-        <tr size="US2" style="display: table-row;" class="">
-          <td class="first">US2</td>
-          <td>33 in</td>
-          <td>26½ in</td>
-          <td>36½ in</td>
-          <td>58 in</td>
-        </tr>
-        <tr size="US4" style="display: table-row;" class="">
-          <td class="first">US4</td>
-          <td>34 in</td>
-          <td>27½ in</td>
-          <td>37½ in</td>
-          <td>59 in</td>
-        </tr>
-        <tr size="US6" style="display: none;" class="">
-          <td class="first">US6</td>
-          <td>35 in</td>
-          <td>28½ in</td>
-          <td>38½ in</td>
-          <td>59 in</td>
-        </tr>
-        <tr size="US8" style="display: none;">
-          <td class="first">US8</td>
-          <td>36 in</td>
-          <td>29½ in</td>
-          <td>39½ in</td>
-          <td>59 in</td>
-        </tr>
-        <tr size="US10" style="display: none;">
-          <td class="first">US10</td>
-          <td>37½ in</td>
-          <td>31 in</td>
-          <td>41 in</td>
-          <td>59 in</td>
-        </tr>
-        <tr size="US12" style="display: none;">
-          <td class="first">US12</td>
-          <td>39 in</td>
-          <td>32½ in</td>
-          <td>42½ in</td>
-          <td>59 in</td>
-        </tr>
-        <tr size="US14" style="display: none;">
-          <td class="first">US14</td>
-          <td>41 in</td>
-          <td>34¾ in</td>
-          <td>44½ in</td>
-          <td>59 in</td>
-        </tr>
-        <tr size="US16" style="display: none;" class="">
-          <td class="first">US16</td>
-          <td>43¼ in</td>
-          <td>37¼ in</td>
-          <td>46¾ in</td>
-          <td>59 in</td>
-        </tr>
-        <tr size="US18" style="display: none;">
-          <td class="first">US18</td>
-          <td>45½ in</td>
-          <td>39¾ in</td>
-          <td>49 in</td>
-          <td>59 in</td>
-        </tr>
-        <tr size="US20" style="display: none;" class="">
-          <td class="first">US20</td>
-          <td>47¾ in</td>
-          <td>42¼ in</td>
-          <td>51¼ in</td>
-          <td>59 in</td>
-        </tr>
-        <tr size="US22" style="display: none;">
-          <td class="first">US22</td>
-          <td>50 in</td>
-          <td>44¾ in</td>
-          <td>53½ in</td>
-          <td>59 in</td>
-        </tr>
-        <tr size="US24" style="display: none;">
-          <td class="first">US24</td>
-          <td>53 in</td>
-          <td>48 in</td>
-          <td>56½ in</td>
-          <td>59 in</td>
-        </tr>
-        <tr size="US26" style="display: none;" class="">
-          <td class="first">US26</td>
-          <td>56 in</td>
-          <td>51¼ in</td>
-          <td>59½ in</td>
-          <td>59 in</td>
-        </tr>
-        <tr size="US28" style="display: none;" class="">
-          <td class="first">US28</td>
-          <td>59 in</td>
-          <td>54½ in</td>
-          <td>62½ in</td>
-          <td>59 in</td>
-        </tr>
-        <tr size="US30" style="display: none;" class="">
-          <td class="first">US30</td>
-          <td>63 in</td>
-          <td>58¾ in</td>
-          <td>66½ in</td>
-          <td>59 in</td>
-        </tr>
-      </tbody>
-    </table>
-    <table unit="cm" display="none" style="display: none;">
-      <thead>
-        <tr>
-          <td>Size</td>
-          <td style="word-break:break-word;">Bust</td>
-          <td style="word-break:break-word;">Waist</td>
-          <td style="word-break:break-word;">Hips</td>
-          <td style="word-break:break-word;">Hollow to Hem</td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr size="US0" style="display: table-row;" class="selected">
-          <td class="first">US0</td>
-          <td>81 cm</td>
-          <td>65 cm</td>
-          <td>90 cm</td>
-          <td>147 cm</td>
-        </tr>
-        <tr size="US2" style="display: table-row;" class="">
-          <td class="first">US2</td>
-          <td>84 cm</td>
-          <td>67 cm</td>
-          <td>93 cm</td>
-          <td>147 cm</td>
-        </tr>
-        <tr size="US4" style="display: table-row;" class="">
-          <td class="first">US4</td>
-          <td>86 cm</td>
-          <td>70 cm</td>
-          <td>95 cm</td>
-          <td>150 cm</td>
-        </tr>
-        <tr size="US6" style="display: none;" class="">
-          <td class="first">US6</td>
-          <td>89 cm</td>
-          <td>72 cm</td>
-          <td>98 cm</td>
-          <td>150 cm</td>
-        </tr>
-        <tr size="US8" style="display: none;">
-          <td class="first">US8</td>
-          <td>91 cm</td>
-          <td>75 cm</td>
-          <td>100 cm</td>
-          <td>150 cm</td>
-        </tr>
-        <tr size="US10" style="display: none;">
-          <td class="first">US10</td>
-          <td>95 cm</td>
-          <td>79 cm</td>
-          <td>104 cm</td>
-          <td>150 cm</td>
-        </tr>
-        <tr size="US12" style="display: none;">
-          <td class="first">US12</td>
-          <td>99 cm</td>
-          <td>83 cm</td>
-          <td>108 cm</td>
-          <td>150 cm</td>
-        </tr>
-        <tr size="US14" style="display: none;">
-          <td class="first">US14</td>
-          <td>104 cm</td>
-          <td>88 cm</td>
-          <td>113 cm</td>
-          <td>150 cm</td>
-        </tr>
-        <tr size="US16" style="display: none;" class="">
-          <td class="first">US16</td>
-          <td>110 cm</td>
-          <td>95 cm</td>
-          <td>119 cm</td>
-          <td>150 cm</td>
-        </tr>
-        <tr size="US18" style="display: none;">
-          <td class="first">US18</td>
-          <td>116 cm</td>
-          <td>101 cm</td>
-          <td>124 cm</td>
-          <td>150 cm</td>
-        </tr>
-        <tr size="US20" style="display: none;" class="">
-          <td class="first">US20</td>
-          <td>121 cm</td>
-          <td>107 cm</td>
-          <td>130 cm</td>
-          <td>150 cm</td>
-        </tr>
-        <tr size="US22" style="display: none;">
-          <td class="first">US22</td>
-          <td>127 cm</td>
-          <td>114 cm</td>
-          <td>136 cm</td>
-          <td>150 cm</td>
-        </tr>
-        <tr size="US24" style="display: none;">
-          <td class="first">US24</td>
-          <td>135 cm</td>
-          <td>122 cm</td>
-          <td>144 cm</td>
-          <td>150 cm</td>
-        </tr>
-        <tr size="US26" style="display: none;" class="">
-          <td class="first">US26</td>
-          <td>142 cm</td>
-          <td>130 cm</td>
-          <td>151 cm</td>
-          <td>150 cm</td>
-        </tr>
-        <tr size="US28" style="display: none;" class="">
-          <td class="first">US28</td>
-          <td>150 cm</td>
-          <td>138 cm</td>
-          <td>159 cm</td>
-          <td>150 cm</td>
-        </tr>
-        <tr size="US30" style="display: none;" class="">
-          <td class="first">US30</td>
-          <td>160 cm</td>
-          <td>149 cm</td>
-          <td>169 cm</td>
-          <td>150 cm</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</size-chart>
+
+  <table class="variant-size-table" role="table" aria-label="Size table">
+    <thead>
+      <tr>
+        <th>Size</th>
+        <th>Bust</th>
+        <th>Waist</th>
+        <th>Hip</th>
+      </tr>
+    </thead>
+    <tbody id="size-table-body">
+      {% comment %}
+        只渲染 product.options_with_values 中 Name == "Size" 的值，
+        且过滤掉 "Free Custom"（大小写不敏感）
+      {% endcomment %}
+      {% for option in product.options_with_values %}
+        {% assign opt_name_down = option.name | downcase %}
+        {% if opt_name_down == 'size' %}
+          {% for size in option.values %}
+            {% assign size_stripped = size | strip %}
+            {% assign size_lower = size_stripped | downcase %}
+            {% unless size_lower == 'free custom' %}
+              <tr class="variant-row" data-size="{{ size_stripped }}">
+                <td>{{ size_stripped }}</td>
+                <td class="bust"></td>
+                <td class="waist"></td>
+                <td class="hip"></td>
+              </tr>
+            {% endunless %}
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  
+  // ---------------- 1) 尺码数据（只维护 cm，in 自动生成） ----------------
+  const sizeTable = {
+    "US2":  { cm: { bust: 80,  waist: 62,  hip: 86  } },
+    "US4":  { cm: { bust: 84,  waist: 66,  hip: 90  } },
+    "US6":  { cm: { bust: 88,  waist: 70,  hip: 94  } },
+    "US8":  { cm: { bust: 92,  waist: 74,  hip: 98  } },
+    "US10": { cm: { bust: 96,  waist: 78,  hip: 102 } },
+    "US12": { cm: { bust: 100, waist: 82,  hip: 106 } },
+    "US14": { cm: { bust: 104, waist: 86,  hip: 110 } },
+    "US16": { cm: { bust: 108, waist: 90,  hip: 114 } },
+    "US18": { cm: { bust: 112, waist: 94,  hip: 118 } },
+    "US20": { cm: { bust: 116, waist: 98,  hip: 122 } },
+    "US22": { cm: { bust: 120, waist: 102, hip: 126 } },
+    "US24": { cm: { bust: 124, waist: 106, hip: 130 } },
+    "US26": { cm: { bust: 128, waist: 110, hip: 134 } }
+  };
+
+  // 自动生成 in（保留1位小数）
+  Object.keys(sizeTable).forEach(sz => {
+    const cm = sizeTable[sz].cm;
+    sizeTable[sz].in = {
+      bust:  (cm.bust / 2.54).toFixed(1),
+      waist: (cm.waist / 2.54).toFixed(1),
+      hip:   (cm.hip / 2.54).toFixed(1)
+    };
+  });
+
+  // 规范化 sizeTable 的 key（去空格/特殊字符并大写）
+  const normalizedSizeTable = {};
+  Object.keys(sizeTable).forEach(k => {
+    const norm = String(k).toUpperCase().replace(/\s+/g, '').replace(/[^A-Z0-9]/g, '');
+    normalizedSizeTable[norm] = sizeTable[k];
+  });
+
+  // ---------------- 2) 从 Liquid 输出的产品数据 ----------------
+  const productVariants = {{ product.variants | json }};
+  const productOptions = {{ product.options | json }};
+
+  // 自动识别 Size 在 product.options 中的位置（index），不区分大小写
+  const sizeIndex = (productOptions || []).findIndex(opt => String(opt).toLowerCase() === 'size');
+
+  // 从 DOM 中构建 rows & sizeValues（Liquid 已过滤掉 Free Custom）
+  const rowNodeList = document.querySelectorAll('.variant-row');
+  const rows = Array.from(rowNodeList);
+  const sizeValues = rows.map(r => r.dataset.size);
+
+  // ---------------- 3) 渲染 / 切换单位 ----------------
+  let currentUnit = 'cm';
+  function lookupSizeData(sizeRaw, unit) {
+    if (!sizeRaw) return null;
+    const norm = String(sizeRaw).toUpperCase().trim().replace(/\s+/g, '').replace(/[^A-Z0-9]/g, '');
+    return normalizedSizeTable[norm] ? normalizedSizeTable[norm][unit] : null;
+  }
+
+  function renderTable(unit) {
+    rows.forEach(row => {
+      const size = row.dataset.size;
+      const cellBust = row.querySelector('.bust');
+      const cellWaist = row.querySelector('.waist');
+      const cellHip = row.querySelector('.hip');
+
+      const data = lookupSizeData(size, unit);
+      if (data) {
+        const unitLabel = unit.toUpperCase();
+        cellBust.textContent  = data.bust  + ' ' + unitLabel;
+        cellWaist.textContent = data.waist + ' ' + unitLabel;
+        cellHip.textContent   = data.hip   + ' ' + unitLabel;
+      } else {
+        cellBust.textContent  = '-';
+        cellWaist.textContent = '-';
+        cellHip.textContent   = '-';
+      }
+    });
+  }
+  renderTable(currentUnit);
+
+  // 按钮切换（切换会刷新表格）
+  document.querySelectorAll('.toggle-unit').forEach(btn => {
+    btn.addEventListener('click', function (ev) {
+      ev.preventDefault();
+      document.querySelectorAll('.toggle-unit').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const toUnit = (this.dataset && this.dataset.unit) ? this.dataset.unit : 'cm';
+      if (toUnit !== currentUnit) {
+        currentUnit = toUnit;
+        renderTable(currentUnit);
+      }
+    });
+  });
+
+  // ---------------- 4) 显示窗口：上一 / 当前 / 下一（三行），处理边界 ----------------
+  function show3Rows(activeIndex) {
+    if (!Array.isArray(rows) || rows.length === 0) return;
+
+    const n = rows.length;
+    // 若总行数 <= 3 则全部显示
+    if (n <= 3) {
+      rows.forEach((r, i) => {
+        r.style.display = 'table-row';
+        r.classList.toggle('active', i === activeIndex);
+      });
+      return;
+    }
+
+    let start, end;
+    if (activeIndex <= 0) {
+      start = 0; end = 2;
+    } else if (activeIndex >= n - 1) {
+      start = n - 3; end = n - 1;
+    } else {
+      start = activeIndex - 1; end = activeIndex + 1;
+    }
+
+    rows.forEach((r, i) => {
+      if (i >= start && i <= end) {
+        r.style.display = 'table-row';
+      } else {
+        r.style.display = 'none';
+      }
+      r.classList.toggle('active', i === activeIndex);
+    });
+  }
+
+  function hideAllRows() {
+    rows.forEach(r => { r.style.display = 'none'; r.classList.remove('active'); });
+  }
+
+  // ---------------- 5) 处理 variant 对象（入口） ----------------
+  function handleVariantObject(variant) {
+    if (!variant || sizeIndex === -1) return;
+
+    const sizeVal = variant.options[sizeIndex];
+    if (!sizeVal) { hideAllRows(); return; }
+
+    // 如果用户选择 Free Custom（大小写不敏感），不展示表格
+    if (String(sizeVal).trim().toLowerCase() === 'free custom') {
+      hideAllRows();
+      return;
+    }
+
+    // 找到在 sizeValues 数组中的索引并展示窗口
+    const idx = sizeValues.indexOf(sizeVal);
+    if (idx !== -1) {
+      show3Rows(idx);
+    } else {
+      // 若没有在渲染的 size 列表中找到（例如名称格式不同），尝试通过规范化名称匹配
+      const normalized = String(sizeVal).toUpperCase().trim().replace(/\s+/g, '').replace(/[^A-Z0-9]/g, '');
+      const foundIdx = sizeValues.findIndex(s => String(s).toUpperCase().trim().replace(/\s+/g,'').replace(/[^A-Z0-9]/g,'') === normalized);
+      if (foundIdx !== -1) {
+        show3Rows(foundIdx);
+      } else {
+        hideAllRows();
+      }
+    }
+  }
+
+  // ---------------- 6) 事件监听（兼容多主题） ----------------
+  document.addEventListener('variant:change', function (e) {
+    handleVariantObject(e.detail && e.detail.variant ? e.detail.variant : null);
+  });
+
+  const variantInput = document.querySelector('[name="id"]');
+  if (variantInput) {
+    variantInput.addEventListener('change', function () {
+      const val = this.value;
+      const found = productVariants.find(v => String(v.id) === String(val));
+      if (found) handleVariantObject(found);
+    });
+  }
+
+  const productForm = variantInput?.closest?.('form') || document.querySelector('form[action*="/cart/add"]');
+  if (productForm) {
+    productForm.addEventListener('change', function () {
+      const idVal = variantInput ? variantInput.value : null;
+      if (idVal) {
+        const foundById = productVariants.find(v => String(v.id) === String(idVal));
+        if (foundById) { handleVariantObject(foundById); return; }
+      }
+      const selectedOptions = [];
+      for (let i = 0; i < (productOptions || []).length; i++) {
+        const optName = productOptions[i];
+        let foundVal = null;
+
+        let sel = productForm.querySelector(`select[name="options[${optName}]"]`) ||
+                  productForm.querySelector(`select[name="option${i+1}"]`) ||
+                  productForm.querySelector(`select[id^="SingleOptionSelector-${i+1}"]`);
+        if (sel) { foundVal = sel.value; selectedOptions.push(foundVal); continue; }
+
+        let radio = productForm.querySelector(`input[type="radio"][name="options[${optName}]"]:checked`) ||
+                    productForm.querySelector(`input[type="radio"][name="option${i+1}"]:checked`);
+        if (radio) { foundVal = radio.value; selectedOptions.push(foundVal); continue; }
+
+        selectedOptions.push(null);
+      }
+
+      const matched = productVariants.find(v => {
+        return (productOptions || []).every((_, idx) => {
+          const sel = selectedOptions[idx];
+          if (sel == null) return false;
+          return String(v.options[idx]) === String(sel);
+        });
+      });
+      if (matched) handleVariantObject(matched);
+    });
+  }
+
+  // ---------------- 7) 初始化：高亮当前已选 variant（页面加载时） ----------------
+  const initialVariant = {{ product.selected_or_first_available_variant | json }};
+  handleVariantObject(initialVariant);
+
+});
+</script>
