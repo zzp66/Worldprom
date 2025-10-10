@@ -1,31 +1,57 @@
 <style>
   .color-swatch-box {
     width: 100%;
+    margin: 20px 0;
   }
+
   .color-swatch-wrapper {
     display: flex;
-    flex-wrap: wrap;
-    gap: 40px;
+    gap: 30px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 10px 0;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    justify-content: center;
+    align-items: flex-start;
   }
+
+  .color-swatch-wrapper::-webkit-scrollbar {
+    height: 0;
+    display: none;
+  }
+
   .color-family {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    min-width: 100px;
     position: relative;
     cursor: pointer;
   }
+
   .color-swatch-main-box {
-    height: 150px;
+    height: 120px;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
   }
+
   .color-swatch-main {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    transition: transform 0.3s ease;
   }
+
   .color-swatch-main span {
-    margin-top: 20px;
+    margin-top: 8px;
+    font-size: 16px;
+    line-height: 18px;
   }
+
   .color-swatch-main img,
   .color-swatch-main .swatch {
     width: 75px;
@@ -33,6 +59,7 @@
     border-radius: 50%;
     object-fit: cover;
   }
+
   .family-img,
   .family-swatch {
     display: flex;
@@ -42,173 +69,253 @@
     transition: all 0.3s ease;
     transform: translateZ(0);
   }
+
   .color-family:hover .family-img,
   .color-family:hover .family-swatch {
-    transform: scale(1.2);
-    border: 3px solid #333;
-    padding: 4px;
+    transform: scale(1.1);
+    border: 3px solid #e5b3ac;
+    padding: 3px;
   }
-  .color-dropdown-box {
-    display: none;
-    position: absolute;
-    left: 48%;
-    top: 100%;
-    transform: translateX(-50%);
-    box-sizing: border-box;
-    width: max-content;
-    z-index: 999999;
-    margin-top: -5px;
-    max-width: 450px;
-    border-radius: 10px;
-  }
-  .color-family:hover .color-dropdown-box {
-    display: block;
-  }
-  .color-dropdown-content {
-    text-align: center;
-    padding: 20px;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    gap: 20px;
-    position: relative;
-    background: #f6f6f6;
-    border-radius: 10px;
-    -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
-    box-shadow: 0 0 4px #00000080;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    -ms-border-radius: 10px;
-    -o-border-radius: 10px;
-  }
-  .triangle-box {
-    position: absolute;
+
+  /* 弹窗 */
+  .color-modal {
+    position: fixed;
     top: 0;
-    left: 50%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    padding: 20px;
   }
-  .triangle-box-1,
-  .triangle-box-2 {
-    display: block;
-    position: absolute;
-    background: #f6f6f6;
-    box-shadow: 0 0 4px #00000080;
-    width: 16px;
-    height: 16px;
-    -webkit-transform: rotate(-45deg);
-    -ms-transform: rotate(-45deg);
-    transform: rotate(-45deg);
-    left: 50%;
-    top: -8px;
-    border-radius: 2px;
-    z-index: -1;
+
+  .color-modal.active {
+    display: flex;
+  }
+
+  .color-modal-content {
+    background: #fff;
+    border-radius: 12px;
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+    animation: modalFadeIn 0.3s ease;
+    overflow: hidden;
+  }
+
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding: 10px 20px;
+    background: #f9f9f9;
+  }
+
+  .modal-header h3 {
+    font-size: 18px;
+    font-weight: bold;
     margin: 0;
-    padding: 0;
   }
-  .triangle-box-2 {
-    z-index: 12;
-    -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0 0);
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 0);
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+    color: #555;
+    transition: color 0.2s ease;
+  }
+
+  .modal-close:hover {
+    color: #000;
+  }
+
+  .modal-body {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 20px;
+    overflow-y: auto;
   }
 
   .sub-color {
+    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 6px 0;
     text-decoration: none;
     color: #333;
+    padding: 10px;
   }
+
+  .sub-color:hover {
+    box-shadow: 0 12px 20px 6px rgba(96, 109, 128, 0.04), 0 8px 16px 4px rgba(96, 109, 128, 0.04),
+      0 4px 14px 0 rgba(98, 111, 131, 0.04);
+  }
+
   .sub-color .swatch {
     width: 60px;
     height: 60px;
     border-radius: 8px;
+    border: 1px solid #ddd;
   }
+
+  /* 自动为浅色加边框 */
+  .sub-color .swatch[data-color='white'],
+  .sub-color .swatch[data-color='#fff'],
+  .sub-color .swatch[data-color='#ffffff'] {
+    border: 1px solid #999;
+  }
+
+  .sub-color img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
   .sub-color .swatch-text {
     font-size: 14px;
     line-height: 16px;
     margin-top: 10px;
   }
+
+  @media (max-width: 768px) {
+    .color-swatch-box {
+      margin: 10px 0;
+    }
+
+    .color-swatch-wrapper {
+      justify-content: flex-start;
+      gap: 25px;
+      padding: 10px 0;
+    }
+
+    .color-family {
+      min-width: auto;
+    }
+
+    .color-swatch-main-box {
+      height: 85px;
+    }
+    .modal-body {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .color-swatch-main img,
+    .color-swatch-main .swatch {
+      width: 55px;
+      height: 55px;
+    }
+    .color-swatch-main span {
+      font-size: 12px;
+      line-height: 14px;
+    }
+  }
 </style>
+
 <div class="row">
   <div class="small-12 columns">
     <div class="color-swatch-box">
       <div class="color-swatch-wrapper">
-        {%- assign color_families = shop.metaobjects[section.settings.metaobject_handle].values -%}
+        {% assign color_families = collection.metafields.custom.color_families.value %}
 
-        {%- for family in color_families -%}
-          <div class="color-family">
-            <div class="color-swatch-main-box">
-              <div class="color-swatch-main">
-                {% if family.image != blank %}
-                  <div class="family-img">
-                    <img src="{{ family.image | image_url: width:100 }}" alt="{{ family.name }}">
-                  </div>
-                {% else %}
-                  <div class="swatch" style="background:#ccc;"></div>
-                {% endif %}
-                <span class="swatch-text">{{ family.name }}</span>
+        {% if color_families != blank %}
+          {% for family in color_families %}
+            <div class="color-family" data-family="{{ family.name | escape }}">
+              <div class="color-swatch-main-box">
+                <div class="color-swatch-main">
+                  {% if family.image != blank %}
+                    <div class="family-img">
+                      <img src="{{ family.image | image_url: width: 100 }}" alt="{{ family.name }}">
+                    </div>
+                  {% else %}
+                    <div class="swatch" style="background: #ccc;"></div>
+                  {% endif %}
+                  <span class="swatch-text">{{ family.name }}</span>
+                </div>
               </div>
-            </div>
 
-            <div class="color-dropdown-box">
-              <div class="color-dropdown-content">
+              <!-- 隐藏子色块 -->
+              <div class="subcolor-data" style="display:none;">
                 {% for sub in family.sub_colors.value %}
                   <a href="{{ sub.collection_link }}" class="sub-color">
-                    <span class="swatch" style="background: {{ sub.swatch_color }}"></span>
+                    {% if sub.image != blank %}
+                      <img src="{{ sub.image | image_url: width: 80 }}" alt="{{ sub.name }}" class="swatch">
+                    {% else %}
+                      <span class="swatch" style="background: {{ sub.swatch_color }};"></span>
+                    {% endif %}
                     <span class="swatch-text">{{ sub.name }}</span>
                   </a>
                 {% endfor %}
               </div>
-              <div class="triangle-box-1"></div>
-              <div class="triangle-box-2"></div>
             </div>
-          </div>
-        {%- endfor -%}
-
-        <!-- ALL 选项 -->
-        <div class="color-family">
-          <div class="color-swatch-main-box">
-            <div class="color-swatch-main">
-              <div class="family-swatch">
-                <div
-                  class="swatch"
-                  style="background: conic-gradient(red, orange, yellow, green, blue, purple, red);"
-                ></div>
-              </div>
-              <span>All</span>
-            </div>
-          </div>
-
-          <div class="color-dropdown-box">
-            <div class="color-dropdown-content">
-              {%- for family in color_families -%}
-                {%- for sub in family.sub_colors.value -%}
-                  <a href="{{ sub.collection_link }}" class="sub-color">
-                    <span class="swatch" style="background: {{ sub.swatch_color }}"></span>
-                    <span>{{ sub.name }}</span>
-                  </a>
-                {%- endfor -%}
-              {%- endfor -%}
-            </div>
-            <div class="triangle-box-1"></div>
-            <div class="triangle-box-2"></div>
-          </div>
-        </div>
+          {% endfor %}
+        {% else %}
+          <p style="text-align:center;">No color families configured for this collection.</p>
+        {% endif %}
       </div>
     </div>
   </div>
 </div>
+
+<!-- 弹窗 -->
+<div class="color-modal" id="colorModal">
+  <div class="color-modal-content">
+    <div class="modal-header">
+      <h3 id="modalFamilyName">Color Family</h3>
+      <button class="modal-close" id="closeModal">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const families = document.querySelectorAll('.color-family');
+    const modal = document.getElementById('colorModal');
+    const modalBody = document.getElementById('modalBody');
+    const modalTitle = document.getElementById('modalFamilyName');
+    const closeModal = document.getElementById('closeModal');
+
+    families.forEach((family) => {
+      family.addEventListener('click', () => {
+        const name = family.dataset.family;
+        const subColors = family.querySelector('.subcolor-data').innerHTML;
+        modalTitle.textContent = name;
+        modalBody.innerHTML = subColors;
+        modal.classList.add('active');
+      });
+    });
+
+    closeModal.addEventListener('click', () => modal.classList.remove('active'));
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.remove('active');
+    });
+  });
+</script>
+
 {% schema %}
 {
   "name": "Color Swatch Selector",
-  "settings": [
-    {
-      "type": "text",
-      "id": "metaobject_handle",
-      "label": "Metaobject definition handle",
-      "default": "colorfamily"
-    }
-  ],
+  "settings": [],
   "presets": [
     {
       "name": "Color Swatch Selector",
