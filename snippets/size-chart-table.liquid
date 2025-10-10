@@ -1,60 +1,106 @@
 <style>
   .variant-size-table-wrapper {
     margin-top: 1.2rem;
-    max-width: 640px;
+    max-width: 720px;
+    transition: all 0.4s ease;
+    overflow: hidden;
   }
-  .unit-toggle {
-    margin-bottom: 0.6rem;
+  .variant-size-table-wrapper.hidden {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
   }
-  .unit-toggle button {
-    margin-right: 0.5rem;
-    padding: 6px 10px;
-    border: 1px solid #ccc;
-    background: #f7f7f7;
+
+  .size-unit {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 15px;
     cursor: pointer;
-    border-radius: 4px;
   }
-  .unit-toggle button.active {
-    background: #111;
-    color: #fff;
-    border-color: #111;
+  .size-unit .unit {
+    font-weight: 500;
+    font-size: 16px;
   }
+  .size-unit .unit-switch {
+    width: 40px;
+    height: 20px;
+    background: #ccc;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .size-unit .unit-switch.right {
+    justify-content: flex-end;
+    background: #b3a6cc;
+  }
+  .size-unit .switch-icon {
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    margin: 2px;
+    transition: transform 0.3s ease;
+  }
+
   .variant-size-table {
     width: 100%;
     border-collapse: collapse;
+    text-align: center;
   }
   .variant-size-table th,
   .variant-size-table td {
-    border: 1px solid #e6e6e6;
-    padding: 10px;
-    text-align: center;
+    border: 1px solid #ccc;
   }
-  .variant-row.active {
-    background-color: #fff2cc;
+  .variant-size-table th {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px;
+    background-color: #b3a6cc;
+  }
+  .variant-size-table td {
+    font-size: 14px;
+    font-weight: 400;
+    padding: 8px 10px;
+    background-color: #fdf7ff;
+  }
+  .variant-row.active td {
+    background-color: #ebe2f9;
     font-weight: 600;
+  }
+
+  @media screen and (max-width: 767px) {
+    .variant-size-table th {
+      font-size: 14px;
+    }
+    .variant-size-table td {
+      font-size: 12px;
+    }
   }
 </style>
 
 <div class="variant-size-table-wrapper">
-  <div class="unit-toggle" aria-hidden="false">
-    <button class="toggle-unit active" data-unit="cm" type="button">CM</button>
-    <button class="toggle-unit" data-unit="in" type="button">IN</button>
+  <div class="size-unit">
+    <span class="unit">IN</span>
+    <div class="unit-switch right"><span class="switch-icon"></span></div>
+    <span class="unit">CM</span>
   </div>
 
-  <table class="variant-size-table" role="table" aria-label="Size table">
+  <table class="variant-size-table">
     <thead>
       <tr>
         <th>Size</th>
         <th>Bust</th>
         <th>Waist</th>
         <th>Hip</th>
+        <th>Length</th>
       </tr>
     </thead>
-    <tbody id="size-table-body">
-      {% comment %}
-        只渲染 product.options_with_values 中 Name == "Size" 的值，
-        且过滤掉 "Free Custom"（大小写不敏感）
-      {% endcomment %}
+    <tbody>
       {% for option in product.options_with_values %}
         {% assign opt_name_down = option.name | downcase %}
         {% if opt_name_down == 'size' %}
@@ -67,6 +113,7 @@
                 <td class="bust"></td>
                 <td class="waist"></td>
                 <td class="hip"></td>
+                <td class="length"></td>
               </tr>
             {% endunless %}
           {% endfor %}
@@ -77,217 +124,135 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  
-  // ---------------- 1) 尺码数据（只维护 cm，in 自动生成） ----------------
-  const sizeTable = {
-    "US2":  { cm: { bust: 80,  waist: 62,  hip: 86  } },
-    "US4":  { cm: { bust: 84,  waist: 66,  hip: 90  } },
-    "US6":  { cm: { bust: 88,  waist: 70,  hip: 94  } },
-    "US8":  { cm: { bust: 92,  waist: 74,  hip: 98  } },
-    "US10": { cm: { bust: 96,  waist: 78,  hip: 102 } },
-    "US12": { cm: { bust: 100, waist: 82,  hip: 106 } },
-    "US14": { cm: { bust: 104, waist: 86,  hip: 110 } },
-    "US16": { cm: { bust: 108, waist: 90,  hip: 114 } },
-    "US18": { cm: { bust: 112, waist: 94,  hip: 118 } },
-    "US20": { cm: { bust: 116, waist: 98,  hip: 122 } },
-    "US22": { cm: { bust: 120, waist: 102, hip: 126 } },
-    "US24": { cm: { bust: 124, waist: 106, hip: 130 } },
-    "US26": { cm: { bust: 128, waist: 110, hip: 134 } }
-  };
+  document.addEventListener('DOMContentLoaded', function () {
 
-  // 自动生成 in（保留1位小数）
-  Object.keys(sizeTable).forEach(sz => {
-    const cm = sizeTable[sz].cm;
-    sizeTable[sz].in = {
-      bust:  (cm.bust / 2.54).toFixed(1),
-      waist: (cm.waist / 2.54).toFixed(1),
-      hip:   (cm.hip / 2.54).toFixed(1)
+    // ---------------- 1) 尺码数据 ----------------
+    const sizeTable = {
+      "US2":   { cm:{bust:83,waist:65,hip:91,length:147}, in:{bust:"32½",waist:"25½",hip:"35¾",length:58}},
+      "US4":   { cm:{bust:85,waist:68,hip:92,length:147}, in:{bust:"33½",waist:"26½",hip:"36¼",length:58}},
+      "US6":   { cm:{bust:88,waist:70,hip:96,length:150}, in:{bust:"34½",waist:"27½",hip:"37¾",length:59}},
+      "US8":   { cm:{bust:90,waist:72,hip:98,length:150}, in:{bust:"35½",waist:"28½",hip:"38¾",length:59}},
+      "US10":  { cm:{bust:93,waist:75,hip:101,length:152}, in:{bust:"36½",waist:"29½",hip:"39¾",length:60}},
+      "US12":  { cm:{bust:97,waist:79,hip:105,length:152}, in:{bust:"38",waist:"31",hip:"41¼",length:60}},
+      "US14":  { cm:{bust:100,waist:83,hip:109,length:155}, in:{bust:"39½",waist:"32½",hip:"42¾",length:61}},
+      "US16":  { cm:{bust:104,waist:86,hip:112,length:155}, in:{bust:"41",waist:"34",hip:"44",length:61}},
+      "US16W": { cm:{bust:109,waist:92,hip:116,length:155}, in:{bust:"43",waist:"36¼",hip:"45½",length:61}},
+      "US18W": { cm:{bust:114,waist:98,hip:121,length:155}, in:{bust:"45",waist:"38½",hip:"47½",length:61}},
+      "US20W": { cm:{bust:119,waist:104,hip:126,length:155}, in:{bust:"47",waist:"40¾",hip:"49½",length:61}},
+      "US22W": { cm:{bust:124,waist:109,hip:131,length:155}, in:{bust:"49",waist:"43",hip:"51½",length:61}},
+      "US24W": { cm:{bust:129,waist:114,hip:136,length:155}, in:{bust:"51",waist:"45¼",hip:"53¼",length:61}},
+      "US26W": { cm:{bust:134,waist:119,hip:141,length:155}, in:{bust:"53",waist:"47½",hip:"55½",length:61}}
     };
-  });
 
-  // 规范化 sizeTable 的 key（去空格/特殊字符并大写）
-  const normalizedSizeTable = {};
-  Object.keys(sizeTable).forEach(k => {
-    const norm = String(k).toUpperCase().replace(/\s+/g, '').replace(/[^A-Z0-9]/g, '');
-    normalizedSizeTable[norm] = sizeTable[k];
-  });
-
-  // ---------------- 2) 从 Liquid 输出的产品数据 ----------------
-  const productVariants = {{ product.variants | json }};
-  const productOptions = {{ product.options | json }};
-
-  // 自动识别 Size 在 product.options 中的位置（index），不区分大小写
-  const sizeIndex = (productOptions || []).findIndex(opt => String(opt).toLowerCase() === 'size');
-
-  // 从 DOM 中构建 rows & sizeValues（Liquid 已过滤掉 Free Custom）
-  const rowNodeList = document.querySelectorAll('.variant-row');
-  const rows = Array.from(rowNodeList);
-  const sizeValues = rows.map(r => r.dataset.size);
-
-  // ---------------- 3) 渲染 / 切换单位 ----------------
-  let currentUnit = 'cm';
-  function lookupSizeData(sizeRaw, unit) {
-    if (!sizeRaw) return null;
-    const norm = String(sizeRaw).toUpperCase().trim().replace(/\s+/g, '').replace(/[^A-Z0-9]/g, '');
-    return normalizedSizeTable[norm] ? normalizedSizeTable[norm][unit] : null;
-  }
-
-  function renderTable(unit) {
-    rows.forEach(row => {
-      const size = row.dataset.size;
-      const cellBust = row.querySelector('.bust');
-      const cellWaist = row.querySelector('.waist');
-      const cellHip = row.querySelector('.hip');
-
-      const data = lookupSizeData(size, unit);
-      if (data) {
-        const unitLabel = unit.toUpperCase();
-        cellBust.textContent  = data.bust  + ' ' + unitLabel;
-        cellWaist.textContent = data.waist + ' ' + unitLabel;
-        cellHip.textContent   = data.hip   + ' ' + unitLabel;
-      } else {
-        cellBust.textContent  = '-';
-        cellWaist.textContent = '-';
-        cellHip.textContent   = '-';
-      }
+    const normalizedSizeTable = {};
+    Object.keys(sizeTable).forEach(k=>{
+      normalizedSizeTable[k.toUpperCase().replace(/\s+/g,'').replace(/[^A-Z0-9]/g,'')] = sizeTable[k];
     });
-  }
-  renderTable(currentUnit);
 
-  // 按钮切换（切换会刷新表格）
-  document.querySelectorAll('.toggle-unit').forEach(btn => {
-    btn.addEventListener('click', function (ev) {
-      ev.preventDefault();
-      document.querySelectorAll('.toggle-unit').forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
-      const toUnit = (this.dataset && this.dataset.unit) ? this.dataset.unit : 'cm';
-      if (toUnit !== currentUnit) {
-        currentUnit = toUnit;
-        renderTable(currentUnit);
-      }
-    });
-  });
+    const productVariants = {{ product.variants | json }};
+    const productOptions = {{ product.options | json }};
+    const sizeIndex = (productOptions||[]).findIndex(opt=>String(opt).toLowerCase()==='size');
 
-  // ---------------- 4) 显示窗口：上一 / 当前 / 下一（三行），处理边界 ----------------
-  function show3Rows(activeIndex) {
-    if (!Array.isArray(rows) || rows.length === 0) return;
+    const wrapper = document.querySelector('.variant-size-table-wrapper');
+    const rows = Array.from(document.querySelectorAll('.variant-row'));
+    const sizeValues = rows.map(r=>r.dataset.size);
+    let currentUnit = 'cm';
 
-    const n = rows.length;
-    // 若总行数 <= 3 则全部显示
-    if (n <= 3) {
-      rows.forEach((r, i) => {
-        r.style.display = 'table-row';
-        r.classList.toggle('active', i === activeIndex);
+    function lookupSizeData(sizeRaw, unit){
+      const norm = String(sizeRaw).toUpperCase().trim().replace(/\s+/g,'').replace(/[^A-Z0-9]/g,'');
+      return normalizedSizeTable[norm]? normalizedSizeTable[norm][unit]:null;
+    }
+
+    function renderTable(unit){
+      rows.forEach(row=>{
+        const size=row.dataset.size;
+        const d=lookupSizeData(size,unit);
+        if(d){
+          row.querySelector('.bust').textContent=d.bust;
+          row.querySelector('.waist').textContent=d.waist;
+          row.querySelector('.hip').textContent=d.hip;
+          row.querySelector('.length').textContent=d.length;
+        }else{
+          row.querySelectorAll('td:not(:first-child)').forEach(td=>td.textContent='-');
+        }
       });
-      return;
     }
+    renderTable(currentUnit);
 
-    let start, end;
-    if (activeIndex <= 0) {
-      start = 0; end = 2;
-    } else if (activeIndex >= n - 1) {
-      start = n - 3; end = n - 1;
-    } else {
-      start = activeIndex - 1; end = activeIndex + 1;
-    }
-
-    rows.forEach((r, i) => {
-      if (i >= start && i <= end) {
-        r.style.display = 'table-row';
-      } else {
-        r.style.display = 'none';
-      }
-      r.classList.toggle('active', i === activeIndex);
+    // ---- 滑块切换动画 ----
+    const sizeUnitWrapper=document.querySelector('.size-unit');
+    const unitSwitch=sizeUnitWrapper.querySelector('.unit-switch');
+    sizeUnitWrapper.addEventListener('click',function(e){
+      e.preventDefault();
+      unitSwitch.classList.toggle('right');
+      const toUnit=unitSwitch.classList.contains('right')?'cm':'in';
+      if(toUnit!==currentUnit){ currentUnit=toUnit; renderTable(currentUnit); }
     });
-  }
 
-  function hideAllRows() {
-    rows.forEach(r => { r.style.display = 'none'; r.classList.remove('active'); });
-  }
+    // ---- 三行窗口逻辑（已修复边界：首/末项仍显示三行） ----
+    function show3Rows(idx){
+      if (!Array.isArray(rows) || rows.length === 0) return;
+      const n = rows.length;
 
-  // ---------------- 5) 处理 variant 对象（入口） ----------------
-  function handleVariantObject(variant) {
-    if (!variant || sizeIndex === -1) return;
+      // 若总行数 <= 3 则全部显示
+      if (n <= 3) {
+        rows.forEach((r,i)=>{ r.style.display='table-row'; r.classList.toggle('active', i===idx); });
+        return;
+      }
 
-    const sizeVal = variant.options[sizeIndex];
-    if (!sizeVal) { hideAllRows(); return; }
-
-    // 如果用户选择 Free Custom（大小写不敏感），不展示表格
-    if (String(sizeVal).trim().toLowerCase() === 'free custom') {
-      hideAllRows();
-      return;
-    }
-
-    // 找到在 sizeValues 数组中的索引并展示窗口
-    const idx = sizeValues.indexOf(sizeVal);
-    if (idx !== -1) {
-      show3Rows(idx);
-    } else {
-      // 若没有在渲染的 size 列表中找到（例如名称格式不同），尝试通过规范化名称匹配
-      const normalized = String(sizeVal).toUpperCase().trim().replace(/\s+/g, '').replace(/[^A-Z0-9]/g, '');
-      const foundIdx = sizeValues.findIndex(s => String(s).toUpperCase().trim().replace(/\s+/g,'').replace(/[^A-Z0-9]/g,'') === normalized);
-      if (foundIdx !== -1) {
-        show3Rows(foundIdx);
+      // 边界处理：首项 -> 0,1,2 ; 末项 -> n-3,n-2,n-1 ; 其它 -> idx-1,idx,idx+1
+      let start, end;
+      if (idx <= 0) {
+        start = 0;
+        end = 2;
+      } else if (idx >= n - 1) {
+        start = n - 3;
+        end = n - 1;
       } else {
-        hideAllRows();
-      }
-    }
-  }
-
-  // ---------------- 6) 事件监听（兼容多主题） ----------------
-  document.addEventListener('variant:change', function (e) {
-    handleVariantObject(e.detail && e.detail.variant ? e.detail.variant : null);
-  });
-
-  const variantInput = document.querySelector('[name="id"]');
-  if (variantInput) {
-    variantInput.addEventListener('change', function () {
-      const val = this.value;
-      const found = productVariants.find(v => String(v.id) === String(val));
-      if (found) handleVariantObject(found);
-    });
-  }
-
-  const productForm = variantInput?.closest?.('form') || document.querySelector('form[action*="/cart/add"]');
-  if (productForm) {
-    productForm.addEventListener('change', function () {
-      const idVal = variantInput ? variantInput.value : null;
-      if (idVal) {
-        const foundById = productVariants.find(v => String(v.id) === String(idVal));
-        if (foundById) { handleVariantObject(foundById); return; }
-      }
-      const selectedOptions = [];
-      for (let i = 0; i < (productOptions || []).length; i++) {
-        const optName = productOptions[i];
-        let foundVal = null;
-
-        let sel = productForm.querySelector(`select[name="options[${optName}]"]`) ||
-                  productForm.querySelector(`select[name="option${i+1}"]`) ||
-                  productForm.querySelector(`select[id^="SingleOptionSelector-${i+1}"]`);
-        if (sel) { foundVal = sel.value; selectedOptions.push(foundVal); continue; }
-
-        let radio = productForm.querySelector(`input[type="radio"][name="options[${optName}]"]:checked`) ||
-                    productForm.querySelector(`input[type="radio"][name="option${i+1}"]:checked`);
-        if (radio) { foundVal = radio.value; selectedOptions.push(foundVal); continue; }
-
-        selectedOptions.push(null);
+        start = idx - 1;
+        end = idx + 1;
       }
 
-      const matched = productVariants.find(v => {
-        return (productOptions || []).every((_, idx) => {
-          const sel = selectedOptions[idx];
-          if (sel == null) return false;
-          return String(v.options[idx]) === String(sel);
-        });
+      rows.forEach((r,i)=>{
+        if (i >= start && i <= end) {
+          r.style.display = 'table-row';
+        } else {
+          r.style.display = 'none';
+        }
+        r.classList.toggle('active', i === idx);
       });
-      if (matched) handleVariantObject(matched);
-    });
-  }
+    }
 
-  // ---------------- 7) 初始化：高亮当前已选 variant（页面加载时） ----------------
-  const initialVariant = {{ product.selected_or_first_available_variant | json }};
-  handleVariantObject(initialVariant);
+    function hideAll(){ rows.forEach(r=>r.style.display='none'); wrapper.classList.add('hidden'); }
+    function showWrapper(){ wrapper.classList.remove('hidden'); }
 
-});
+    function handleVariantObject(v){
+      if(!v||sizeIndex===-1)return;
+      const sizeVal=v.options[sizeIndex];
+      if(!sizeVal)return;
+      if(String(sizeVal).toLowerCase().trim()==='free custom'){ hideAll();return;}
+      showWrapper();
+      const idx=sizeValues.findIndex(s=>s===sizeVal);
+      if(idx!==-1){ show3Rows(idx); }
+      else{
+        const normalized=String(sizeVal).toUpperCase().replace(/\s+/g,'').replace(/[^A-Z0-9]/g,'');
+        const found=sizeValues.findIndex(s=>String(s).toUpperCase().replace(/\s+/g,'').replace(/[^A-Z0-9]/g,'')===normalized);
+        if(found!==-1) show3Rows(found);
+        else hideAll();
+      }
+    }
+
+    document.addEventListener('variant:change',e=>{ handleVariantObject(e.detail&&e.detail.variant?e.detail.variant:null); });
+
+    const variantInput=document.querySelector('[name="id"]');
+    if(variantInput){
+      variantInput.addEventListener('change',function(){
+        const v=productVariants.find(x=>String(x.id)===String(this.value));
+        if(v)handleVariantObject(v);
+      });
+    }
+
+    const initialVariant={{ product.selected_or_first_available_variant | json }};
+    handleVariantObject(initialVariant);
+  });
 </script>
