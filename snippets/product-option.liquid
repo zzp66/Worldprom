@@ -51,20 +51,38 @@
         </div>
         <div class="product-form__input-wrapper">
           {%- for value in option.values -%}
-            <input
-              type="radio"
-              id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}{{ appended }}"
-              name="{{ option.name | append: appended }}"
-              value="{{ value | escape }}"
-              form="{{ product_form_id }}"
-              {% if option.selected_value == value %}
-                checked
-              {% endif %}
-            >
-            <label for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}{{ appended }}">
-              <span>{{ value }}</span>
-            </label>
+            {%- assign tooltip_text = '' -%}
+
+            {%- for variant in product.variants -%}
+              {%- if variant.options contains value -%}
+                {%- assign tooltip_text = variant.metafields.custom.option_value_tooltiptext.value -%}
+                {%- break -%}
+              {%- endif -%}
+            {%- endfor -%}
+
+            <div class="option-value-box">
+              <div class="option-value-item">
+                <input
+                  type="radio"
+                  id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}{{ appended }}"
+                  name="{{ option.name | append: appended }}"
+                  value="{{ value | escape }}"
+                  form="{{ product_form_id }}"
+                  {% if option.selected_value == value %}
+                    checked
+                  {% endif %}
+                >
+                <label for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}{{ appended }}">
+                  <span>{{ value }}</span>
+                </label>
+              </div>
+
+              {%- if tooltip_text != blank -%}
+                <div class="tooltiptext">{{ tooltip_text }}</div>
+              {%- endif -%}
+            </div>
           {%- endfor -%}
+
           {{ sizing_link }}
         </div>
       </fieldset>
