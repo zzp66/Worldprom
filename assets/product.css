@@ -2330,18 +2330,22 @@ shopify-payment-terms {
   height: auto;
   font-size: 8px;
 } */
-/* .option-value-box .option-value-icon {
+
+.option-value-box .option-value-icon {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #000;
-  width: 10px;
+  width: 15px;
   height: 10px;
   position: absolute;
-  top: 0;
-  right: 2px;
-  max-width: 8px;
-} */
+  top: -4px;
+  right: 0;
+  max-width: 20px;
+}
+
+.option-value-icon img {
+  display: block;
+}
 
 .tooltiptext {
   visibility: hidden;

@@ -76,10 +76,17 @@
                   <span>{{ value }}</span>
                 </label>
               </div>
-
               {%- if tooltip_text != blank -%}
-                <div class="tooltiptext">{{ tooltip_text }}</div>
+                <div class="option-value-icon">
+                  <img src="https://cdn.shopify.com/s/files/1/0742/6628/0191/files/shark-1.png?v=1760978281" alt="">
+                </div>
               {%- endif -%}
+
+              {% comment %}
+                {%- if tooltip_text != blank -%}
+                  <div class="tooltiptext">{{ tooltip_text }}</div>
+                {%- endif -%}
+              {% endcomment %}
             </div>
           {%- endfor -%}
 
