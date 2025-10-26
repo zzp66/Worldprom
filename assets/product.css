@@ -2335,10 +2335,10 @@ shopify-payment-terms {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 15px;
+  width: 10px;
   height: 10px;
   position: absolute;
-  top: -4px;
+  top: 0;
   right: 0;
   max-width: 20px;
 }
