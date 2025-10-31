@@ -54,12 +54,22 @@
               assign bg_value = sib_product.featured_media.preview_image | image_url: width: variant_image_size
             endif
           -%}
-          <label
-            class="{%- if sib_product.handle == product.handle -%}active{%- endif %}{%- if sib_product.available == false %} sold-out{%- endif %}"
-            style="--option-color: {{ color_value | downcase | escape }}; {%- if bg_value != empty -%} --option-color-image: url('{{ bg_value | escape }}');{%- endif -%}"
-          >
-            <a href="{{ sib_product.url }}" title="{{ color_name }}"></a>
-          </label>
+          <div class="sib-color-item-box">
+            <label
+              class="{%- if sib_product.handle == product.handle -%}active{%- endif %}{%- if sib_product.available == false %} sold-out{%- endif %}"
+              style="--option-color: {{ color_value | downcase | escape }}; {%- if bg_value != empty -%} --option-color-image: url('{{ bg_value | escape }}');{%- endif -%}"
+            >
+              <a href="{{ sib_product.url }}" title="{{ color_name }}"></a>
+            </label>
+            {% if sib_product.metafields.custom.ships_now.value == true %}
+              <div class="sib-color-item-icon">
+                <img
+                  src="https://cdn.shopify.com/s/files/1/0742/6628/0191/files/shark-1_98ca9bf3-7e04-4df0-966f-53d0f29f4b51.png?v=1761292639"
+                  alt=""
+                >
+              </div>
+            {% endif %}
+          </div>
         {%- endfor -%}
 
         {%- if hidden_count > 0 -%}

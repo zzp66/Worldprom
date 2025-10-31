@@ -119,6 +119,31 @@
   gap: 6px;
 }
 
+.sib-color-item-box {
+  position: relative;
+  display: flex;
+}
+
+.sib-color-item-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.sib-color-item-icon img {
+  max-height: 18px;
+  width: auto;
+}
+
+.product-card .sib-color-item-icon img {
+  max-height: 12px;
+}
+
 .product-form__input-wrapper modal-opener {
   flex-basis: 100%;
 }
