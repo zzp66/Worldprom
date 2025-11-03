@@ -90,16 +90,17 @@
                 class="{%- if sib_product.handle == product.handle -%}active{%- endif %}{%- if sib_product.available == false %} sold-out{%- endif %}"
                 style="--option-color: {{ color_value | downcase | escape }}; {%- if bg_value != empty -%} --option-color-image: url('{{ bg_value | escape }}');{%- endif -%}"
               >
-                <a href="{{ sib_product.url }}" title="{{ color_name }}"></a>
+                <a href="{{ sib_product.url }}" title="{{ color_name }}">
+                  {% if sib_product.metafields.custom.ships_now.value == true %}
+                    <div class="sib-color-item-icon">
+                      <img
+                        src="https://cdn.shopify.com/s/files/1/0742/6628/0191/files/Color-3.png?v=1762161323"
+                        alt=""
+                      >
+                    </div>
+                  {% endif %}
+                </a>
               </label>
-              {% if sib_product.metafields.custom.ships_now.value == true %}
-                <div class="sib-color-item-icon">
-                  <img
-                    src="https://cdn.shopify.com/s/files/1/0742/6628/0191/files/Color-3.png?v=1762161323"
-                    alt=""
-                  >
-                </div>
-              {% endif %}
             </div>
           {%- endfor -%}
         </div>
