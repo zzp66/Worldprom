@@ -133,10 +133,11 @@
   height: 100%;
   top: 0;
   left: 0;
+  z-index: 99;
 }
 
 .sib-color-item-icon img {
-  max-height: 18px;
+  max-height: 20px;
   width: auto;
 }
 
