@@ -56,12 +56,13 @@
     "product_label_4": "custom.product_label_4",
     "sale_badge_type": "save_percentage",
     "badge_position": "top left",
+    "badge_corner_radius": 3,
     "color_badge_sale": "#d83f3f",
     "color_badge_preorder": "#369d65",
     "custom_product_badge_group_1_tag_names": "",
     "custom_product_badge_group_1_color": "#ffffff",
     "custom_product_badge_group_1_bg": "#ffd900",
-    "custom_product_badge_group_2_tag_names": "",
+    "custom_product_badge_group_2_tag_names": "48H Shipping",
     "custom_product_badge_group_2_color": "#ffffff",
     "custom_product_badge_group_2_bg": "#0081ff",
     "custom_product_badge_group_3_tag_names": "",
@@ -132,6 +133,8 @@
     }
   },
   "platform_customizations": {
-    "custom_css": []
+    "custom_css": [
+      "/* 精准定位促销徽章并隐藏 */.product-card--badges .badge.onsale {display: none !important; /* !important 确保样式优先级，避免被原有样式覆盖 */}"
+    ]
   }
 }
