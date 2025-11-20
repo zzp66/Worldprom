@@ -358,13 +358,14 @@
   top: 8px;
 }
 
-.product-card--badges.top.left{
+.product-card--badges.top.left {
   top: auto;
-    left: auto;
-    bottom: 0;
-    width: 100%;
+  left: auto;
+  bottom: 0;
+  width: 100%;
 }
-.badge[data-badge="48h-shipping"]{
+
+.badge[data-badge="48h-shipping"] {
   width: 100%;
   justify-content: center;
 }
@@ -844,4 +845,8 @@
   align-items: flex-end;
   font-size: 12px;
   line-height: 14px;
+}
+
+.product-card .afterpay-info-box {
+  display: none;
 }

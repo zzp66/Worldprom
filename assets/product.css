@@ -799,6 +799,7 @@
   flex-wrap: wrap;
   align-items: center;
   margin-right: 11px;
+  margin-top: 10px;
 }
 
 .thb-product-detail .product-price-container .price .unit-price {
@@ -2410,4 +2411,35 @@ shopify-payment-terms {
 .option-value-box:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
+}
+
+.afterpay-info {
+  display: inline-flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.afterpay-info img {
+  display: block;
+  max-height: 18px;
+  width: auto;
+}
+
+.afterpay-logo-box {
+  margin-left: 5px;
+}
+
+.afterpay-logo-box strong {
+  font-weight: 700;
+}
+
+@media screen and (max-width: 767px) {
+  .afterpay-info {
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .afterpay-info img {
+    max-height: 16px;
+  }
 }
