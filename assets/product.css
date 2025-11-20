@@ -823,6 +823,7 @@
   margin-right: 5px;
   height: 23px;
   padding: 0 11px;
+  white-space: nowrap;
 }
 
 .thb-product-detail .star-rating-container {

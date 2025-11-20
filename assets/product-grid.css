@@ -358,6 +358,17 @@
   top: 8px;
 }
 
+.product-card--badges.top.left{
+  top: auto;
+    left: auto;
+    bottom: 0;
+    width: 100%;
+}
+.badge[data-badge="48h-shipping"]{
+  width: 100%;
+  justify-content: center;
+}
+
 @media only screen and (min-width: 768px) {
   .product-card--badges.top {
     top: 16px;
