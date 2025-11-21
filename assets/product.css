@@ -2419,6 +2419,11 @@ shopify-payment-terms {
   margin: 10px 0;
 }
 
+.afterpay-klarna {
+  display: inline-flex;
+  align-items: center;
+}
+
 .afterpay-info img {
   display: block;
   max-height: 18px;
@@ -2426,7 +2431,7 @@ shopify-payment-terms {
 }
 
 .afterpay-logo-box {
-  margin-left: 5px;
+  margin: 0 5px;
 }
 
 .afterpay-logo-box strong {
@@ -2435,7 +2440,7 @@ shopify-payment-terms {
 
 @media screen and (max-width: 767px) {
   .afterpay-info {
-    font-size: 12px;
+    font-size: 11px;
     line-height: 16px;
   }
 
