@@ -119,6 +119,11 @@
   gap: 6px;
 }
 
+.product-form__input-wrapper.product-form__input-wrapper-size {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+
 .sib-color-item-box {
   position: relative;
   display: flex;
@@ -236,17 +241,18 @@
 }
 
 .variations .product-form__input--block input[type="radio"]+label {
-  width: auto;
+  width: 100%;
   min-width: 34px;
   height: 34px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 5px 20px;
+  padding: 5px 12px;
   font-size: 0.8125rem;
   cursor: pointer;
   color: rgba(var(--color-body-rgb), 0.8);
   box-shadow: 0 0 0 1px var(--color-border) inset;
+  white-space: nowrap;
 }
 
 @media only screen and (min-width: 768px) {
@@ -2446,5 +2452,14 @@ shopify-payment-terms {
 
   .afterpay-info img {
     max-height: 16px;
+  }
+
+  .variations .product-form__input--block input[type="radio"]+label {
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+
+  modal-opener.product-popup-modal__opener {
+    grid-column-start: span 2;
   }
 }
