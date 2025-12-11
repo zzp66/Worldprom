@@ -16,13 +16,6 @@
     "main-product": {
       "type": "main-product",
       "blocks": {
-        "e431a79e-9c7b-4a53-a79a-0cb918617ecf": {
-          "type": "text",
-          "settings": {
-            "text": "{{ product.vendor }}",
-            "text_style": "style_vendor"
-          }
-        },
         "title": {
           "type": "title",
           "settings": {
@@ -36,17 +29,10 @@
           "type": "flash_message",
           "settings": {
             "icon": "price_tag",
-            "heading": "2026 Black Friday",
-            "message": "<p>Get a big discount on orders over $150</p>",
+            "heading": "2026 Christmas Sale",
+            "message": "<p>$0-$500:15% OFF | $500-$1000:20% OFF | Over $1000:30% OFF</p>",
             "close_button": "none",
             "color_text": "#d83f3f"
-          }
-        },
-        "4fd23485-293f-46a0-8a4c-34d0e25ea41b": {
-          "type": "share",
-          "settings": {
-            "need_help": false,
-            "show_phone_number": false
           }
         },
         "siblings_XRYrCV": {
@@ -85,11 +71,6 @@
             "multiple_options": "Option 1\nOption 2\nOption 3"
           }
         },
-        "estimate_time_AkwrFJ": {
-          "type": "estimate_time",
-          "disabled": true,
-          "settings": {}
-        },
         "buy_buttons": {
           "type": "buy_buttons",
           "settings": {
@@ -99,15 +80,30 @@
             "show_gift_card_recipient": true
           }
         },
-        "payment_icons_XaAFEC": {
-          "type": "payment_icons",
+        "4fd23485-293f-46a0-8a4c-34d0e25ea41b": {
+          "type": "share",
+          "settings": {
+            "need_help": false,
+            "show_phone_number": false
+          }
+        },
+        "border_MCqDB7": {
+          "type": "border",
+          "settings": {}
+        },
+        "estimate_time_AkwrFJ": {
+          "type": "estimate_time",
+          "settings": {}
+        },
+        "border_4bVDgg": {
+          "type": "border",
           "settings": {}
         },
         "icon_list_Gmdnwq": {
           "type": "icon_list",
           "settings": {
-            "icon_1_label": "",
-            "icon_1_icon": "none",
+            "icon_1_label": "24H Rapid Problem Solving",
+            "icon_1_icon": "chat_bubble",
             "icon_2_label": "Free Custom Size Service",
             "icon_2_icon": "shirt",
             "icon_3_label": "14-Day Returns & Exchanges",
@@ -117,6 +113,14 @@
             "icon_5_label": "",
             "icon_5_icon": "none"
           }
+        },
+        "payment_icons_XaAFEC": {
+          "type": "payment_icons",
+          "settings": {}
+        },
+        "border_gYU7MQ": {
+          "type": "border",
+          "settings": {}
         },
         "tabbed_content_4tbgpR": {
           "type": "tabbed_content",
@@ -133,25 +137,27 @@
             "text_2": "",
             "page_2": "size-guide",
             "custom_liquid_2": "",
-            "tab_label_3": "Delivery",
-            "text_3": "<p>Economy Shipping: 5-8 business Days <strong>(After Shipping)</strong> $14.99</p><p>Expedited Shipping: 3-5 Business Days <strong>(After Shipping)</strong> $39.99<br/><br/></p>",
+            "tab_label_3": "CONTACT",
+            "text_3": "<p>Feel free to reach out with any questions regarding purchases, orders, or after-sales service. You can email us, and we will respond within 24 hours. </p><p>Email: service@worldprom.com<br/><br/></p>",
             "page_3": "",
             "custom_liquid_3": ""
           }
         }
       },
       "block_order": [
-        "e431a79e-9c7b-4a53-a79a-0cb918617ecf",
         "title",
         "flash_message_mBqxN9",
-        "4fd23485-293f-46a0-8a4c-34d0e25ea41b",
         "siblings_XRYrCV",
         "variant_picker_cjwBPV",
         "custom_option_T6Kyh8",
-        "estimate_time_AkwrFJ",
         "buy_buttons",
-        "payment_icons_XaAFEC",
+        "4fd23485-293f-46a0-8a4c-34d0e25ea41b",
+        "border_MCqDB7",
+        "estimate_time_AkwrFJ",
+        "border_4bVDgg",
         "icon_list_Gmdnwq",
+        "payment_icons_XaAFEC",
+        "border_gYU7MQ",
         "tabbed_content_4tbgpR"
       ],
       "custom_css": [],
@@ -160,13 +166,68 @@
         "enable_sticky_add_to_cart": false,
         "show_taxes_included": true,
         "media_layout": "collage",
-        "display_slider_pagination": true,
-        "product_media_width": "small",
-        "media_aspect_ratio": "adapt",
+        "display_slider_pagination": false,
+        "product_media_width": "large",
+        "media_aspect_ratio": "portrait",
         "display_captions": true,
-        "hide_variants": true,
+        "hide_variants": false,
         "lightbox": true,
-        "enable_video_looping": false
+        "enable_video_looping": true
+      }
+    },
+    "tabbed_content_mCjgca": {
+      "type": "tabbed-content",
+      "blocks": {
+        "tab_TPCNye": {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Description",
+            "icon": "ruler",
+            "text": "",
+            "text_columns": "1",
+            "page": "",
+            "custom_liquid": "{{ product.description }}"
+          }
+        },
+        "tab_dMR8Ud": {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Tab label",
+            "icon": "ruler",
+            "text": "<p>Add a short description for this tabbed section</p>",
+            "text_columns": "1",
+            "page": "",
+            "custom_liquid": ""
+          }
+        },
+        "tab_n377xD": {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Tab label",
+            "icon": "ruler",
+            "text": "<p>Add a short description for this tabbed section</p>",
+            "text_columns": "1",
+            "page": "",
+            "custom_liquid": ""
+          }
+        }
+      },
+      "block_order": [
+        "tab_TPCNye",
+        "tab_dMR8Ud",
+        "tab_n377xD"
+      ],
+      "disabled": true,
+      "name": "Tabbed content",
+      "settings": {
+        "subheading": "",
+        "heading": "",
+        "description": "",
+        "text_width": "medium",
+        "tab_alignment": "left",
+        "text_alignment": "left",
+        "disable_top_spacing": true,
+        "disable_bottom_spacing": false
       }
     },
     "17549592591dfa9272": {
@@ -222,6 +283,7 @@
   "order": [
     "breadcrumbs",
     "main-product",
+    "tabbed_content_mCjgca",
     "17549592591dfa9272",
     "product-recommendations",
     "recently_viewed_products_EWt9np"

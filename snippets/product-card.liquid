@@ -204,13 +204,14 @@
       </div>
 
       {% render 'product-price', product: product_card_product %}
+
+      {% render 'product-card-siblings', product: product_card_product %}
+
       <!-- Start of Judge.me code -->
       <div class="jdgm-widget jdgm-preview-badge" data-id="{{ product_card_product.id }}">
         {{ product_card_product.metafields.judgeme.badge }}
       </div>
       <!-- End of Judge.me code -->
-
-      {% render 'product-card-siblings', product: product_card_product %}
 
       {% comment %}
         {%- if has_review -%}
