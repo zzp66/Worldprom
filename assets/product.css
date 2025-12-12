@@ -2299,7 +2299,7 @@ shopify-payment-terms {
   text-align: center;
 }
 
-.top-content svg {
+.top-content img {
   width: 32px;
   height: 32px;
 }
@@ -2317,13 +2317,17 @@ shopify-payment-terms {
   display: block;
   height: 1px;
   border: 0;
-  border-top: 1px solid #e5b3ac;
+  border-top: 1px solid #b3a6cc;
   margin: 0;
   padding: 0;
 }
 
+.time-desc {
+  margin: 0 5px;
+}
+
 .time-desc .bot-desc {
-  color: #e5b3ac;
+  color: #b3a6cc;
 }
 
 .bot-content,
@@ -2332,14 +2336,13 @@ shopify-payment-terms {
   margin: 1rem 0;
   align-items: flex-start;
   line-height: 1.4;
+  gap: 5px;
 }
 
-.bot-content svg,
-.mid-content svg {
-  width: 20px;
-  height: 20px;
-  margin-right: .5rem;
-  fill: #e5b3ac;
+.bot-content img,
+.mid-content img {
+  max-width: 20px;
+  height: auto;
 }
 
 #faq-delivery-time,
