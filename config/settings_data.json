@@ -9,8 +9,8 @@
  */
 {
   "current": {
-    "heading_font": "playfair_n4",
-    "body_font": "noto_sans_display_n4",
+    "heading_font": "libre_bodoni_n4",
+    "body_font": "jost_n4",
     "body_font_scale": 100,
     "navigation_font_family": "body",
     "navigation_uppercase": false,
@@ -71,7 +71,7 @@
     "custom_product_badge_group_4_tag_names": "",
     "custom_product_badge_group_4_color": "#ffd900",
     "custom_product_badge_group_4_bg": "#272727",
-    "color_swatches": "Dirty Pink: #F9EEEE\nBlack: #000000\nWhite: #FFFFFF\nIvory: #FFFFF0\nChampagne: #f0d2a2\nTaupe: #54463A\nGrey: #808080\nSilver: #C0C0C0\nDeep Burgundy: #800020\nBurgundy: #9E1B32\nCrimson: #DC143C\nRed: #FF0000\nBurnt Orange: #CC5500\nRust: #B7410E\nOrange: #FF5F1F\nMustard Yellow: #FFDB58\nGold: #FFD700\nYellow: #FFFF00\nBean Green: #4B5320\nOlive Green: #808000\nGreen: #008000\nTeal: #008080\nSage Green: #B2AC88\nEucalyptus: #44D7A8\nMint Green: #ADEBB3\nNavy Blue: #000080\nRoyal Blue: #0000FF\nBlue: #4169E1\nPeacock Blue: #1A5A6C\nStormy Blue: #4F6D7A\nAqua Blue: #00FFFF\nSky Blue: #87CEEB\nDusty Blue: #A3BFD9\nLight Blue: #ADD8E6\nBaby Blue: #89CFF0\nTurquoise: #40E0D0\nPlum: #8E4585\nPurple: #800080\nPurple Grey: #6C4F7D\nDusty Purple: #A39BC6\nLight Purple: #B19CD9\nWisteria: #C9A0DC\nLilac: #C8A2C8\nLavender: #D3D3FF\nDesert Rose: #CF6977\nMarigold: #EAA221\nMauve: #E0B0FF\nFuchsia: #750137\nHot Pink: #FF69B4\nCandy Pink: #FF6EC7\nPink: #FFC0CB\nDusty Rose: #DCA1A1\nRose Gold: #DEA193\nBlush Pink: #F9C1D4\nPeach: #FFDAB9\nFluorescent: #90ff77\nDusty Pink: #D58A94\nEmerald Green: #00674F\nDark Green: #06402B\nBright Orange: #FF991C\nLight Grey: #D3D3D3\nGrape: #440f3c\nDark Blue: #070738\nChocolate: #713600\nBrown: #895129\nCoral: #F88379\nLight Pink: #ffe9ec\nCyan: #008B8B\nLight Yellow: #FFFFC5\nAcid Blue: #207bac\nGoose Yellow: #FFD32C\nColorful: istockphoto-1366265822-612x612.jpg\nAs Picture: istockphoto-1366265822-612x612.jpg\nSolid Chiffon: solid-chiffon.jpg\nFloral Chiffon: floral-chiffon.jpg\nDusty Rose Floral: BCES0196_2.jpg\nDusty Blue Floral: BCES0196_5.jpg\nSage Floral: BCES0196_1.jpg\nBlue Floral: BCES0196_8.jpg\nBaby Blue Floral: BCES0196_3.jpg\nWhite Floral: BCES0196_6.jpg\nPink Floral: BCES0196_4.jpg\nKhaki Floral: BCES0196_7.jpg\nSky Blue Floral: BCEA0195.png\nEmerald Green Floral: BCAL0337-sage.jpg\nOlive Green Floral:BCAL0337.jpg\nWatermelon Red: #DA5B6E\nOrange Floral: PCBT0194-3.jpg\nLilac Floral: PCBT0194-5.jpg\nBurgundy Floral: PCBT0194-burgundy.jpg\nLight Champagne: #F7E7CE\nChampagne Gold: #f7e199\nLight Ocean Green: #7ba5ac\nDeep Lavender: #7A4E9F\nLeopard Print: leopard_print.jpg\nBlack Floral: black_floral.jpg\nNude & Black: Nude_Black.png\nBlack Polka Dot: Black_Polka_Dot.jpg\nRed Floral: Red_Floral.jpg\nWhite Black: black-white.jpg\nBlack Green: black-green.jpg\nBlack Gold: black-gold.jpg",
+    "color_swatches": "Dirty Pink: #F9EEEE\nBlack: #000000\nWhite: #FFFFFF\nIvory: #FFFFF0\nChampagne: #f0d2a2\nTaupe: #54463A\nGrey: #808080\nSilver: #C0C0C0\nDeep Burgundy: #800020\nBurgundy: #9E1B32\nCrimson: #DC143C\nRed: #FF0000\nBurnt Orange: #CC5500\nRust: #B7410E\nOrange: #FF5F1F\nMustard Yellow: #FFDB58\nGold: #FFD700\nYellow: #FFFF00\nBean Green: #4B5320\nOlive Green: #808000\nGreen: #008000\nTeal: #008080\nSage Green: #B2AC88\nEucalyptus: #44D7A8\nMint Green: #ADEBB3\nNavy Blue: #000080\nRoyal Blue: #0000FF\nBlue: #4169E1\nPeacock Blue: #1A5A6C\nStormy Blue: #4F6D7A\nAqua Blue: #00FFFF\nSky Blue: #87CEEB\nDusty Blue: #A3BFD9\nLight Blue: #ADD8E6\nBaby Blue: #89CFF0\nTurquoise: #40E0D0\nPlum: #8E4585\nPurple: #800080\nPurple Grey: #6C4F7D\nDusty Purple: #A39BC6\nLight Purple: #B19CD9\nWisteria: #C9A0DC\nLilac: #C8A2C8\nLavender: #D3D3FF\nDesert Rose: #CF6977\nMarigold: #EAA221\nMauve: #E0B0FF\nFuchsia: #750137\nHot Pink: #FF69B4\nCandy Pink: #FF6EC7\nPink: #FFC0CB\nDusty Rose: #DCA1A1\nRose Gold: #DEA193\nBlush Pink: #F9C1D4\nPeach: #FFDAB9\nFluorescent: #90ff77\nDusty Pink: #D58A94\nEmerald Green: #00674F\nDark Green: #06402B\nBright Orange: #FF991C\nLight Grey: #D3D3D3\nGrape: #440f3c\nDark Blue: #070738\nChocolate: #713600\nBrown: #895129\nCoral: #F88379\nLight Pink: #ffe9ec\nCyan: #008B8B\nLight Yellow: #FFFFC5\nAcid Blue: #207bac\nGoose Yellow: #FFD32C\nColorful: istockphoto-1366265822-612x612.jpg\nAs Picture: istockphoto-1366265822-612x612.jpg\nSolid Chiffon: solid-chiffon.jpg\nFloral Chiffon: floral-chiffon.jpg\nDusty Rose Floral: BCES0196_2.jpg\nDusty Blue Floral: BCES0196_5.jpg\nSage Floral: BCES0196_1.jpg\nBlue Floral: BCES0196_8.jpg\nBaby Blue Floral: BCES0196_3.jpg\nWhite Floral: BCES0196_6.jpg\nPink Floral: BCES0196_4.jpg\nKhaki Floral: BCES0196_7.jpg\nSky Blue Floral: BCEA0195.png\nEmerald Green Floral: BCAL0337-sage.jpg\nOlive Green Floral:BCAL0337.jpg\nWatermelon Red: #DA5B6E\nOrange Floral: PCBT0194-3.jpg\nLilac Floral: PCBT0194-5.jpg\nBurgundy Floral: PCBT0194-burgundy.jpg\nLight Champagne: #F7E7CE\nChampagne Gold: #f7e199\nLight Ocean Green: #7ba5ac\nDeep Lavender: #7A4E9F\nLeopard Print: leopard_print.jpg\nBlack Floral: black_floral.jpg\nNude & Black: Nude_Black.png\nBlack Polka Dot: Black_Polka_Dot.jpg\nRed Floral: Red_Floral.jpg\nWhite Black: black-white.jpg\nBlack Green: black-green.jpg\nBlack Gold: black-gold.jpg\nYellow Floral: YellowFloral.jpg",
     "sibling_style": "swatch",
     "cart_terms_conditions_enable": false,
     "cart_terms_conditions_page": "shopify://policies/terms-of-service",
@@ -91,29 +91,14 @@
     },
     "content_for_index": [],
     "blocks": {
-      "5918707185744429496": {
-        "type": "shopify://apps/optis-product-options-variant/blocks/bss-po-script/2c446099-c349-4e73-80cd-49c9770b7807",
-        "disabled": false,
-        "settings": {}
-      },
       "14060646107696862457": {
         "type": "shopify://apps/judge-me-reviews/blocks/judgeme_core/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
-        "disabled": false,
-        "settings": {}
-      },
-      "2567389343055140935": {
-        "type": "shopify://apps/microsoft-clarity/blocks/clarity_js/31c3d126-8116-4b4a-8ba1-baeda7c4aeea",
         "disabled": false,
         "settings": {}
       },
       "855628211100114053": {
         "type": "shopify://apps/klaviyo-email-marketing-sms/blocks/klaviyo-onsite-embed/2632fe16-c075-4321-a88b-50b567f42507",
         "disabled": false,
-        "settings": {}
-      },
-      "4015264832934714879": {
-        "type": "shopify://apps/trustoo-email-popups/blocks/app/a5670cf8-5705-4b01-ad9e-447033feae26",
-        "disabled": true,
         "settings": {}
       },
       "15683396631634586217": {

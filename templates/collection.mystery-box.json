@@ -26,21 +26,16 @@
       "type": "breadcrumbs",
       "settings": {}
     },
-    "collection_color_swatch_fQqQph": {
-      "type": "collection-color-swatch",
-      "name": "Color Swatch Selector",
-      "settings": {}
-    },
     "product-grid": {
       "type": "main-collection-product-grid",
       "blocks": {
-        "promotion_HNfqPR": {
+        "promotion_drfqyk": {
           "type": "promotion",
           "settings": {
             "promotion_collection": "",
             "promotion_position": 1,
             "promotion_width": "1",
-            "image": "shopify://shop_images/2026_spring.jpg",
+            "image": "shopify://shop_images/note-promotion.jpg",
             "title": "",
             "heading_size": "h3",
             "text": "",
@@ -55,7 +50,7 @@
         }
       },
       "block_order": [
-        "promotion_HNfqPR"
+        "promotion_drfqyk"
       ],
       "custom_css": [
         ".product-card-title {font-size: 12px;}"
@@ -81,7 +76,6 @@
   "order": [
     "main-collection-banner",
     "breadcrumbs",
-    "collection_color_swatch_fQqQph",
     "product-grid"
   ]
 }

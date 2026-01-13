@@ -48,7 +48,7 @@
         "164794776393e76b8e-2"
       ],
       "settings": {
-        "desktop_height": "desktop-height-650",
+        "desktop_height": "desktop-height-full",
         "mobile_height": "mobile-height-500",
         "full_width": true,
         "autoplay": false,
@@ -96,7 +96,7 @@
         "heading_left": false,
         "description": "",
         "full_width": true,
-        "collection": "all-prom-dresses",
+        "collection": "new-arrival",
         "display_type": "carousel",
         "product_limit": 10,
         "columns_desktop": 5,
@@ -262,6 +262,62 @@
         "disable_bottom_spacing": false
       }
     },
+    "email_signup_wh6BTw": {
+      "type": "email-signup",
+      "name": "Newsletter",
+      "settings": {
+        "subheading": "",
+        "heading": "15% Off New Styles Awaits!",
+        "description": "<p>Unlock 15% off! First access to prom & homecoming dresses. Enter email.</p>",
+        "color_bg": "#faf7ff",
+        "color_text": "#151515",
+        "disable_top_spacing": false,
+        "disable_bottom_spacing": false
+      }
+    },
+    "interviews_rdAnEw": {
+      "type": "interviews",
+      "blocks": {
+        "question_EMEPbN": {
+          "type": "question",
+          "settings": {
+            "question": "Why Choose Worldprom?",
+            "text": "<p>We use high-quality fabrics and innovative designs to highlight each woman’s best features. With over a decade of experience, our factory offers a wide range of colors and fabrics from trusted manufacturers to guarantee top-quality dresses.</p>"
+          }
+        },
+        "question_j8ryWR": {
+          "type": "question",
+          "settings": {
+            "question": "Who We Are?",
+            "text": "<p>Founded in 2024, Worldprom is an online retailer offering a wide selection of prom, wedding party, bridesmaid, and quinceañera dresses. We provide a variety of elegant, high-quality dresses to ensure you find the perfect fit for any special occasion.</p>"
+          }
+        },
+        "question_RGcBmz": {
+          "type": "question",
+          "settings": {
+            "question": "What You Can Expect?",
+            "text": "<p>At Worldprom, we are committed to providing an exceptional shopping experience and helping you find the perfect dress for your special moment. Every detail reflects our dedication to quality and service.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "question_EMEPbN",
+        "question_j8ryWR",
+        "question_RGcBmz"
+      ],
+      "settings": {
+        "image": "shopify://shop_images/60420208-1-1.png",
+        "image_link": "",
+        "section_width": "full-width-row-full",
+        "layout": "image_first",
+        "interviewee_name": "",
+        "interviewee_job": "",
+        "color_bg": "#faf7ff",
+        "color_text": "#151515",
+        "disable_top_spacing": true,
+        "disable_bottom_spacing": false
+      }
+    },
     "rich_text_pYxmT6": {
       "type": "rich-text",
       "blocks": {
@@ -390,62 +446,6 @@
         "direction": "left",
         "speed": "50s",
         "disable_top_spacing": true,
-        "disable_bottom_spacing": true
-      }
-    },
-    "email_signup_wh6BTw": {
-      "type": "email-signup",
-      "name": "Newsletter",
-      "settings": {
-        "subheading": "",
-        "heading": "15% Off New Styles Awaits!",
-        "description": "<p>Unlock 15% off! First access to prom & homecoming dresses. Enter email.</p>",
-        "color_bg": "#faf7ff",
-        "color_text": "#151515",
-        "disable_top_spacing": false,
-        "disable_bottom_spacing": false
-      }
-    },
-    "interviews_rdAnEw": {
-      "type": "interviews",
-      "blocks": {
-        "question_EMEPbN": {
-          "type": "question",
-          "settings": {
-            "question": "Why Choose Worldprom?",
-            "text": "<p>We use high-quality fabrics and innovative designs to highlight each woman’s best features. With over a decade of experience, our factory offers a wide range of colors and fabrics from trusted manufacturers to guarantee top-quality dresses.</p>"
-          }
-        },
-        "question_j8ryWR": {
-          "type": "question",
-          "settings": {
-            "question": "Who We Are?",
-            "text": "<p>Founded in 2024, Worldprom is an online retailer offering a wide selection of prom, wedding party, bridesmaid, and quinceañera dresses. We provide a variety of elegant, high-quality dresses to ensure you find the perfect fit for any special occasion.</p>"
-          }
-        },
-        "question_RGcBmz": {
-          "type": "question",
-          "settings": {
-            "question": "What You Can Expect?",
-            "text": "<p>At Worldprom, we are committed to providing an exceptional shopping experience and helping you find the perfect dress for your special moment. Every detail reflects our dedication to quality and service.</p>"
-          }
-        }
-      },
-      "block_order": [
-        "question_EMEPbN",
-        "question_j8ryWR",
-        "question_RGcBmz"
-      ],
-      "settings": {
-        "image": "shopify://shop_images/60420208-1-1.png",
-        "image_link": "",
-        "section_width": "full-width-row-full",
-        "layout": "image_first",
-        "interviewee_name": "",
-        "interviewee_job": "",
-        "color_bg": "#faf7ff",
-        "color_text": "#151515",
-        "disable_top_spacing": true,
         "disable_bottom_spacing": false
       }
     }
@@ -460,9 +460,9 @@
     "spacer_kfpHVh",
     "slideshow_zwXLKG",
     "featured_collection_YPRmkP",
-    "rich_text_pYxmT6",
-    "scrolling_images_QMpAfB",
     "email_signup_wh6BTw",
-    "interviews_rdAnEw"
+    "interviews_rdAnEw",
+    "rich_text_pYxmT6",
+    "scrolling_images_QMpAfB"
   ]
 }
