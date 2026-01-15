@@ -2290,11 +2290,12 @@ shopify-payment-terms {
 
 .estimate-time {
   font-size: 16px;
-  margin: 15px 0;
+  margin: 0 0 15px 0;
 }
 
 .estimate-time .top-content {
-  display: grid;
+  /* display: grid; */
+  display: none;
   grid-template-columns: 32px 1fr 32px 1fr 32px;
   text-align: center;
 }
@@ -2339,6 +2340,22 @@ shopify-payment-terms {
   gap: 5px;
 }
 
+.mid-content {
+  display: none;
+}
+
+.estimate-time .top-content {
+  display: none;
+}
+
+.estimate-time .icon {
+  display: none;
+}
+
+.bot-content {
+  margin: 0;
+}
+
 .bot-content img,
 .mid-content img {
   max-width: 20px;
@@ -2352,6 +2369,7 @@ shopify-payment-terms {
 
 .estimate-time .desc p {
   margin: 0;
+  font-size: 14px;
 }
 
 .option-value-box {
@@ -2464,5 +2482,9 @@ shopify-payment-terms {
 
   modal-opener.product-popup-modal__opener {
     grid-column-start: span 2;
+  }
+
+  .estimate-time .desc p {
+    font-size: 14px;
   }
 }
