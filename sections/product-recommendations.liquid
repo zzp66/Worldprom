@@ -14,38 +14,68 @@
   endif
 
   assign columns_tablet = columns_desktop | minus: 2 | at_most: 5 | at_least: 3
+  assign coll = product.metafields.custom.recommendations_collection.value
 -%}
 <div class="row{% if full_width %} full-width-row{% endif %}">
   <div class="small-12 columns">
-    <product-recommendations
-      class="product-recommendations section-spacing-padding{% if disable_top_spacing %} section-spacing--disable-top{% endif %}{% if disable_bottom_spacing %} section-spacing--disable-bottom{% endif %}"
-      data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product_id }}&limit={{ columns_desktop }}"
-    >
-      {% if recommendations.performed and recommendations.products_count > 0 %}
+    {% if coll != blank %}
+      <div
+        class="custom-product-recommendations section-spacing-padding{% if disable_top_spacing %} section-spacing--disable-top{% endif %}{% if disable_bottom_spacing %} section-spacing--disable-bottom{% endif %}"
+      >
         {% render 'section-header',
           section_heading: section_heading,
           section_description: section_description,
           section_heading_left: section_heading_left,
           section_subheading: section_subheading
         %}
-        <theme-scroll class="theme-scroll featured-collection__inner display-type--carousel">
-          <div class="theme-scroll--inner">
-            <div
-              id="product-grid-{{ section.id }}"
-              class="products carousel"
-              style="--desktop-columns: {{ columns_desktop }}; --tablet-columns: {{ columns_tablet }};"
-            >
-              {% for recommendation in recommendations.products %}
-                <div class="carousel__slide">
-                  {% render 'product-card', product_card_product: recommendation, index: forloop.index %}
-                </div>
-              {% endfor %}
-            </div>
+      </div>
+      <theme-scroll class="theme-scroll featured-collection__inner display-type--carousel">
+        <div class="theme-scroll--inner">
+          <div
+            id="product-grid-{{ section.id }}"
+            class="products carousel"
+            style="--desktop-columns: {{ columns_desktop }}; --tablet-columns: {{ columns_tablet }};"
+          >
+            {% for product in coll.products limit: 10 %}
+              <div class="carousel__slide">
+                {% render 'product-card', product_card_product: product, index: forloop.index %}
+              </div>
+            {% endfor %}
           </div>
-          {% render 'slideshow-arrows', disabled: true %}
-        </theme-scroll>
-      {% endif %}
-    </product-recommendations>
+        </div>
+        {% render 'slideshow-arrows', disabled: true %}
+      </theme-scroll>
+    {% else %}
+      <product-recommendations
+        class="product-recommendations section-spacing-padding{% if disable_top_spacing %} section-spacing--disable-top{% endif %}{% if disable_bottom_spacing %} section-spacing--disable-bottom{% endif %}"
+        data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product_id }}&limit={{ columns_desktop }}"
+      >
+        {% if recommendations.performed and recommendations.products_count > 0 %}
+          {% render 'section-header',
+            section_heading: section_heading,
+            section_description: section_description,
+            section_heading_left: section_heading_left,
+            section_subheading: section_subheading
+          %}
+          <theme-scroll class="theme-scroll featured-collection__inner display-type--carousel">
+            <div class="theme-scroll--inner">
+              <div
+                id="product-grid-{{ section.id }}"
+                class="products carousel"
+                style="--desktop-columns: {{ columns_desktop }}; --tablet-columns: {{ columns_tablet }};"
+              >
+                {% for recommendation in recommendations.products %}
+                  <div class="carousel__slide">
+                    {% render 'product-card', product_card_product: recommendation, index: forloop.index %}
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+            {% render 'slideshow-arrows', disabled: true %}
+          </theme-scroll>
+        {% endif %}
+      </product-recommendations>
+    {% endif %}
   </div>
 </div>
 {%- unless settings.cart_recommendations -%}
