@@ -76,32 +76,31 @@
           "settings": {
             "show_quantity_selector": true,
             "outline_button": false,
-            "show_dynamic_checkout": true,
-            "show_gift_card_recipient": true
+            "show_dynamic_checkout": false,
+            "show_gift_card_recipient": false
           }
-        },
-        "payment_icons_XaAFEC": {
-          "type": "payment_icons",
-          "disabled": true,
-          "settings": {}
-        },
-        "border_MCqDB7": {
-          "type": "border",
-          "disabled": true,
-          "settings": {}
         },
         "estimate_time_AkwrFJ": {
           "type": "estimate_time",
           "settings": {}
         },
-        "border_4bVDgg": {
+        "4fd23485-293f-46a0-8a4c-34d0e25ea41b": {
+          "type": "share",
+          "settings": {
+            "need_help": false,
+            "show_phone_number": false
+          }
+        },
+        "payment_icons_XaAFEC": {
+          "type": "payment_icons",
+          "settings": {}
+        },
+        "border_gYU7MQ": {
           "type": "border",
-          "disabled": true,
           "settings": {}
         },
         "icon_list_Gmdnwq": {
           "type": "icon_list",
-          "disabled": true,
           "settings": {
             "icon_1_label": "24H Rapid Problem Solving",
             "icon_1_icon": "chat_bubble",
@@ -114,17 +113,6 @@
             "icon_5_label": "",
             "icon_5_icon": "none"
           }
-        },
-        "4fd23485-293f-46a0-8a4c-34d0e25ea41b": {
-          "type": "share",
-          "settings": {
-            "need_help": false,
-            "show_phone_number": false
-          }
-        },
-        "border_gYU7MQ": {
-          "type": "border",
-          "settings": {}
         },
         "tabbed_content_4tbgpR": {
           "type": "tabbed_content",
@@ -155,13 +143,11 @@
         "variant_picker_cjwBPV",
         "custom_option_T6Kyh8",
         "buy_buttons",
-        "payment_icons_XaAFEC",
-        "border_MCqDB7",
         "estimate_time_AkwrFJ",
-        "border_4bVDgg",
-        "icon_list_Gmdnwq",
         "4fd23485-293f-46a0-8a4c-34d0e25ea41b",
+        "payment_icons_XaAFEC",
         "border_gYU7MQ",
+        "icon_list_Gmdnwq",
         "tabbed_content_4tbgpR"
       ],
       "custom_css": [],
@@ -177,61 +163,6 @@
         "hide_variants": false,
         "lightbox": true,
         "enable_video_looping": true
-      }
-    },
-    "tabbed_content_mCjgca": {
-      "type": "tabbed-content",
-      "blocks": {
-        "tab_TPCNye": {
-          "type": "tab",
-          "settings": {
-            "tab_label": "Description",
-            "icon": "ruler",
-            "text": "",
-            "text_columns": "1",
-            "page": "",
-            "custom_liquid": "{{ product.description }}"
-          }
-        },
-        "tab_dMR8Ud": {
-          "type": "tab",
-          "settings": {
-            "tab_label": "Tab label",
-            "icon": "ruler",
-            "text": "<p>Add a short description for this tabbed section</p>",
-            "text_columns": "1",
-            "page": "",
-            "custom_liquid": ""
-          }
-        },
-        "tab_n377xD": {
-          "type": "tab",
-          "settings": {
-            "tab_label": "Tab label",
-            "icon": "ruler",
-            "text": "<p>Add a short description for this tabbed section</p>",
-            "text_columns": "1",
-            "page": "",
-            "custom_liquid": ""
-          }
-        }
-      },
-      "block_order": [
-        "tab_TPCNye",
-        "tab_dMR8Ud",
-        "tab_n377xD"
-      ],
-      "disabled": true,
-      "name": "Tabbed content",
-      "settings": {
-        "subheading": "",
-        "heading": "",
-        "description": "",
-        "text_width": "medium",
-        "tab_alignment": "left",
-        "text_alignment": "left",
-        "disable_top_spacing": true,
-        "disable_bottom_spacing": false
       }
     },
     "17549592591dfa9272": {
@@ -259,14 +190,15 @@
     "product-recommendations": {
       "type": "product-recommendations",
       "settings": {
+        "collection": "all-prom-dresses",
         "subheading": "",
         "heading": "You may also like",
         "heading_left": true,
-        "description": "<p>Gowns Designed for Spotlight Moments</p>",
+        "description": "",
         "full_width": true,
         "columns_desktop": 5,
         "disable_top_spacing": true,
-        "disable_bottom_spacing": false
+        "disable_bottom_spacing": true
       }
     },
     "recently_viewed_products_EWt9np": {
@@ -287,7 +219,6 @@
   "order": [
     "breadcrumbs",
     "main-product",
-    "tabbed_content_mCjgca",
     "17549592591dfa9272",
     "product-recommendations",
     "recently_viewed_products_EWt9np"
