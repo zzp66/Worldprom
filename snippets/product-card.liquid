@@ -179,6 +179,9 @@
           {% endcomment %}
         </div>
       {%- endif -%}
+      {%- if settings.show_products_subtitle and product_card_product.metafields.descriptors.subtitle != blank -%}
+        <p class="product-card-subtitle">{{ product_card_product.metafields.descriptors.subtitle }}</p>
+      {%- endif -%}
       <div class="product-card-text-with-review">
         <a
           href="{{ product_card_product.url | within: collection }}"
@@ -225,9 +228,6 @@
       {% endcomment %}
       {%- render 'product-card-swatch', product: product_card_product, sizes: sizes -%}
       {%- render 'product-card-labels', product: product_card_product -%}
-      {%- if settings.show_products_subtitle and product_card_product.metafields.descriptors.subtitle != blank -%}
-        <p class="product-card-subtitle">{{ product_card_product.metafields.descriptors.subtitle }}</p>
-      {%- endif -%}
     </div>
   </product-card>
 {%- else -%}
