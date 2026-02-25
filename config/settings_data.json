@@ -42,6 +42,7 @@
     "product_image_fit": "cover",
     "products_hover_images_count": 3,
     "enable_quick_add": false,
+    "show_products_vendor": false,
     "show_products_subtitle": false,
     "show_products_rating": true,
     "show_products_swatches": true,
@@ -57,6 +58,7 @@
     "sale_badge_type": "save_percentage",
     "badge_position": "top left",
     "badge_corner_radius": 3,
+    "color_badge_text": "#ffffff",
     "color_badge_sale": "#d83f3f",
     "color_badge_preorder": "#369d65",
     "custom_product_badge_group_1_tag_names": "",
@@ -78,6 +80,10 @@
     "cart_recommendations": true,
     "free_shipping": false,
     "free_shipping_minimum": "99",
+    "empty_cart_collection_list": [
+      "best-sellers"
+    ],
+    "empty_cart_collection": "new-arrival",
     "currency_code_enabled": false,
     "email_terms_conditions_enable": false,
     "lazy_loading": true,
@@ -119,7 +125,8 @@
   },
   "platform_customizations": {
     "custom_css": [
-      "/* 精准定位促销徽章并隐藏 */.product-card--badges .badge.onsale {display: none !important; /* !important 确保样式优先级，避免被原有样式覆盖 */}"
+      "/* 精准定位促销徽章并隐藏 */.product-card--badges .badge.onsale {display: none !important; /* !important 确保样式优先级，避免被原有样式覆盖 */}",
+      " fieldset[data-handle=\"color\"] {display: none !important;}"
     ]
   }
 }

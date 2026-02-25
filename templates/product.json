@@ -62,9 +62,9 @@
           "type": "custom_option",
           "settings": {
             "type": "text",
-            "label": "Custom Size",
+            "label": "Note",
             "text_required": false,
-            "text_placeholder": "Please enter your Bust,Waist,Hips and Height",
+            "text_placeholder": "Please enter your other requirements or expected delivery date.",
             "checkbox_checked_value": "Yes",
             "checkbox_unchecked_value": "No",
             "multiple_style": "dropdown",
