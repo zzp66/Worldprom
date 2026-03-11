@@ -4,6 +4,103 @@
     margin: 20px 0;
   }
 
+  .color-swatch-scroll {
+    position: relative;
+  }
+
+  .color-swatch-scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: rgba(255, 255, 255, 0.92);
+    color: #111;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  .color-swatch-scroll-btn:hover {
+    background: #fff;
+  }
+
+  .color-swatch-scroll-btn[disabled] {
+    opacity: 0.35;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .color-swatch-scroll-btn.is-visible {
+    display: inline-flex;
+  }
+
+  .color-swatch-scroll-btn.is-left {
+    left: 0;
+  }
+
+  .color-swatch-scroll-btn.is-right {
+    right: 0;
+  }
+
+  /* 两侧渐隐，提示还能横向滚动 */
+  .color-swatch-scroll::before,
+  .color-swatch-scroll::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 42px;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .color-swatch-scroll::before {
+    left: 0;
+    background: linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+  }
+
+  .color-swatch-scroll::after {
+    right: 0;
+    background: linear-gradient(to left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+  }
+
+  .color-swatch-scroll.has-left::before {
+    opacity: 1;
+  }
+
+  .color-swatch-scroll.has-right::after {
+    opacity: 1;
+  }
+
+  .color-swatch-mobile-hint {
+    display: none;
+  }
+
+  @keyframes swatchHintNudge {
+    0% {
+      transform: translate(0, -50%);
+      opacity: 0.85;
+    }
+    60% {
+      transform: translate(-8px, -50%);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(0, -50%);
+      opacity: 0.85;
+    }
+  }
+
   .color-swatch-wrapper {
     display: flex;
     gap: 30px;
@@ -12,8 +109,12 @@
     padding: 10px 0;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: flex-start;
+    scroll-behavior: smooth;
+    /* 给按钮留出一点可点击空间，避免盖住内容 */
+    padding-left: 46px;
+    padding-right: 46px;
   }
 
   .color-swatch-wrapper::-webkit-scrollbar {
@@ -204,9 +305,36 @@
     }
 
     .color-swatch-wrapper {
-      justify-content: flex-start;
       gap: 25px;
       padding: 10px 0;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .color-swatch-scroll-btn {
+      display: none !important;
+    }
+
+    /* 移动端右滑提示：仅在还能向右滚动时出现 */
+    .color-swatch-scroll.has-right:not(.hint-dismissed) .color-swatch-mobile-hint {
+      display: inline-flex;
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      z-index: 2;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+      align-items: center;
+      justify-content: center;
+      color: #111;
+      font-size: 18px;
+      line-height: 1;
+      pointer-events: none;
+      animation: swatchHintNudge 1.2s ease-in-out infinite;
     }
 
     .color-family {
@@ -234,7 +362,15 @@
 <div class="row">
   <div class="small-12 columns">
     <div class="color-swatch-box">
-      <div class="color-swatch-wrapper">
+      <div class="color-swatch-scroll" data-color-swatch-scroll>
+        <button class="color-swatch-scroll-btn is-left" type="button" aria-label="Scroll left" data-dir="left">
+          <span aria-hidden="true">‹</span>
+        </button>
+        <button class="color-swatch-scroll-btn is-right" type="button" aria-label="Scroll right" data-dir="right">
+          <span aria-hidden="true">›</span>
+        </button>
+        <div class="color-swatch-mobile-hint" aria-hidden="true">›</div>
+        <div class="color-swatch-wrapper" data-color-swatch-scroll-el>
         {% assign color_families = collection.metafields.custom.color_families.value %}
 
         {% if color_families != blank %}
@@ -244,7 +380,13 @@
                 <div class="color-swatch-main">
                   {% if family.image != blank %}
                     <div class="family-img">
-                      <img src="{{ family.image | image_url: width: 100 }}" alt="{{ family.name }}">
+                      <img
+                        src="{{ family.image | image_url: width: 100 }}"
+                        alt="{{ family.name }}"
+                        width="75"
+                        height="75"
+                        loading="lazy"
+                      >
                     </div>
                   {% else %}
                     <div class="swatch" style="background: #ccc;"></div>
@@ -258,7 +400,14 @@
                 {% for sub in family.sub_colors.value %}
                   <a href="{{ sub.collection_link }}" class="sub-color">
                     {% if sub.image != blank %}
-                      <img src="{{ sub.image | image_url: width: 80 }}" alt="{{ sub.name }}" class="swatch">
+                      <img
+                        src="{{ sub.image | image_url: width: 80 }}"
+                        alt="{{ sub.name }}"
+                        class="swatch"
+                        width="60"
+                        height="60"
+                        loading="lazy"
+                      >
                     {% else %}
                       <span class="swatch" style="background: {{ sub.swatch_color }};"></span>
                     {% endif %}
@@ -271,6 +420,7 @@
         {% else %}
           <p style="text-align:center;">No color families configured for this collection.</p>
         {% endif %}
+        </div>
       </div>
     </div>
   </div>
@@ -294,6 +444,101 @@
     const modalBody = document.getElementById('modalBody');
     const modalTitle = document.getElementById('modalFamilyName');
     const closeModal = document.getElementById('closeModal');
+
+    // 横向滚动控制（按钮 + 悬停自动滚动）
+    document.querySelectorAll('[data-color-swatch-scroll]').forEach((root) => {
+      const scroller = root.querySelector('[data-color-swatch-scroll-el]');
+      const btnLeft = root.querySelector('.color-swatch-scroll-btn.is-left');
+      const btnRight = root.querySelector('.color-swatch-scroll-btn.is-right');
+
+      if (!scroller || !btnLeft || !btnRight) return;
+
+      let hintDismissed = false;
+      const dismissHintOnce = () => {
+        if (hintDismissed) return;
+        hintDismissed = true;
+        root.classList.add('hint-dismissed');
+      };
+
+      const update = () => {
+        const maxScrollLeft = scroller.scrollWidth - scroller.clientWidth;
+        const hasOverflow = maxScrollLeft > 2;
+
+        // 只有真的溢出才展示按钮（桌面端）
+        btnLeft.classList.toggle('is-visible', hasOverflow);
+        btnRight.classList.toggle('is-visible', hasOverflow);
+
+        const hasLeft = scroller.scrollLeft > 2;
+        const hasRight = scroller.scrollLeft < maxScrollLeft - 2;
+
+        root.classList.toggle('has-left', hasLeft);
+        root.classList.toggle('has-right', hasRight);
+
+        btnLeft.disabled = !hasLeft;
+        btnRight.disabled = !hasRight;
+      };
+
+      const scrollByAmount = (dir) => {
+        const amount = Math.max(260, Math.floor(scroller.clientWidth * 0.7));
+        scroller.scrollBy({ left: dir === 'left' ? -amount : amount, behavior: 'smooth' });
+      };
+
+      btnLeft.addEventListener('click', (e) => {
+        e.preventDefault();
+        scrollByAmount('left');
+      });
+      btnRight.addEventListener('click', (e) => {
+        e.preventDefault();
+        scrollByAmount('right');
+      });
+
+      // 悬停在左右边缘自动滚动（可发现性更强，且不影响移动端）
+      let raf = null;
+      let vel = 0;
+      const tick = () => {
+        if (vel !== 0) {
+          scroller.scrollLeft += vel;
+          update();
+        }
+        raf = requestAnimationFrame(tick);
+      };
+      const start = () => {
+        if (raf == null) raf = requestAnimationFrame(tick);
+      };
+      const stop = () => {
+        if (raf != null) cancelAnimationFrame(raf);
+        raf = null;
+        vel = 0;
+      };
+
+      root.addEventListener('mousemove', (ev) => {
+        // 只在桌面端启用
+        if (window.matchMedia('(max-width: 768px)').matches) return;
+
+        const rect = root.getBoundingClientRect();
+        const x = ev.clientX - rect.left;
+        const edge = 60;
+        const maxV = 10; // px/frame
+
+        if (x < edge) {
+          vel = -Math.ceil(((edge - x) / edge) * maxV);
+          start();
+        } else if (x > rect.width - edge) {
+          vel = Math.ceil(((x - (rect.width - edge)) / edge) * maxV);
+          start();
+        } else {
+          vel = 0;
+        }
+      });
+      root.addEventListener('mouseleave', stop);
+
+      scroller.addEventListener('scroll', update, { passive: true });
+      scroller.addEventListener('scroll', dismissHintOnce, { passive: true });
+      scroller.addEventListener('touchstart', dismissHintOnce, { passive: true });
+      scroller.addEventListener('wheel', dismissHintOnce, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    });
 
     families.forEach((family) => {
       family.addEventListener('click', () => {
