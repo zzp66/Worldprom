@@ -124,7 +124,7 @@
           "settings": {
             "image": "shopify://shop_images/prom-pc.jpg",
             "mobile_image": "shopify://shop_images/prom-mb-1.jpg",
-            "slide_link": "shopify://collections/short-homecoming-dresses",
+            "slide_link": "shopify://collections/best-sellers",
             "video_background": false,
             "video": "",
             "subheading": "",
@@ -174,7 +174,7 @@
         "heading_left": false,
         "description": "",
         "full_width": true,
-        "collection": "homecoming",
+        "collection": "best-sellers",
         "display_type": "carousel",
         "product_limit": 10,
         "columns_desktop": 5,

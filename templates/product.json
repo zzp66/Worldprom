@@ -29,10 +29,10 @@
           "type": "flash_message",
           "settings": {
             "icon": "price_tag",
-            "heading": "2026 Spring Prom",
-            "message": "<p>$100-$300:10% OFF | $300-$500:15% OFF | Over $500:20% OFF</p>",
+            "heading": "2026 Prom Exclusive",
+            "message": "<p>Save $20–$50 | 20% OFF<br/>On orders $150+ – limited time!</p>",
             "close_button": "none",
-            "color_text": "#d83f3f"
+            "color_text": "#ff0000"
           }
         },
         "siblings_XRYrCV": {
@@ -154,14 +154,14 @@
       "settings": {
         "full_width": false,
         "enable_sticky_add_to_cart": false,
-        "show_taxes_included": true,
+        "show_taxes_included": false,
         "media_layout": "collage",
-        "display_slider_pagination": false,
+        "display_slider_pagination": true,
         "product_media_width": "large",
         "media_aspect_ratio": "portrait",
         "display_captions": true,
         "hide_variants": false,
-        "lightbox": true,
+        "lightbox": false,
         "enable_video_looping": true
       }
     },
