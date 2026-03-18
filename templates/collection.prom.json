@@ -28,6 +28,7 @@
     },
     "collection_color_swatch_fQqQph": {
       "type": "collection-color-swatch",
+      "disabled": true,
       "name": "Color Swatch Selector",
       "settings": {}
     },
@@ -40,7 +41,7 @@
             "promotion_collection": "",
             "promotion_position": 1,
             "promotion_width": "1",
-            "image": "shopify://shop_images/promo-03.01.jpg",
+            "image": "shopify://shop_images/3_9c70664e-caa0-43ee-bc11-ec3a737018ec.jpg",
             "title": "",
             "heading_size": "h3",
             "text": "",

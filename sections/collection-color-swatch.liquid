@@ -107,7 +107,6 @@
     overflow-x: auto;
     overflow-y: hidden;
     padding: 10px 0;
-    scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     justify-content: flex-start;
     align-items: flex-start;
@@ -124,7 +123,6 @@
 
   .color-family {
     flex: 0 0 auto;
-    scroll-snap-align: start;
     min-width: 100px;
     position: relative;
     cursor: pointer;
@@ -371,55 +369,55 @@
         </button>
         <div class="color-swatch-mobile-hint" aria-hidden="true">›</div>
         <div class="color-swatch-wrapper" data-color-swatch-scroll-el>
-        {% assign color_families = collection.metafields.custom.color_families.value %}
+          {% assign color_families = collection.metafields.custom.color_families.value %}
 
-        {% if color_families != blank %}
-          {% for family in color_families %}
-            <div class="color-family" data-family="{{ family.name | escape }}">
-              <div class="color-swatch-main-box">
-                <div class="color-swatch-main">
-                  {% if family.image != blank %}
-                    <div class="family-img">
-                      <img
-                        src="{{ family.image | image_url: width: 100 }}"
-                        alt="{{ family.name }}"
-                        width="75"
-                        height="75"
-                        loading="lazy"
-                      >
-                    </div>
-                  {% else %}
-                    <div class="swatch" style="background: #ccc;"></div>
-                  {% endif %}
-                  <span class="swatch-text">{{ family.name }}</span>
+          {% if color_families != blank %}
+            {% for family in color_families %}
+              <div class="color-family" data-family="{{ family.name | escape }}">
+                <div class="color-swatch-main-box">
+                  <div class="color-swatch-main">
+                    {% if family.image != blank %}
+                      <div class="family-img">
+                        <img
+                          src="{{ family.image | image_url: width: 100 }}"
+                          alt="{{ family.name }}"
+                          width="75"
+                          height="75"
+                          loading="lazy"
+                        >
+                      </div>
+                    {% else %}
+                      <div class="swatch" style="background: #ccc;"></div>
+                    {% endif %}
+                    <span class="swatch-text">{{ family.name }}</span>
+                  </div>
+                </div>
+
+                <!-- 隐藏子色块 -->
+                <div class="subcolor-data" style="display:none;">
+                  {% for sub in family.sub_colors.value %}
+                    <a href="{{ sub.collection_link }}" class="sub-color">
+                      {% if sub.image != blank %}
+                        <img
+                          src="{{ sub.image | image_url: width: 80 }}"
+                          alt="{{ sub.name }}"
+                          class="swatch"
+                          width="60"
+                          height="60"
+                          loading="lazy"
+                        >
+                      {% else %}
+                        <span class="swatch" style="background: {{ sub.swatch_color }};"></span>
+                      {% endif %}
+                      <span class="swatch-text">{{ sub.name }}</span>
+                    </a>
+                  {% endfor %}
                 </div>
               </div>
-
-              <!-- 隐藏子色块 -->
-              <div class="subcolor-data" style="display:none;">
-                {% for sub in family.sub_colors.value %}
-                  <a href="{{ sub.collection_link }}" class="sub-color">
-                    {% if sub.image != blank %}
-                      <img
-                        src="{{ sub.image | image_url: width: 80 }}"
-                        alt="{{ sub.name }}"
-                        class="swatch"
-                        width="60"
-                        height="60"
-                        loading="lazy"
-                      >
-                    {% else %}
-                      <span class="swatch" style="background: {{ sub.swatch_color }};"></span>
-                    {% endif %}
-                    <span class="swatch-text">{{ sub.name }}</span>
-                  </a>
-                {% endfor %}
-              </div>
-            </div>
-          {% endfor %}
-        {% else %}
-          <p style="text-align:center;">No color families configured for this collection.</p>
-        {% endif %}
+            {% endfor %}
+          {% else %}
+            <p style="text-align:center;">No color families configured for this collection.</p>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -438,123 +436,187 @@
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const families = document.querySelectorAll('.color-family');
-    const modal = document.getElementById('colorModal');
-    const modalBody = document.getElementById('modalBody');
-    const modalTitle = document.getElementById('modalFamilyName');
-    const closeModal = document.getElementById('closeModal');
+  (() => {
+    const init = () => {
+      const modal = document.getElementById('colorModal');
+      const modalBody = document.getElementById('modalBody');
+      const modalTitle = document.getElementById('modalFamilyName');
+      const closeModal = document.getElementById('closeModal');
 
-    // 横向滚动控制（按钮 + 悬停自动滚动）
-    document.querySelectorAll('[data-color-swatch-scroll]').forEach((root) => {
-      const scroller = root.querySelector('[data-color-swatch-scroll-el]');
-      const btnLeft = root.querySelector('.color-swatch-scroll-btn.is-left');
-      const btnRight = root.querySelector('.color-swatch-scroll-btn.is-right');
+      // 横向滚动控制（按钮 + 悬停自动滚动）
+      document.querySelectorAll('[data-color-swatch-scroll]').forEach((root) => {
+        if (root.dataset.colorSwatchScrollInited === 'true') return;
+        root.dataset.colorSwatchScrollInited = 'true';
 
-      if (!scroller || !btnLeft || !btnRight) return;
+        const scroller = root.querySelector('[data-color-swatch-scroll-el]');
+        const btnLeft = root.querySelector('.color-swatch-scroll-btn.is-left');
+        const btnRight = root.querySelector('.color-swatch-scroll-btn.is-right');
 
-      let hintDismissed = false;
-      const dismissHintOnce = () => {
-        if (hintDismissed) return;
-        hintDismissed = true;
-        root.classList.add('hint-dismissed');
-      };
+        if (!scroller || !btnLeft || !btnRight) return;
 
-      const update = () => {
-        const maxScrollLeft = scroller.scrollWidth - scroller.clientWidth;
-        const hasOverflow = maxScrollLeft > 2;
+        let hintDismissed = false;
+        const dismissHintOnce = () => {
+          if (hintDismissed) return;
+          hintDismissed = true;
+          root.classList.add('hint-dismissed');
+        };
 
-        // 只有真的溢出才展示按钮（桌面端）
-        btnLeft.classList.toggle('is-visible', hasOverflow);
-        btnRight.classList.toggle('is-visible', hasOverflow);
+        const update = () => {
+          const maxScrollLeft = scroller.scrollWidth - scroller.clientWidth;
+          const hasOverflow = maxScrollLeft > 2;
 
-        const hasLeft = scroller.scrollLeft > 2;
-        const hasRight = scroller.scrollLeft < maxScrollLeft - 2;
+          // 只有真的溢出才展示按钮（桌面端）
+          btnLeft.classList.toggle('is-visible', hasOverflow);
+          btnRight.classList.toggle('is-visible', hasOverflow);
 
-        root.classList.toggle('has-left', hasLeft);
-        root.classList.toggle('has-right', hasRight);
+          const hasLeft = scroller.scrollLeft > 2;
+          const hasRight = scroller.scrollLeft < maxScrollLeft - 2;
 
-        btnLeft.disabled = !hasLeft;
-        btnRight.disabled = !hasRight;
-      };
+          root.classList.toggle('has-left', hasLeft);
+          root.classList.toggle('has-right', hasRight);
 
-      const scrollByAmount = (dir) => {
-        const amount = Math.max(260, Math.floor(scroller.clientWidth * 0.7));
-        scroller.scrollBy({ left: dir === 'left' ? -amount : amount, behavior: 'smooth' });
-      };
+          btnLeft.disabled = !hasLeft;
+          btnRight.disabled = !hasRight;
+        };
 
-      btnLeft.addEventListener('click', (e) => {
-        e.preventDefault();
-        scrollByAmount('left');
-      });
-      btnRight.addEventListener('click', (e) => {
-        e.preventDefault();
-        scrollByAmount('right');
-      });
+        let scrollRafId = null;
+        const programmaticScrollTo = (left) => {
+          const maxScrollLeft = scroller.scrollWidth - scroller.clientWidth;
+          const target = Math.max(0, Math.min(maxScrollLeft, left));
 
-      // 悬停在左右边缘自动滚动（可发现性更强，且不影响移动端）
-      let raf = null;
-      let vel = 0;
-      const tick = () => {
-        if (vel !== 0) {
-          scroller.scrollLeft += vel;
-          update();
-        }
-        raf = requestAnimationFrame(tick);
-      };
-      const start = () => {
-        if (raf == null) raf = requestAnimationFrame(tick);
-      };
-      const stop = () => {
-        if (raf != null) cancelAnimationFrame(raf);
-        raf = null;
-        vel = 0;
-      };
+          // 取消进行中的动画，避免左右键互相“抢”scrollLeft（左键尤其容易失效）
+          if (scrollRafId != null) {
+            cancelAnimationFrame(scrollRafId);
+            scrollRafId = null;
+          }
 
-      root.addEventListener('mousemove', (ev) => {
-        // 只在桌面端启用
-        if (window.matchMedia('(max-width: 768px)').matches) return;
+          const prevSnap = scroller.style.scrollSnapType;
+          scroller.style.scrollSnapType = 'none';
+          const prevBehavior = scroller.style.scrollBehavior;
+          scroller.style.scrollBehavior = 'auto';
 
-        const rect = root.getBoundingClientRect();
-        const x = ev.clientX - rect.left;
-        const edge = 60;
-        const maxV = 10; // px/frame
+          const start = scroller.scrollLeft;
+          const delta = target - start;
+          const duration = 320;
+          const startTs = performance.now();
 
-        if (x < edge) {
-          vel = -Math.ceil(((edge - x) / edge) * maxV);
-          start();
-        } else if (x > rect.width - edge) {
-          vel = Math.ceil(((x - (rect.width - edge)) / edge) * maxV);
-          start();
-        } else {
+          const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+          const tick = (now) => {
+            const t = Math.min(1, (now - startTs) / duration);
+            scroller.scrollLeft = start + delta * easeOutCubic(t);
+            if (t < 1) {
+              scrollRafId = requestAnimationFrame(tick);
+            } else {
+              scrollRafId = null;
+              scroller.scrollLeft = target;
+              scroller.style.scrollSnapType = prevSnap || '';
+              scroller.style.scrollBehavior = prevBehavior || '';
+              update();
+            }
+          };
+
+          scrollRafId = requestAnimationFrame(tick);
+        };
+
+        const scrollToItem = (dir) => {
+          const current = scroller.scrollLeft;
+          const amount = Math.max(260, Math.floor(scroller.clientWidth * 0.8));
+          const delta = dir === 'left' ? -amount : amount;
+          programmaticScrollTo(current + delta);
+        };
+
+        btnLeft.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          scrollToItem('left');
+        });
+        btnRight.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          scrollToItem('right');
+        });
+
+        // 悬停在左右边缘自动滚动（可发现性更强，且不影响移动端）
+        let raf = null;
+        let vel = 0;
+        const tick = () => {
+          if (vel !== 0) {
+            scroller.scrollLeft += vel;
+            update();
+          }
+          raf = requestAnimationFrame(tick);
+        };
+        const start = () => {
+          if (raf == null) raf = requestAnimationFrame(tick);
+        };
+        const stop = () => {
+          if (raf != null) cancelAnimationFrame(raf);
+          raf = null;
           vel = 0;
-        }
+        };
+
+        root.addEventListener('mousemove', (ev) => {
+          // 只在桌面端启用
+          if (window.matchMedia('(max-width: 768px)').matches) return;
+
+          const rect = root.getBoundingClientRect();
+          const x = ev.clientX - rect.left;
+          const edge = 60;
+          const maxV = 10; // px/frame
+
+          if (x < edge) {
+            vel = -Math.ceil(((edge - x) / edge) * maxV);
+            start();
+          } else if (x > rect.width - edge) {
+            vel = Math.ceil(((x - (rect.width - edge)) / edge) * maxV);
+            start();
+          } else {
+            vel = 0;
+          }
+        });
+        root.addEventListener('mouseleave', stop);
+
+        scroller.addEventListener('scroll', update, { passive: true });
+        scroller.addEventListener('scroll', dismissHintOnce, { passive: true });
+        scroller.addEventListener('touchstart', dismissHintOnce, { passive: true });
+        scroller.addEventListener('wheel', dismissHintOnce, { passive: true });
+        window.addEventListener('resize', update);
+        update();
       });
-      root.addEventListener('mouseleave', stop);
 
-      scroller.addEventListener('scroll', update, { passive: true });
-      scroller.addEventListener('scroll', dismissHintOnce, { passive: true });
-      scroller.addEventListener('touchstart', dismissHintOnce, { passive: true });
-      scroller.addEventListener('wheel', dismissHintOnce, { passive: true });
-      window.addEventListener('resize', update);
-      update();
-    });
+      // 弹窗 & 色系点击（避免重复绑定）
+      document.querySelectorAll('.color-family').forEach((family) => {
+        if (family.dataset.colorFamilyInited === 'true') return;
+        family.dataset.colorFamilyInited = 'true';
 
-    families.forEach((family) => {
-      family.addEventListener('click', () => {
-        const name = family.dataset.family;
-        const subColors = family.querySelector('.subcolor-data').innerHTML;
-        modalTitle.textContent = name;
-        modalBody.innerHTML = subColors;
-        modal.classList.add('active');
+        family.addEventListener('click', () => {
+          if (!modal || !modalBody || !modalTitle) return;
+          const name = family.dataset.family;
+          const subColors = family.querySelector('.subcolor-data')?.innerHTML || '';
+          modalTitle.textContent = name;
+          modalBody.innerHTML = subColors;
+          modal.classList.add('active');
+        });
       });
-    });
 
-    closeModal.addEventListener('click', () => modal.classList.remove('active'));
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.classList.remove('active');
-    });
-  });
+      if (modal && closeModal && modal.dataset.colorModalInited !== 'true') {
+        modal.dataset.colorModalInited = 'true';
+        closeModal.addEventListener('click', () => modal.classList.remove('active'));
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) modal.classList.remove('active');
+        });
+      }
+    };
+
+    // Shopify 主题里 section 可能在 DOMContentLoaded 之后才注入
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+    document.addEventListener('shopify:section:load', init);
+  })();
 </script>
 
 {% schema %}

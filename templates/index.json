@@ -15,14 +15,14 @@
         "164794776393e76b8e-2": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/banner-03.18.png",
+            "mobile_image": "shopify://shop_images/m-banner-03.18.png",
             "slide_link": "shopify://collections/all-prom-dresses",
-            "video_background": true,
+            "video_background": false,
             "video": "",
-            "video_hosted": "shopify://files/videos/prom.mp4",
-            "video_hosted_mb": "shopify://files/videos/mb-prom.mp4",
             "subheading": "",
             "badge_text": "",
-            "heading": "Spring 2026 Prom Dresses",
+            "heading": "",
             "heading_size": "h1",
             "content": "",
             "description_size": "small",
@@ -35,7 +35,7 @@
             "overlay_color": "#1d1d1d",
             "overlay_opacity": 0,
             "overlay_gradient": "",
-            "button_1_text": "SHOP NOW",
+            "button_1_text": "",
             "button_1_link": "shopify://collections/homecoming",
             "button_1_outline": true,
             "button_2_text": "",
@@ -48,8 +48,8 @@
         "164794776393e76b8e-2"
       ],
       "settings": {
-        "desktop_height": "desktop-height-full",
-        "mobile_height": "mobile-height-500",
+        "desktop_height": "desktop-height-image",
+        "mobile_height": "mobile-height-image",
         "full_width": true,
         "autoplay": false,
         "autoplay_length": 10,
@@ -63,10 +63,10 @@
       "name": "Collection list",
       "settings": {
         "section_width": "full-width-row",
-        "subheading": "Find Trending Now",
+        "subheading": "",
         "heading": "Spring 2026 Prom Collections",
         "heading_left": false,
-        "description": "<p>Beaded Accents, Luxe Sheaths & Embroidered Florals Prom Dresses</p>",
+        "description": "<p>Exquisite Beaded Details, Luxe Sheath Silhouettes & Stunning Embroidered Floral Prom Dresses</p>",
         "full_width": true,
         "collection_list": [
           "all-prom-dresses",
@@ -262,19 +262,6 @@
         "disable_bottom_spacing": false
       }
     },
-    "email_signup_wh6BTw": {
-      "type": "email-signup",
-      "name": "Newsletter",
-      "settings": {
-        "subheading": "",
-        "heading": "15% Off New Styles Awaits!",
-        "description": "<p>Unlock 15% off! First access to prom & homecoming dresses. Enter email.</p>",
-        "color_bg": "#faf7ff",
-        "color_text": "#151515",
-        "disable_top_spacing": false,
-        "disable_bottom_spacing": false
-      }
-    },
     "interviews_rdAnEw": {
       "type": "interviews",
       "blocks": {
@@ -448,6 +435,29 @@
         "disable_top_spacing": true,
         "disable_bottom_spacing": false
       }
+    },
+    "email_signup_wh6BTw": {
+      "type": "email-signup",
+      "name": "Newsletter",
+      "settings": {
+        "subheading": "",
+        "heading": "15% Off New Styles Awaits!",
+        "description": "<p>Unlock 15% off! First access to prom & homecoming dresses. Enter email.</p>",
+        "color_bg": "#faf7ff",
+        "color_text": "#151515",
+        "disable_top_spacing": false,
+        "disable_bottom_spacing": false
+      }
+    },
+    "spacer_DmQtcM": {
+      "type": "spacer",
+      "name": "Spacer",
+      "settings": {
+        "spacer_mobile": 25,
+        "spacer_desktop": 50,
+        "border_separator": false,
+        "section_width": "full-width-row"
+      }
     }
   },
   "order": [
@@ -460,9 +470,10 @@
     "spacer_kfpHVh",
     "slideshow_zwXLKG",
     "featured_collection_YPRmkP",
-    "email_signup_wh6BTw",
     "interviews_rdAnEw",
     "rich_text_pYxmT6",
-    "scrolling_images_QMpAfB"
+    "scrolling_images_QMpAfB",
+    "email_signup_wh6BTw",
+    "spacer_DmQtcM"
   ]
 }

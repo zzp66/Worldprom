@@ -27,10 +27,11 @@
         },
         "flash_message_mBqxN9": {
           "type": "flash_message",
+          "disabled": true,
           "settings": {
             "icon": "price_tag",
             "heading": "2026 Prom Exclusive",
-            "message": "<p>Save $20–$50 | 20% OFF<br/>On orders $150+ – limited time!</p>",
+            "message": "<p>Save 5% - 15% OFF<br/>On orders $150+ – limited time!</p>",
             "close_button": "none",
             "color_text": "#ff0000"
           }
@@ -84,55 +85,41 @@
           "type": "estimate_time",
           "settings": {}
         },
+        "collapsible_tab_EYbTdh": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "DESCRIPTION",
+            "open": false,
+            "content": "",
+            "page": "",
+            "custom_liquid": "{{ product.description }}"
+          }
+        },
+        "collapsible_tab_7zkcL7": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "SIZE GUIDE",
+            "open": false,
+            "content": "",
+            "page": "size-guide",
+            "custom_liquid": "{{ product.description }}"
+          }
+        },
+        "collapsible_tab_hdTWMm": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "CONTACT",
+            "open": false,
+            "content": "",
+            "page": "",
+            "custom_liquid": "Feel free to reach out with any questions regarding purchases, orders, or after-sales service. You can email us, and we will respond within 24 hours. \n\nEmail: service@worldprom.com"
+          }
+        },
         "4fd23485-293f-46a0-8a4c-34d0e25ea41b": {
           "type": "share",
           "settings": {
             "need_help": false,
             "show_phone_number": false
-          }
-        },
-        "payment_icons_XaAFEC": {
-          "type": "payment_icons",
-          "settings": {}
-        },
-        "border_gYU7MQ": {
-          "type": "border",
-          "settings": {}
-        },
-        "icon_list_Gmdnwq": {
-          "type": "icon_list",
-          "settings": {
-            "icon_1_label": "24H Rapid Problem Solving",
-            "icon_1_icon": "chat_bubble",
-            "icon_2_label": "Free Custom Size Service",
-            "icon_2_icon": "shirt",
-            "icon_3_label": "14-Day Returns & Exchanges",
-            "icon_3_icon": "lightning_bolt",
-            "icon_4_label": "",
-            "icon_4_icon": "none",
-            "icon_5_label": "",
-            "icon_5_icon": "none"
-          }
-        },
-        "tabbed_content_4tbgpR": {
-          "type": "tabbed_content",
-          "settings": {
-            "show_specifications_tab": false,
-            "tab_label_specifications": "Specifications",
-            "content": "",
-            "empty_field_label": "N/A",
-            "tab_label_1": "Description",
-            "text_1": "",
-            "page_1": "",
-            "custom_liquid_1": "{{ product.description }}",
-            "tab_label_2": "Size Guide",
-            "text_2": "",
-            "page_2": "size-guide",
-            "custom_liquid_2": "",
-            "tab_label_3": "CONTACT",
-            "text_3": "<p>Feel free to reach out with any questions regarding purchases, orders, or after-sales service. You can email us, and we will respond within 24 hours. </p><p>Email: service@worldprom.com<br/><br/></p>",
-            "page_3": "",
-            "custom_liquid_3": ""
           }
         }
       },
@@ -144,25 +131,58 @@
         "custom_option_T6Kyh8",
         "buy_buttons",
         "estimate_time_AkwrFJ",
-        "4fd23485-293f-46a0-8a4c-34d0e25ea41b",
-        "payment_icons_XaAFEC",
-        "border_gYU7MQ",
-        "icon_list_Gmdnwq",
-        "tabbed_content_4tbgpR"
+        "collapsible_tab_EYbTdh",
+        "collapsible_tab_7zkcL7",
+        "collapsible_tab_hdTWMm",
+        "4fd23485-293f-46a0-8a4c-34d0e25ea41b"
       ],
       "custom_css": [],
       "settings": {
-        "full_width": false,
+        "full_width": true,
         "enable_sticky_add_to_cart": false,
         "show_taxes_included": false,
-        "media_layout": "collage",
+        "media_layout": "grid",
         "display_slider_pagination": true,
-        "product_media_width": "large",
+        "product_media_width": "medium",
         "media_aspect_ratio": "portrait",
         "display_captions": true,
         "hide_variants": false,
         "lightbox": false,
         "enable_video_looping": true
+      }
+    },
+    "spacer_MVWGLV": {
+      "type": "spacer",
+      "name": "Spacer",
+      "settings": {
+        "spacer_mobile": 50,
+        "spacer_desktop": 100,
+        "border_separator": false,
+        "section_width": "full-width-row"
+      }
+    },
+    "product-recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "collection": "all-prom-dresses",
+        "subheading": "",
+        "heading": "Perfect For You",
+        "heading_left": false,
+        "description": "",
+        "full_width": true,
+        "columns_desktop": 5,
+        "disable_top_spacing": true,
+        "disable_bottom_spacing": true
+      }
+    },
+    "spacer_VntMbm": {
+      "type": "spacer",
+      "name": "Spacer",
+      "settings": {
+        "spacer_mobile": 50,
+        "spacer_desktop": 100,
+        "border_separator": false,
+        "section_width": "full-width-row"
       }
     },
     "17549592591dfa9272": {
@@ -186,41 +206,14 @@
         "disable_top_spacing": true,
         "disable_bottom_spacing": true
       }
-    },
-    "product-recommendations": {
-      "type": "product-recommendations",
-      "settings": {
-        "collection": "all-prom-dresses",
-        "subheading": "",
-        "heading": "You may also like",
-        "heading_left": true,
-        "description": "",
-        "full_width": true,
-        "columns_desktop": 5,
-        "disable_top_spacing": true,
-        "disable_bottom_spacing": true
-      }
-    },
-    "recently_viewed_products_EWt9np": {
-      "type": "recently-viewed-products",
-      "name": "Recently viewed products",
-      "settings": {
-        "subheading": "",
-        "heading": "Recently viewed products",
-        "heading_left": true,
-        "description": "",
-        "full_width": true,
-        "columns_desktop": 5,
-        "disable_top_spacing": false,
-        "disable_bottom_spacing": false
-      }
     }
   },
   "order": [
     "breadcrumbs",
     "main-product",
-    "17549592591dfa9272",
+    "spacer_MVWGLV",
     "product-recommendations",
-    "recently_viewed_products_EWt9np"
+    "spacer_VntMbm",
+    "17549592591dfa9272"
   ]
 }
