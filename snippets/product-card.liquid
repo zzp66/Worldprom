@@ -20,7 +20,6 @@
         assign featured_media = featured_media.preview_image
       endif
     endif
-
     if product_aspect_ratio == 'adapt'
       if featured_media
         assign ratio = featured_media.aspect_ratio
@@ -30,7 +29,6 @@
     elsif product_aspect_ratio == 'landscape'
       assign ratio = 1 | divided_by: 0.75
     endif
-
     assign product_content_alignment = settings.product_content_alignment
 
     assign is_purchasable = false
