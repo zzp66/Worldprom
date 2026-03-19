@@ -1,19 +1,24 @@
 {%- liquid
   assign style = section.settings.style
   assign sticky_header = section.settings.sticky_header
-  assign transparent_header = false
   assign logo_height_range = section.settings.logo_height_range
   assign logo_height_range_mobile = section.settings.logo_height_range_mobile
   assign header_shadow = section.settings.header_shadow
 
-  if template == 'index'
-    assign transparent_header = section.settings.transparent_header
+  comment
+    Transparent header 仅在首页按开关生效：
+    - request.page_type == 'index' 时，使用 section.settings.transparent_header
+    - 其他页面一律不透明
+  endcomment
+  assign transparent_header = false
+  if request.page_type == 'index' and section.settings.transparent_header
+    assign transparent_header = true
   endif
 -%}
 <sticky-header class="sticky-header sticky-header--transparent-{{ transparent_header }}">
   <theme-header
     id="header"
-    class="header {{ style }} {{ header_shadow }} transparent--{{ transparent_header }} {% if sticky_header %}header-sticky--active{%- endif -%}"
+    class="header {{ style }} {{ header_shadow }} {% if transparent_header %}transparent--true{% endif %} {% if sticky_header %}header-sticky--active{%- endif -%}"
   >
     <div class="header--inner">
       {%- case style -%}
