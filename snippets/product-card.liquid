@@ -5,9 +5,7 @@
   {%- liquid
     assign products_hover_images = settings.products_hover_images
     assign products_hover_images_count = settings.products_hover_images_count
-    assign product_aspect_ratio = settings.product_aspect_ratio
     assign featured_media = product_card_product.featured_media
-    assign ratio = 1
     assign sizes = '375x0,770x0'
     assign is_video = false
     assign use_video = settings.products_use_video
@@ -19,15 +17,6 @@
       else
         assign featured_media = featured_media.preview_image
       endif
-    endif
-    if product_aspect_ratio == 'adapt'
-      if featured_media
-        assign ratio = featured_media.aspect_ratio
-      endif
-    elsif product_aspect_ratio == 'portrait'
-      assign ratio = 1 | divided_by: 1.25
-    elsif product_aspect_ratio == 'landscape'
-      assign ratio = 1 | divided_by: 0.75
     endif
     assign product_content_alignment = settings.product_content_alignment
 
@@ -65,9 +54,9 @@
         class="product-card--image-link"
       ></a>
       <div class="product-card--image product-card--image--{{ product_image_fit }}">
-        <div class="product-card--image-inner" style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;">
+        <div class="product-card--image-inner" style="--ratio-percent: 150%;">
           {%- if featured_media -%}
-            <figure class="aspect-ratio aspect-ratio--{{ settings.product_aspect_ratio }} product-card--image-primary">
+            <figure class="aspect-ratio aspect-ratio--adapt product-card--image-primary">
               {%- if is_video and use_video -%}
                 {{
                   featured_media
@@ -84,7 +73,7 @@
               {%- endif -%}
             </figure>
           {%- else -%}
-            <figure class="aspect-ratio aspect-ratio--{{ settings.product_aspect_ratio }}">
+            <figure class="aspect-ratio aspect-ratio--adapt">
               <div class="thb-placeholder">
                 {{ 'product-apparel-' | append: index_c | placeholder_svg_tag }}
               </div>
@@ -93,7 +82,7 @@
           {%- if products_hover_images and product_card_product.images.size > 1 -%}
             {%- for i in (1..products_hover_images_count) -%}
               {%- if product_card_product.images[i] -%}
-                <figure class="aspect-ratio aspect-ratio--{{ settings.product_aspect_ratio }}">
+                <figure class="aspect-ratio aspect-ratio--adapt">
                   {%- render 'responsive-image',
                     class: 'product-secondary-image',
                     image: product_card_product.images[i],
@@ -239,7 +228,7 @@
         class="product-card--image-link"
       ></a>
       <div class="product-card--image">
-        <div class="product-card--image-inner" style="--ratio-percent: 120%;">
+        <div class="product-card--image-inner" style="--ratio-percent: 150%;">
           <figure class="aspect-ratio aspect-ratio--adapt product-card--image-primary">
             <div class="thb-placeholder">
               {{ 'product-apparel-' | append: index_c | placeholder_svg_tag }}
