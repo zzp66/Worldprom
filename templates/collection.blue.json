@@ -1,0 +1,150 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main-collection-banner": {
+      "type": "main-collection-banner",
+      "settings": {
+        "show_collection_image": false,
+        "collection_image_ratio": "adapt",
+        "collection_image_width": "small",
+        "show_subcollections": false,
+        "show_collection_description": true,
+        "seo_text_read_more": "Read more",
+        "seo_text_read_less": "Read less",
+        "seo_text_max_height": 100
+      }
+    },
+    "1774014782b50fa90e": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_4147e0f_FLEJyn": {
+          "type": "ai_gen_block_4147e0f",
+          "settings": {
+            "buttons_per_row": 10,
+            "button_spacing_desktop": 12,
+            "button_spacing_mobile": 8,
+            "margin_top_desktop": 20,
+            "margin_bottom_desktop": 20,
+            "margin_left_desktop": 100,
+            "margin_right_desktop": 100,
+            "margin_top_mobile": 16,
+            "margin_bottom_mobile": 16,
+            "margin_left_mobile": 16,
+            "margin_right_mobile": 16,
+            "button_font": "jost_n4",
+            "button_font_size": 15,
+            "button_font_size_mobile": 13,
+            "button_padding_vertical": 12,
+            "button_padding_horizontal": 24,
+            "button_border_radius": 4,
+            "button_border_width": 1,
+            "button_border_style": "solid",
+            "button_bg_color": "#ffffff",
+            "button_text_color": "#4d4d4d",
+            "button_border_color": "#f3eef7",
+            "button_hover_bg_color": "#523f65",
+            "button_hover_text_color": "#ffffff",
+            "button_hover_border_color": "#523f65",
+            "button_active_bg_color": "#4d4d4d",
+            "button_active_text_color": "#ffffff",
+            "button_active_border_color": "#4d4d4d",
+            "button_1_text": "Prom 2026",
+            "button_1_url": "shopify://collections/all-prom-dresses",
+            "button_2_text": "48H Shipping",
+            "button_2_url": "shopify://collections/48h-shipping",
+            "button_3_text": "Homecoming",
+            "button_3_url": "shopify://collections/homecoming-dresses",
+            "button_4_text": "A-Line Dresses",
+            "button_4_url": "shopify://collections/a-line-prom-dresses",
+            "button_5_text": "Mermaid Dresses",
+            "button_5_url": "shopify://collections/prom-trumpet-mermaid",
+            "button_6_text": "Ball Gowns",
+            "button_6_url": "shopify://collections/ball-gown-prom-dresses",
+            "button_7_text": "Floral Dresses",
+            "button_7_url": "shopify://collections/floral-dresses",
+            "button_8_text": "Bow Dresses",
+            "button_8_url": "shopify://collections/bow-dresses",
+            "button_9_text": "Crystal Dresses",
+            "button_9_url": "shopify://collections/crystal-dresses",
+            "button_10_text": "Lace Dresses",
+            "button_10_url": "shopify://collections/lace-dresses"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_4147e0f_FLEJyn"
+      ],
+      "settings": {}
+    },
+    "breadcrumbs": {
+      "type": "breadcrumbs",
+      "settings": {}
+    },
+    "collection_color_swatch_kifwPP": {
+      "type": "collection-color-swatch",
+      "disabled": true,
+      "name": "Color Swatch Selector",
+      "settings": {}
+    },
+    "product-grid": {
+      "type": "main-collection-product-grid",
+      "blocks": {
+        "promotion_drfqyk": {
+          "type": "promotion",
+          "settings": {
+            "promotion_collection": "",
+            "promotion_position": 1,
+            "promotion_width": "1",
+            "image": "shopify://shop_images/3_9c70664e-caa0-43ee-bc11-ec3a737018ec.jpg",
+            "title": "",
+            "heading_size": "h3",
+            "text": "",
+            "link_label": "",
+            "link": "",
+            "content_position": "bottom-left",
+            "text_alignment": "left",
+            "color_text": "#4e693d",
+            "color_bg": "#fff6df",
+            "color_button_text": "#fff6df"
+          }
+        }
+      },
+      "block_order": [
+        "promotion_drfqyk"
+      ],
+      "custom_css": [],
+      "settings": {
+        "full_width": true,
+        "products_per_page": 31,
+        "columns_desktop": 4,
+        "pagination_type": "paginated",
+        "enable_filtering": true,
+        "enable_sorting": true,
+        "show_counts": true,
+        "filter_color_swatches": false,
+        "facets_desktop": "sidebar",
+        "seo_text": "{{ collection.description }}",
+        "seo_text_custom_liquid": "",
+        "seo_text_read_more": "Read more",
+        "seo_text_read_less": "Read less",
+        "seo_text_max_height": 150
+      }
+    }
+  },
+  "order": [
+    "main-collection-banner",
+    "1774014782b50fa90e",
+    "breadcrumbs",
+    "collection_color_swatch_kifwPP",
+    "product-grid"
+  ]
+}

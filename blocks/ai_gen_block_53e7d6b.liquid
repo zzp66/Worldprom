@@ -1,0 +1,1324 @@
+{% doc %}
+  @prompt
+    This component serves as a button bar on website category pages, designed to guide users to other related categories. The order of the buttons is fully customizable, and users are free to adjust the number of buttons displayed per row (ranging from 1 to 16); the layout automatically adjusts to fill the entire row based on the specified count. On mobile devices, the interface utilizes a horizontal scrolling mode. The spacing between buttons, as well as the top, bottom, left, and right margins of the entire module, are all adjustable; these spacing settings can be configured independently for mobile and desktop environments. Users can select their preferred button styles and border designs, and can individually set the text and background colors for each specific button. Furthermore, the text font and font size are also fully customizable. Additionally, the button colors can be customized to change dynamically when a user hovers their mouse over them. Finally, when a user is currently browsing the category corresponding to a specific button, that button becomes disabled (non-selectable) and is highlighted using a user-defined accent color.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-category-nav-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding-top: {{ block.settings.spacing_top_desktop }}px;
+    padding-bottom: {{ block.settings.spacing_bottom_desktop }}px;
+    padding-left: {{ block.settings.spacing_left_desktop }}px;
+    padding-right: {{ block.settings.spacing_right_desktop }}px;
+  }
+
+  .ai-category-nav__container-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat({{ block.settings.buttons_per_row_desktop }}, 1fr);
+    gap: {{ block.settings.button_gap_desktop }}px;
+  }
+
+  .ai-category-nav__button-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-style: {{ block.settings.border_style }};
+    border-width: {{ block.settings.border_width }}px;
+    border-radius: {{ block.settings.border_radius }}px;
+    font-family: {{ block.settings.font_family.family }}, {{ block.settings.font_family.fallback_families }};
+    font-weight: {{ block.settings.font_family.weight }};
+    font-size: {{ block.settings.font_size_desktop }}px;
+    text-align: center;
+    word-wrap: break-word;
+  }
+
+  .ai-category-nav__button-{{ ai_gen_id }}:not(.ai-category-nav__button--active-{{ ai_gen_id }}):hover {
+    transform: translateY(-2px);
+  }
+
+  .ai-category-nav__button--active-{{ ai_gen_id }} {
+    cursor: default;
+    pointer-events: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-category-nav-{{ ai_gen_id }} {
+      padding-top: {{ block.settings.spacing_top_mobile }}px;
+      padding-bottom: {{ block.settings.spacing_bottom_mobile }}px;
+      padding-left: {{ block.settings.spacing_left_mobile }}px;
+      padding-right: {{ block.settings.spacing_right_mobile }}px;
+    }
+
+    .ai-category-nav__container-{{ ai_gen_id }} {
+      display: flex;
+      overflow-x: auto;
+      gap: {{ block.settings.button_gap_mobile }}px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .ai-category-nav__container-{{ ai_gen_id }}::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ai-category-nav__button-{{ ai_gen_id }} {
+      flex-shrink: 0;
+      min-width: fit-content;
+      font-size: {{ block.settings.font_size_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+<category-nav-{{ ai_gen_id }} class="ai-category-nav-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-category-nav__container-{{ ai_gen_id }}">
+    {% for i in (1..16) %}
+      {% liquid
+        assign button_enabled_key = 'button_' | append: i | append: '_enabled'
+        assign button_text_key = 'button_' | append: i | append: '_text'
+        assign button_link_key = 'button_' | append: i | append: '_link'
+        assign button_text_color_key = 'button_' | append: i | append: '_text_color'
+        assign button_bg_color_key = 'button_' | append: i | append: '_bg_color'
+        assign button_border_color_key = 'button_' | append: i | append: '_border_color'
+        assign button_hover_text_color_key = 'button_' | append: i | append: '_hover_text_color'
+        assign button_hover_bg_color_key = 'button_' | append: i | append: '_hover_bg_color'
+        assign button_hover_border_color_key = 'button_' | append: i | append: '_hover_border_color'
+
+        assign button_enabled = block.settings[button_enabled_key]
+        assign button_text = block.settings[button_text_key]
+        assign button_link = block.settings[button_link_key]
+        assign button_text_color = block.settings[button_text_color_key]
+        assign button_bg_color = block.settings[button_bg_color_key]
+        assign button_border_color = block.settings[button_border_color_key]
+        assign button_hover_text_color = block.settings[button_hover_text_color_key]
+        assign button_hover_bg_color = block.settings[button_hover_bg_color_key]
+        assign button_hover_border_color = block.settings[button_hover_border_color_key]
+      %}
+
+      {% if button_enabled and button_text != blank %}
+        {% liquid
+          assign is_active = false
+          if button_link != blank
+            assign current_url = request.path
+            assign button_url = button_link | split: request.host | last
+            if current_url == button_url
+              assign is_active = true
+            endif
+          endif
+        %}
+
+        <a
+          href="{{ button_link }}"
+          class="ai-category-nav__button-{{ ai_gen_id }} {% if is_active %}ai-category-nav__button--active-{{ ai_gen_id }}{% endif %}"
+          data-button-index="{{ i }}"
+          style="
+            {% if is_active %}
+              color: {{ block.settings.active_text_color }};
+              background-color: {{ block.settings.active_bg_color }};
+              border-color: {{ block.settings.active_border_color }};
+            {% else %}
+              color: {{ button_text_color }};
+              background-color: {{ button_bg_color }};
+              border-color: {{ button_border_color }};
+            {% endif %}
+          "
+          data-default-text-color="{{ button_text_color }}"
+          data-default-bg-color="{{ button_bg_color }}"
+          data-default-border-color="{{ button_border_color }}"
+          data-hover-text-color="{{ button_hover_text_color }}"
+          data-hover-bg-color="{{ button_hover_bg_color }}"
+          data-hover-border-color="{{ button_hover_border_color }}"
+        >
+          {{ button_text }}
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</category-nav-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class CategoryNav{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.buttons = this.querySelectorAll('.ai-category-nav__button-{{ ai_gen_id }}:not(.ai-category-nav__button--active-{{ ai_gen_id }})');
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        this.buttons.forEach((button) => {
+          const defaultTextColor = button.getAttribute('data-default-text-color');
+          const defaultBgColor = button.getAttribute('data-default-bg-color');
+          const defaultBorderColor = button.getAttribute('data-default-border-color');
+          const hoverTextColor = button.getAttribute('data-hover-text-color');
+          const hoverBgColor = button.getAttribute('data-hover-bg-color');
+          const hoverBorderColor = button.getAttribute('data-hover-border-color');
+
+          button.addEventListener('mouseenter', () => {
+            button.style.color = hoverTextColor;
+            button.style.backgroundColor = hoverBgColor;
+            button.style.borderColor = hoverBorderColor;
+          });
+
+          button.addEventListener('mouseleave', () => {
+            button.style.color = defaultTextColor;
+            button.style.backgroundColor = defaultBgColor;
+            button.style.borderColor = defaultBorderColor;
+          });
+        });
+      }
+    }
+
+    customElements.define('category-nav-{{ ai_gen_id }}', CategoryNav{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Category navigation bar",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "buttons_per_row_desktop",
+      "label": "Buttons per row (desktop)",
+      "min": 1,
+      "max": 16,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Spacing - Desktop"
+    },
+    {
+      "type": "range",
+      "id": "spacing_top_desktop",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "spacing_bottom_desktop",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "spacing_left_desktop",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "spacing_right_desktop",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "button_gap_desktop",
+      "label": "Button gap",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Spacing - Mobile"
+    },
+    {
+      "type": "range",
+      "id": "spacing_top_mobile",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "spacing_bottom_mobile",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "spacing_left_mobile",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "spacing_right_mobile",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "button_gap_mobile",
+      "label": "Button gap",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "font_picker",
+      "id": "font_family",
+      "label": "Font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "font_size_desktop",
+      "label": "Font size (desktop)",
+      "min": 10,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "font_size_mobile",
+      "label": "Font size (mobile)",
+      "min": 10,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "border_style",
+      "label": "Border style",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "solid",
+          "label": "Solid"
+        },
+        {
+          "value": "dashed",
+          "label": "Dashed"
+        },
+        {
+          "value": "dotted",
+          "label": "Dotted"
+        }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Border width",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Active button colors"
+    },
+    {
+      "type": "color",
+      "id": "active_text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "active_bg_color",
+      "label": "Background color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "active_border_color",
+      "label": "Border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "header",
+      "content": "Button 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_1_enabled",
+      "label": "Enable button 1",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_1_text",
+      "label": "Text",
+      "default": "Category 1"
+    },
+    {
+      "type": "url",
+      "id": "button_1_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_1_text_color",
+      "label": "Text color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_1_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_1_border_color",
+      "label": "Border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_1_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_1_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_1_hover_border_color",
+      "label": "Hover border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "header",
+      "content": "Button 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_2_enabled",
+      "label": "Enable button 2",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_2_text",
+      "label": "Text",
+      "default": "Category 2"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_2_text_color",
+      "label": "Text color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_2_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_2_border_color",
+      "label": "Border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_2_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_2_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_2_hover_border_color",
+      "label": "Hover border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "header",
+      "content": "Button 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_3_enabled",
+      "label": "Enable button 3",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_3_text",
+      "label": "Text",
+      "default": "Category 3"
+    },
+    {
+      "type": "url",
+      "id": "button_3_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_3_text_color",
+      "label": "Text color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_3_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_3_border_color",
+      "label": "Border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_3_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_3_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_3_hover_border_color",
+      "label": "Hover border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "header",
+      "content": "Button 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_4_enabled",
+      "label": "Enable button 4",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_4_text",
+      "label": "Text",
+      "default": "Category 4"
+    },
+    {
+      "type": "url",
+      "id": "button_4_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_4_text_color",
+      "label": "Text color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_4_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_4_border_color",
+      "label": "Border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_4_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_4_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_4_hover_border_color",
+      "label": "Hover border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "header",
+      "content": "Button 5"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_5_enabled",
+      "label": "Enable button 5",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_5_text",
+      "label": "Text"
+    },
+    {
+      "type": "url",
+      "id": "button_5_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_5_text_color",
+      "label": "Text color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_5_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_5_border_color",
+      "label": "Border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_5_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_5_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_5_hover_border_color",
+      "label": "Hover border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "header",
+      "content": "Button 6"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_6_enabled",
+      "label": "Enable button 6",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_6_text",
+      "label": "Text"
+    },
+    {
+      "type": "url",
+      "id": "button_6_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_6_text_color",
+      "label": "Text color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_6_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_6_border_color",
+      "label": "Border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_6_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_6_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_6_hover_border_color",
+      "label": "Hover border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "header",
+      "content": "Button 7"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_7_enabled",
+      "label": "Enable button 7",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_7_text",
+      "label": "Text"
+    },
+    {
+      "type": "url",
+      "id": "button_7_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_7_text_color",
+      "label": "Text color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_7_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_7_border_color",
+      "label": "Border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_7_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_7_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_7_hover_border_color",
+      "label": "Hover border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "header",
+      "content": "Button 8"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_8_enabled",
+      "label": "Enable button 8",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_8_text",
+      "label": "Text"
+    },
+    {
+      "type": "url",
+      "id": "button_8_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_8_text_color",
+      "label": "Text color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_8_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_8_border_color",
+      "label": "Border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_8_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_8_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_8_hover_border_color",
+      "label": "Hover border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "header",
+      "content": "Button 9"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_9_enabled",
+      "label": "Enable button 9",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_9_text",
+      "label": "Text"
+    },
+    {
+      "type": "url",
+      "id": "button_9_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_9_text_color",
+      "label": "Text color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_9_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_9_border_color",
+      "label": "Border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_9_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_9_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_9_hover_border_color",
+      "label": "Hover border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "header",
+      "content": "Button 10"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_10_enabled",
+      "label": "Enable button 10",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_10_text",
+      "label": "Text"
+    },
+    {
+      "type": "url",
+      "id": "button_10_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_10_text_color",
+      "label": "Text color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_10_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_10_border_color",
+      "label": "Border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_10_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_10_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_10_hover_border_color",
+      "label": "Hover border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "header",
+      "content": "Button 11"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_11_enabled",
+      "label": "Enable button 11",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_11_text",
+      "label": "Text"
+    },
+    {
+      "type": "url",
+      "id": "button_11_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_11_text_color",
+      "label": "Text color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_11_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_11_border_color",
+      "label": "Border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_11_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_11_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_11_hover_border_color",
+      "label": "Hover border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "header",
+      "content": "Button 12"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_12_enabled",
+      "label": "Enable button 12",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_12_text",
+      "label": "Text"
+    },
+    {
+      "type": "url",
+      "id": "button_12_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_12_text_color",
+      "label": "Text color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_12_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_12_border_color",
+      "label": "Border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_12_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_12_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_12_hover_border_color",
+      "label": "Hover border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "header",
+      "content": "Button 13"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_13_enabled",
+      "label": "Enable button 13",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_13_text",
+      "label": "Text"
+    },
+    {
+      "type": "url",
+      "id": "button_13_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_13_text_color",
+      "label": "Text color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_13_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_13_border_color",
+      "label": "Border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_13_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_13_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_13_hover_border_color",
+      "label": "Hover border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "header",
+      "content": "Button 14"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_14_enabled",
+      "label": "Enable button 14",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_14_text",
+      "label": "Text"
+    },
+    {
+      "type": "url",
+      "id": "button_14_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_14_text_color",
+      "label": "Text color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_14_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_14_border_color",
+      "label": "Border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_14_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_14_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_14_hover_border_color",
+      "label": "Hover border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "header",
+      "content": "Button 15"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_15_enabled",
+      "label": "Enable button 15",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_15_text",
+      "label": "Text"
+    },
+    {
+      "type": "url",
+      "id": "button_15_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_15_text_color",
+      "label": "Text color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_15_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_15_border_color",
+      "label": "Border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_15_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_15_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_15_hover_border_color",
+      "label": "Hover border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "header",
+      "content": "Button 16"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_16_enabled",
+      "label": "Enable button 16",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_16_text",
+      "label": "Text"
+    },
+    {
+      "type": "url",
+      "id": "button_16_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_16_text_color",
+      "label": "Text color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_16_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_16_border_color",
+      "label": "Border color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_16_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_16_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#4d4d4d"
+    },
+    {
+      "type": "color",
+      "id": "button_16_hover_border_color",
+      "label": "Hover border color",
+      "default": "#4d4d4d"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category navigation bar"
+    }
+  ]
+}
+{% endschema %}

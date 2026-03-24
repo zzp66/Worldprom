@@ -27,7 +27,6 @@
         },
         "flash_message_mBqxN9": {
           "type": "flash_message",
-          "disabled": true,
           "settings": {
             "icon": "price_tag",
             "heading": "2026 Prom Exclusive",
@@ -179,8 +178,8 @@
       "type": "spacer",
       "name": "Spacer",
       "settings": {
-        "spacer_mobile": 50,
-        "spacer_desktop": 100,
+        "spacer_mobile": 25,
+        "spacer_desktop": 50,
         "border_separator": false,
         "section_width": "full-width-row"
       }
@@ -191,7 +190,7 @@
         "judge_me_reviews_review_widget_Ww8XXf": {
           "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
           "settings": {
-            "review_data": "sample_data",
+            "review_data": "real_data",
             "max_width": 1200,
             "show_shop_reviews": false,
             "empty_state": "empty_widget"
@@ -206,6 +205,19 @@
         "disable_top_spacing": true,
         "disable_bottom_spacing": true
       }
+    },
+    "email_signup_GmPpH3": {
+      "type": "email-signup",
+      "name": "Newsletter",
+      "settings": {
+        "subheading": "",
+        "heading": "15% Off New Styles Awaits!",
+        "description": "<p>Unlock 15% off! First access to prom & homecoming dresses. Enter email.</p>",
+        "color_bg": "#faf7ff",
+        "color_text": "#151515",
+        "disable_top_spacing": false,
+        "disable_bottom_spacing": false
+      }
     }
   },
   "order": [
@@ -214,6 +226,7 @@
     "spacer_MVWGLV",
     "product-recommendations",
     "spacer_VntMbm",
-    "17549592591dfa9272"
+    "17549592591dfa9272",
+    "email_signup_GmPpH3"
   ]
 }

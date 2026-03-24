@@ -33,8 +33,8 @@
         "logo_height_range_mobile": 20,
         "style": "style4",
         "header_shadow": "header--shadow-small",
-        "menu": "main-menu",
-        "transparent_header": true,
+        "menu": "menu-03-19",
+        "transparent_header": false,
         "show_language_switcher": false,
         "show_currency_switcher": false
       }

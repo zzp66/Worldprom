@@ -17,7 +17,7 @@
           "settings": {
             "image": "shopify://shop_images/banner-03.18.png",
             "mobile_image": "shopify://shop_images/m-banner-03.18.png",
-            "slide_link": "shopify://collections/all-prom-dresses",
+            "slide_link": "shopify://collections/floral-dresses",
             "video_background": false,
             "video": "",
             "subheading": "",
@@ -58,21 +58,31 @@
         "disable_bottom_spacing": true
       }
     },
+    "spacer_DmQtcM": {
+      "type": "spacer",
+      "name": "Spacer",
+      "settings": {
+        "spacer_mobile": 25,
+        "spacer_desktop": 50,
+        "border_separator": false,
+        "section_width": "full-width-row"
+      }
+    },
     "collection_list_VHV4Tw": {
       "type": "collection-list",
       "name": "Collection list",
       "settings": {
         "section_width": "full-width-row",
         "subheading": "",
-        "heading": "Spring 2026 Prom Collections",
+        "heading": "New 2026 Maxi Dresses",
         "heading_left": false,
-        "description": "<p>Exquisite Beaded Details, Luxe Sheath Silhouettes & Stunning Embroidered Floral Prom Dresses</p>",
+        "description": "<p>Exquisite Beaded Details, Luxe Sheath Silhouettes & Stunning Embroidered Floral Long Evening Gowns</p>",
         "full_width": true,
         "collection_list": [
-          "all-prom-dresses",
-          "prom-trumpet-mermaid",
-          "sparkly-prom-dresses",
-          "luxury-prom-dresses-1"
+          "maxi-dresses",
+          "floral-maxi-dresses",
+          "evening-dresses",
+          "sparkly-dresses"
         ],
         "image_ratio": "adapt",
         "columns_desktop": 4,
@@ -96,7 +106,7 @@
         "heading_left": false,
         "description": "",
         "full_width": true,
-        "collection": "new-arrival",
+        "collection": "maxi-dresses",
         "display_type": "carousel",
         "product_limit": 10,
         "columns_desktop": 5,
@@ -110,8 +120,8 @@
       "type": "spacer",
       "name": "Spacer",
       "settings": {
-        "spacer_mobile": 30,
-        "spacer_desktop": 70,
+        "spacer_mobile": 15,
+        "spacer_desktop": 35,
         "border_separator": false,
         "section_width": "full-width-row"
       }
@@ -174,7 +184,7 @@
         "heading_left": false,
         "description": "",
         "full_width": true,
-        "collection": "best-sellers",
+        "collection": "mini-dresses",
         "display_type": "carousel",
         "product_limit": 10,
         "columns_desktop": 5,
@@ -188,8 +198,8 @@
       "type": "spacer",
       "name": "Spacer",
       "settings": {
-        "spacer_mobile": 30,
-        "spacer_desktop": 70,
+        "spacer_mobile": 15,
+        "spacer_desktop": 35,
         "border_separator": false,
         "section_width": "full-width-row"
       }
@@ -252,7 +262,7 @@
         "heading_left": false,
         "description": "",
         "full_width": true,
-        "collection": "all-bridesmaid-dresses",
+        "collection": "bridesmaid",
         "display_type": "carousel",
         "product_limit": 10,
         "columns_desktop": 5,
@@ -292,6 +302,7 @@
         "question_j8ryWR",
         "question_RGcBmz"
       ],
+      "disabled": true,
       "settings": {
         "image": "shopify://shop_images/60420208-1-1.png",
         "image_link": "",
@@ -328,6 +339,7 @@
         "heading_6t4zBC",
         "text_wRiqcz"
       ],
+      "disabled": true,
       "settings": {
         "section_width": "grid",
         "text_width": "grid",
@@ -426,6 +438,7 @@
         "image_p8yc6t",
         "image_KajDAi"
       ],
+      "disabled": true,
       "settings": {
         "image_ratio": "adapt",
         "column_spacing": "small",
@@ -449,19 +462,34 @@
         "disable_bottom_spacing": false
       }
     },
-    "spacer_DmQtcM": {
+    "spacer_p7XFHT": {
       "type": "spacer",
       "name": "Spacer",
       "settings": {
-        "spacer_mobile": 25,
-        "spacer_desktop": 50,
+        "spacer_mobile": 10,
+        "spacer_desktop": 15,
         "border_separator": false,
         "section_width": "full-width-row"
       }
+    },
+    "spacer_wDXPPC": {
+      "type": "spacer",
+      "name": "Spacer",
+      "settings": {
+        "spacer_mobile": 10,
+        "spacer_desktop": 15,
+        "border_separator": false,
+        "section_width": "full-width-row"
+      }
+    },
+    "1774275453ef3d0890": {
+      "type": "_blocks",
+      "settings": {}
     }
   },
   "order": [
     "16479477632637c9a7",
+    "spacer_DmQtcM",
     "collection_list_VHV4Tw",
     "featured_collection_fGHJxg",
     "spacer_AnPdfg",
@@ -473,7 +501,9 @@
     "interviews_rdAnEw",
     "rich_text_pYxmT6",
     "scrolling_images_QMpAfB",
+    "spacer_wDXPPC",
     "email_signup_wh6BTw",
-    "spacer_DmQtcM"
+    "spacer_p7XFHT",
+    "1774275453ef3d0890"
   ]
 }

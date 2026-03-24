@@ -58,9 +58,7 @@
       "block_order": [
         "promotion_HNfqPR"
       ],
-      "custom_css": [
-        ".product-card-title {font-size: 12px;}"
-      ],
+      "custom_css": [],
       "settings": {
         "full_width": true,
         "products_per_page": 31,
