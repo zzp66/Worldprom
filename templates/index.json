@@ -132,9 +132,9 @@
         "slide_p8mGJz": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/prom-pc.jpg",
-            "mobile_image": "shopify://shop_images/prom-mb-1.jpg",
-            "slide_link": "shopify://collections/best-sellers",
+            "image": "shopify://shop_images/mini-PC.jpg",
+            "mobile_image": "shopify://shop_images/mini-MB.jpg",
+            "slide_link": "shopify://collections/mini-dresses",
             "video_background": false,
             "video": "",
             "subheading": "",
@@ -212,7 +212,7 @@
           "settings": {
             "image": "shopify://shop_images/B.jpg",
             "mobile_image": "shopify://shop_images/A.jpg",
-            "slide_link": "shopify://collections/bridesmaid",
+            "slide_link": "shopify://collections/bridesmaids",
             "video_background": false,
             "video": "",
             "subheading": "",
@@ -262,7 +262,7 @@
         "heading_left": false,
         "description": "",
         "full_width": true,
-        "collection": "bridesmaid",
+        "collection": "bridesmaids",
         "display_type": "carousel",
         "product_limit": 10,
         "columns_desktop": 5,
@@ -449,6 +449,16 @@
         "disable_bottom_spacing": false
       }
     },
+    "spacer_wDXPPC": {
+      "type": "spacer",
+      "name": "Spacer",
+      "settings": {
+        "spacer_mobile": 10,
+        "spacer_desktop": 15,
+        "border_separator": false,
+        "section_width": "full-width-row"
+      }
+    },
     "email_signup_wh6BTw": {
       "type": "email-signup",
       "name": "Newsletter",
@@ -463,16 +473,6 @@
       }
     },
     "spacer_p7XFHT": {
-      "type": "spacer",
-      "name": "Spacer",
-      "settings": {
-        "spacer_mobile": 10,
-        "spacer_desktop": 15,
-        "border_separator": false,
-        "section_width": "full-width-row"
-      }
-    },
-    "spacer_wDXPPC": {
       "type": "spacer",
       "name": "Spacer",
       "settings": {
