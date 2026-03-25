@@ -28,32 +28,49 @@
     z-index: 25;
     background-color: var(--bg-body, #fff); }
 
-/* Mobile: facets bar fixed under header; show while scrolling */
+/* Mobile: facets bar becomes fixed after passing its natural position */
 @media only screen and (max-width: 767px) {
+  /* 保持原本位置（正常文档流） */
   facet-filters-form.facets--bar {
+    position: static;
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
+    transition: none;
+  }
+
+  /* 触发固定后，才固定在 header 下方 */
+  facet-filters-form.facets--bar.is-fixed {
     position: fixed;
     top: var(--header-height, 0px);
     left: 0;
     right: 0;
     z-index: 40;
+    will-change: transform, opacity;
   }
 
-  /* 取消 sticky，避免移动端吸顶/闪烁问题 */
-  facet-filters-form.facets--bar .facets--bar-row {
-    position: static;
-  }
-
-  facet-filters-form.facets--bar {
+  /* 固定态下：滚动中显示，停止滚动后隐藏 */
+  facet-filters-form.facets--bar.is-fixed {
     transform: translateY(-110%);
     opacity: 0;
     pointer-events: none;
     transition: transform 0.18s cubic-bezier(0.104, 0.204, 0.492, 1), opacity 0.18s cubic-bezier(0.104, 0.204, 0.492, 1);
-    will-change: transform, opacity;
   }
-  facet-filters-form.facets--bar.is-visible {
+  facet-filters-form.facets--bar.is-fixed.is-visible {
     transform: translateY(0);
     opacity: 1;
     pointer-events: auto;
+  }
+
+  /* 取消 sticky（移动端由 JS 控制 fixed 时机） */
+  facet-filters-form.facets--bar .facets--bar-row {
+    position: static;
+  }
+
+  /* 占位元素必须始终在文档流里（高度可为 0），否则无法正确判断“回到原位” */
+  .facets--bar-placeholder {
+    display: block;
+    height: 0;
   }
 }
   .facets--bar-left {

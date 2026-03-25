@@ -283,11 +283,49 @@ class FacetFiltersForm extends HTMLElement {
     });
   };
 
+  const ensurePlaceholder = (bar) => {
+    if (bar.__facetsPlaceholder) return bar.__facetsPlaceholder;
+    const ph = document.createElement('div');
+    ph.className = 'facets--bar-placeholder';
+    bar.parentNode.insertBefore(ph, bar);
+    bar.__facetsPlaceholder = ph;
+    return ph;
+  };
+
+  const measure = () => {
+    ensureHeaderHeightVar();
+    getBars().forEach((bar) => {
+      const ph = ensurePlaceholder(bar);
+      // 固定时需要占位，防止页面跳动
+      const h = bar.offsetHeight || 0;
+      if (h > 0) ph.style.height = `${h}px`;
+    });
+  };
+
+  const updateFixedState = () => {
+    if (!mq.matches) return;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const headerH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height'), 10) || 0;
+
+    getBars().forEach((bar) => {
+      const ph = ensurePlaceholder(bar);
+      // 触发点始终用占位元素当前位置计算（占位始终在文档流里）
+      const triggerTop = ph.getBoundingClientRect().top + scrollTop;
+
+      // 超过原本位置（考虑 header 高度）才固定
+      const shouldFix = scrollTop + headerH >= triggerTop;
+      bar.classList.toggle('is-fixed', shouldFix);
+      // fixed 时占位高度撑开；非 fixed 时占位高度归零
+      ph.style.height = shouldFix ? `${bar.offsetHeight || 0}px` : '0px';
+    });
+  };
+
   const onScroll = () => {
     if (!mq.matches) return;
     // rAF 合并频繁 scroll 事件，避免抖动
     if (rafId) cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(() => {
+      updateFixedState();
       setVisible(true);
     });
     if (hideTimer) window.clearTimeout(hideTimer);
@@ -305,8 +343,9 @@ class FacetFiltersForm extends HTMLElement {
       setVisible(false);
       return;
     }
-    ensureHeaderHeightVar();
-    // mobile 初始隐藏
+    measure();
+    updateFixedState();
+    // mobile 初始：未超过触发点时保持正常位置显示；超过触发点才受 is-visible 控制
     setVisible(false);
   };
 

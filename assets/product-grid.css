@@ -304,6 +304,7 @@
   letter-spacing: 0.05em;
   margin: 12px 0 2px;
   white-space: nowrap;
+  text-transform: capitalize;
 }
 
 .product-card-subtitle-row {
