@@ -24,6 +24,14 @@ if (!customElements.get("sticky-header")) {
       this.preventReveal = 0;
       this.onScrollHandler = this.onScroll.bind(this);
 
+      // Mobile: keep header always visible and avoid scroll-driven class churn (jitter).
+      if (window.matchMedia("(max-width: 767px)").matches) {
+        this.section?.classList.add("section-header-section--is-sticky");
+        this.section?.classList.remove("section-header-section--is-hidden");
+        this.header?.classList.add("is-sticky");
+        return;
+      }
+
       window.addEventListener("scroll", this.onScrollHandler, false);
       this.createObserver();
     }
@@ -52,6 +60,15 @@ if (!customElements.get("sticky-header")) {
     onScroll() {
       const scrollTop =
         window.pageYOffset || document.documentElement.scrollTop;
+
+      // Mobile: keep header always visible (no hide-on-scroll)
+      if (window.matchMedia("(max-width: 767px)").matches) {
+        this.section.classList.add("section-header-section--is-sticky");
+        this.section.classList.remove("section-header-section--is-hidden");
+        this.header.classList.add("is-sticky");
+        this.currentScrollTop = scrollTop;
+        return;
+      }
 
       if (
         scrollTop > this.currentScrollTop &&
@@ -169,9 +186,19 @@ if (!customElements.get("theme-header")) {
         passive: true,
       });
       window.addEventListener("resize", this.setHeaderOffset.bind(this));
-      window.addEventListener("scroll", this.setHeaderHeight.bind(this), {
-        passive: true,
-      });
+      // Header height var can cause layout jitter on mobile if updated every scroll.
+      // Update on resize, and on scroll only when it actually changes (rAF + diff check).
+      this._headerHeightRaf = null;
+      this._lastHeaderHeight = null;
+      const scheduleHeaderHeight = () => {
+        if (this._headerHeightRaf) return;
+        this._headerHeightRaf = window.requestAnimationFrame(() => {
+          this._headerHeightRaf = null;
+          this.setHeaderHeight();
+        });
+      };
+      window.addEventListener("scroll", scheduleHeaderHeight, { passive: true });
+      window.addEventListener("resize", scheduleHeaderHeight);
 
       window.dispatchEvent(new Event("scroll"));
 
@@ -227,7 +254,12 @@ if (!customElements.get("theme-header")) {
       }
     }
     setHeaderHeight() {
+      if (!this.header_section) return;
       let h = this.header_section.clientHeight;
+      if (this._lastHeaderHeight !== null && Math.abs(h - this._lastHeaderHeight) < 1) {
+        return;
+      }
+      this._lastHeaderHeight = h;
       document.documentElement.style.setProperty("--header-height", h + "px");
     }
     closeAll() {

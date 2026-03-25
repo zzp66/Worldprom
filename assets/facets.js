@@ -260,6 +260,62 @@ class FacetFiltersForm extends HTMLElement {
   }
 }
 
+// Mobile: show facets bar while scrolling; hide 3s after stop
+(() => {
+  const mq = window.matchMedia('(max-width: 767px)');
+  let hideTimer = null;
+  let rafId = null;
+
+  const getBars = () => Array.from(document.querySelectorAll('facet-filters-form.facets--bar'));
+
+  const ensureHeaderHeightVar = () => {
+    const headerSection = document.querySelector('.section-header-section');
+    if (!headerSection) return;
+    const h = headerSection.clientHeight || 0;
+    if (h > 0) {
+      document.documentElement.style.setProperty('--header-height', `${h}px`);
+    }
+  };
+
+  const setVisible = (visible) => {
+    getBars().forEach((bar) => {
+      bar.classList.toggle('is-visible', visible);
+    });
+  };
+
+  const onScroll = () => {
+    if (!mq.matches) return;
+    // rAF 合并频繁 scroll 事件，避免抖动
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(() => {
+      setVisible(true);
+    });
+    if (hideTimer) window.clearTimeout(hideTimer);
+    hideTimer = window.setTimeout(() => {
+      setVisible(false);
+    }, 3000);
+  };
+
+  const onResize = () => {
+    if (!mq.matches) {
+      if (hideTimer) window.clearTimeout(hideTimer);
+      hideTimer = null;
+      // Desktop: do not toggle visibility classes/styles here.
+      // Keep original sticky behavior controlled by CSS only.
+      setVisible(false);
+      return;
+    }
+    ensureHeaderHeightVar();
+    // mobile 初始隐藏
+    setVisible(false);
+  };
+
+  // init
+  onResize();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onResize);
+})();
+
 FacetFiltersForm.filterData = [];
 FacetFiltersForm.searchParamsInitial = window.location.search.slice(1);
 FacetFiltersForm.searchParamsPrev = window.location.search.slice(1);

@@ -297,11 +297,38 @@
 
 .product-card-vendor a,
 .product-card-subtitle {
+  font-family: var(--font-heading-family);
   color: rgba(var(--color-body-rgb), 0.7);
   text-transform: uppercase;
   font-size: 1rem;
   letter-spacing: 0.05em;
   margin: 12px 0 2px;
+  white-space: nowrap;
+}
+
+.product-card-subtitle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.product-card-subtitle-row .product-card-subtitle {
+  margin: 12px 0 2px;
+}
+
+.product-card-subtitle-row .product-card--badges {
+  position: static;
+  z-index: auto;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  margin: 12px 0 2px;
+}
+
+.product-card-subtitle-row .product-card--badges .badge {
+  width: auto;
+  justify-content: center;
 }
 
 .product-card-title {

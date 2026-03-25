@@ -98,6 +98,14 @@
 		font-family: {{ body_font.family }}, {{ body_font.fallback_families }};
 	}
 	:root {
+		/* Font families (from theme settings) */
+		--font-heading-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+		--font-heading-style: {{ heading_font.style }};
+		--font-heading-weight: {{ heading_font.weight }};
+		--font-body-family: {{ body_font.family }}, {{ body_font.fallback_families }};
+		--font-body-style: {{ body_font.style }};
+		--font-body-weight: {{ body_font.weight }};
+
 		--mobile-swipe-width: calc(90vw - 30px);
 		--font-body-scale: {{ settings.body_font_scale | divided_by: 100.0 }};
 		--font-body-line-height-scale: {{ settings.body_font_line_height_scale | divided_by: 100.0 }};
