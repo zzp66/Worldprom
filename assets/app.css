@@ -2288,7 +2288,7 @@ h6,
   list-style: none;
   font-size: 0.9375rem; }
   .thb-full-menu--link {
-    font-family: var(--font-heading-family);
+    font-family: var(--font-body-family);
     color: var(--color-header-text, --color-body);
     position: relative;
     font-size: calc(var(--font-navigation-scale, 1) * 14px); }
@@ -2411,6 +2411,7 @@ h6,
       width: 15px;
       height: 15px;
       border-radius: 50%;
+      border: 1px solid var(--color-header-border, var(--color-border));
       margin-right: 5px;
       vertical-align: middle;
       flex: 0 0 auto;
@@ -2427,6 +2428,7 @@ h6,
       height: 15px;
       object-fit: cover;
       border-radius: 50%;
+      border: 1px solid var(--color-header-border, var(--color-border));
       -webkit-border-radius: 50%;
       -moz-border-radius: 50%;
       -ms-border-radius: 50%;

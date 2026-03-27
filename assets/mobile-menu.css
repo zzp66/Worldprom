@@ -127,7 +127,7 @@
 }
 
 .mobile-menu li .link-container {
-  font-family: var(--font-heading-family);
+  font-family: var(--font-body-family);
   display: flex;
   align-items: center;
   min-height: 70px;
