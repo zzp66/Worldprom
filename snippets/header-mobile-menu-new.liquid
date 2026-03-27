@@ -9,9 +9,7 @@
             assign has_mega_menu = false
             assign has_menu_badge = false
 
-            assign mega_menu_block_index = false
             assign mega_menu_block_index_sidebar = false
-            assign mega_menu_block_index_promotions = false
 
             assign mega_menu_blocks = blocks | where: 'type', 'megamenu'
             assign mega_menu_blocks_sidebar = blocks | where: 'type', 'megamenu_sidebar'
@@ -27,7 +25,6 @@
               assign position = block.settings.position | plus: 0
               if position == parent_index
                 assign has_mega_menu = true
-                assign mega_menu_block_index = forloop.index0
               endif
             endfor
 
@@ -43,7 +40,6 @@
               assign position_promotions = block.settings.position | plus: 0
               if position_promotions == parent_index
                 assign has_mega_menu = true
-                assign mega_menu_block_index_promotions = forloop.index0
               endif
             endfor
 
@@ -57,12 +53,30 @@
           -%}
           <li class="link-forloop-1">
             {%- if has_sub_menu == true or has_mega_menu == true -%}
-              {%- liquid
-                assign mega_menu_block = mega_menu_blocks[mega_menu_block_index]
-                assign mega_menu_block_promotions = mega_menu_blocks_promotions[mega_menu_block_index_promotions]
-              -%}
               <div class="link-forloop-1-box">
                 <div class="link-forloop-1-title link-container">
+                  {%- liquid
+                    assign nav_collection = blank
+                    if link.type == 'collection_link' and link.object != blank
+                      assign nav_collection = link.object
+                    endif
+                  -%}
+                  {%- if nav_collection and nav_collection.metafields.custom.link_color_block != blank -%}
+                    <span
+                      class="nav-color-block"
+                      style="background-color: {{ nav_collection.metafields.custom.link_color_block }};"
+                    ></span>
+                  {%- endif -%}
+                  {%- if nav_collection and nav_collection.metafields.custom.link_img_block != blank -%}
+                    <div class="nav-img-block">
+                      <img
+                        src="{{ nav_collection.metafields.custom.link_img_block | image_url: width: master }}"
+                        alt=""
+                        width="15"
+                        height="15"
+                      >
+                    </div>
+                  {%- endif -%}
                   {{ link.title }}
                   {%- if has_menu_badge -%}
                     {%- assign menu_badge_block = menu_badge_blocks[menu_badge_index] -%}
@@ -111,10 +125,56 @@
                                                 priority: 'low'
                                               -%}
                                             </div>
-                                            <span class="text-button">{{- sub_link.title -}}</span>
+                                            <span class="text-button">
+                                              {%- liquid
+                                                assign nav_collection = blank
+                                                if sub_link.type == 'collection_link' and sub_link.object != blank
+                                                  assign nav_collection = sub_link.object
+                                                endif
+                                              -%}
+                                              {%- if nav_collection and nav_collection.metafields.custom.link_color_block != blank -%}
+                                                <span
+                                                  class="nav-color-block"
+                                                  style="background-color: {{ nav_collection.metafields.custom.link_color_block }};"
+                                                ></span>
+                                              {%- endif -%}
+                                              {%- if nav_collection and nav_collection.metafields.custom.link_img_block != blank -%}
+                                                <div class="nav-img-block">
+                                                  <img
+                                                    src="{{ nav_collection.metafields.custom.link_img_block | image_url: width: master }}"
+                                                    alt=""
+                                                    width="15"
+                                                    height="15"
+                                                  >
+                                                </div>
+                                              {%- endif -%}
+                                              {{- sub_link.title -}}
+                                            </span>
                                           </a>
                                         {%- else -%}
                                           <a href="{{ sub_link.url }}" class="thb-full-menu--link">
+                                            {%- liquid
+                                              assign nav_collection = blank
+                                              if sub_link.type == 'collection_link' and sub_link.object != blank
+                                                assign nav_collection = sub_link.object
+                                              endif
+                                            -%}
+                                            {%- if nav_collection and nav_collection.metafields.custom.link_color_block != blank -%}
+                                              <span
+                                                class="nav-color-block"
+                                                style="background-color: {{ nav_collection.metafields.custom.link_color_block }};"
+                                              ></span>
+                                            {%- endif -%}
+                                            {%- if nav_collection and nav_collection.metafields.custom.link_img_block != blank -%}
+                                              <div class="nav-img-block">
+                                                <img
+                                                  src="{{ nav_collection.metafields.custom.link_img_block | image_url: width: master }}"
+                                                  alt=""
+                                                  width="15"
+                                                  height="15"
+                                                >
+                                              </div>
+                                            {%- endif -%}
                                             {{- sub_link.title -}}
                                           </a>
                                         {%- endif -%}
@@ -131,12 +191,56 @@
                             </div>
                           {%- else -%}
                             <a href="{{ l.url }}" title="{{ l.title | escape }}" class="link-container">
+                              {%- liquid
+                                assign nav_collection = blank
+                                if l.type == 'collection_link' and l.object != blank
+                                  assign nav_collection = l.object
+                                endif
+                              -%}
+                              {%- if nav_collection and nav_collection.metafields.custom.link_color_block != blank -%}
+                                <span
+                                  class="nav-color-block"
+                                  style="background-color: {{ nav_collection.metafields.custom.link_color_block }};"
+                                ></span>
+                              {%- endif -%}
+                              {%- if nav_collection and nav_collection.metafields.custom.link_img_block != blank -%}
+                                <div class="nav-img-block">
+                                  <img
+                                    src="{{ nav_collection.metafields.custom.link_img_block | image_url: width: master }}"
+                                    alt=""
+                                    width="15"
+                                    height="15"
+                                  >
+                                </div>
+                              {%- endif -%}
                               {{- l.title -}}
                             </a>
                           {%- endif -%}
                         {%- elsif has_sub_menu -%}
                           <div class="link-forloop-2-box">
                             <div class="link-forloop-2-title link-container">
+                              {%- liquid
+                                assign nav_collection = blank
+                                if l.type == 'collection_link' and l.object != blank
+                                  assign nav_collection = l.object
+                                endif
+                              -%}
+                              {%- if nav_collection and nav_collection.metafields.custom.link_color_block != blank -%}
+                                <span
+                                  class="nav-color-block"
+                                  style="background-color: {{ nav_collection.metafields.custom.link_color_block }};"
+                                ></span>
+                              {%- endif -%}
+                              {%- if nav_collection and nav_collection.metafields.custom.link_img_block != blank -%}
+                                <div class="nav-img-block">
+                                  <img
+                                    src="{{ nav_collection.metafields.custom.link_img_block | image_url: width: master }}"
+                                    alt=""
+                                    width="15"
+                                    height="15"
+                                  >
+                                </div>
+                              {%- endif -%}
                               {{- l.title }}
                               {%- if has_menu_badge -%}
                                 {%- assign menu_badge_block = menu_badge_blocks[menu_badge_index] -%}
@@ -167,24 +271,28 @@
                                       class="link-container"
                                       role="menuitem"
                                     >
-                                      {%- assign handle = sub_link.object.handle -%}
-                                      {%- assign collection = collections[handle] -%}
-                                      {% if collection and collection.metafields.custom.link_color_block != blank %}
+                                      {%- liquid
+                                        assign nav_collection = blank
+                                        if sub_link.type == 'collection_link' and sub_link.object != blank
+                                          assign nav_collection = sub_link.object
+                                        endif
+                                      -%}
+                                      {%- if nav_collection and nav_collection.metafields.custom.link_color_block != blank -%}
                                         <span
                                           class="nav-color-block"
-                                          style="background-color: {{ collection.metafields.custom.link_color_block }};"
+                                          style="background-color: {{ nav_collection.metafields.custom.link_color_block }};"
                                         ></span>
-                                      {% endif %}
-                                      {% if collection and collection.metafields.custom.link_img_block != blank %}
-                                        <div
-                                          class="nav-img-block"
-                                        >
+                                      {%- endif -%}
+                                      {%- if nav_collection and nav_collection.metafields.custom.link_img_block != blank -%}
+                                        <div class="nav-img-block">
                                           <img
-                                            src="{{ collection.metafields.custom.link_img_block | image_url: width: master }}"
+                                            src="{{ nav_collection.metafields.custom.link_img_block | image_url: width: master }}"
                                             alt=""
+                                            width="15"
+                                            height="15"
                                           >
                                         </div>
-                                      {% endif %}
+                                      {%- endif -%}
                                       {{- sub_link.title }}
                                       {% if has_sub_menu %}<span></span>{%- endif -%}
                                     </a>
@@ -194,7 +302,31 @@
                             </div>
                           </div>
                         {%- else -%}
-                          <a href="{{ l.url }}" title="{{ l.title | escape }}" class="link-container">{{ l.title }}</a>
+                          <a href="{{ l.url }}" title="{{ l.title | escape }}" class="link-container">
+                            {%- liquid
+                              assign nav_collection = blank
+                              if l.type == 'collection_link' and l.object != blank
+                                assign nav_collection = l.object
+                              endif
+                            -%}
+                            {%- if nav_collection and nav_collection.metafields.custom.link_color_block != blank -%}
+                              <span
+                                class="nav-color-block"
+                                style="background-color: {{ nav_collection.metafields.custom.link_color_block }};"
+                              ></span>
+                            {%- endif -%}
+                            {%- if nav_collection and nav_collection.metafields.custom.link_img_block != blank -%}
+                              <div class="nav-img-block">
+                                <img
+                                  src="{{ nav_collection.metafields.custom.link_img_block | image_url: width: master }}"
+                                  alt=""
+                                  width="15"
+                                  height="15"
+                                >
+                              </div>
+                            {%- endif -%}
+                            {{ l.title }}
+                          </a>
                         {%- endif -%}
                       </li>
                     {%- endfor -%}
@@ -242,51 +374,72 @@
 </nav>
 <link rel="stylesheet" href="{{ 'mobile-menu.css' | asset_url }}" media="print" onload="this.media='all'">
 <noscript>{{ 'mobile-menu.css' | asset_url | stylesheet_tag }}</noscript>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
 <script>
-  $(document).ready(function () {
-    // 默认隐藏二级和三级菜单
-    $('.link-forloop-2-menu, .link-forloop-3-menu').hide();
+  (function () {
+    function setDisplay(el, isOpen) {
+      if (!el) return;
+      el.style.display = isOpen ? 'block' : 'none';
+    }
 
-    // 点击一级菜单标题
-    $(document).on('click', '.link-forloop-1-title', function (e) {
-      e.preventDefault();
+    function isOpen(el) {
+      if (!el) return false;
+      return el.style.display !== 'none' && getComputedStyle(el).display !== 'none';
+    }
 
-      var $this = $(this);
-      var $submenu = $this.closest('.link-forloop-1-box').find('.link-forloop-2-menu').first();
+    function closeAll(selector, exceptEl) {
+      document.querySelectorAll(selector).forEach(function (el) {
+        if (exceptEl && el === exceptEl) return;
+        setDisplay(el, false);
+      });
+    }
 
-      // 收起其他所有二级菜单，并移除箭头高亮
-      $('.link-forloop-2-menu').not($submenu).slideUp(200);
-      $('.link-forloop-1-title .link-forward').not($this.find('.link-forward')).removeClass('active');
+    function deactivateAll(selector, exceptEl) {
+      document.querySelectorAll(selector).forEach(function (el) {
+        if (exceptEl && el === exceptEl) return;
+        el.classList.remove('active');
+      });
+    }
 
-      // 切换当前点击的二级菜单
-      $submenu.stop(true, true).slideToggle(200);
+    document.addEventListener('click', function (e) {
+      var lvl1Title = e.target.closest('.link-forloop-1-title');
+      if (lvl1Title) {
+        e.preventDefault();
+        var box1 = lvl1Title.closest('.link-forloop-1-box');
+        var submenu2 = box1 ? box1.querySelector('.link-forloop-2-menu') : null;
+        var arrow1 = lvl1Title.querySelector('.link-forward');
 
-      // 切换当前箭头旋转
-      $this.find('.link-forward').toggleClass('active');
+        closeAll('.link-forloop-2-menu', submenu2);
+        deactivateAll('.link-forloop-1-title .link-forward', arrow1);
+
+        var nextOpen = !isOpen(submenu2);
+        setDisplay(submenu2, nextOpen);
+        if (arrow1) arrow1.classList.toggle('active', nextOpen);
+        return;
+      }
+
+      var lvl2Title = e.target.closest('.link-forloop-2-title');
+      if (lvl2Title) {
+        e.preventDefault();
+        var box2 = lvl2Title.closest('.link-forloop-2-box');
+        var submenu3 = box2 ? box2.querySelector('.link-forloop-3-menu') : null;
+        var arrow2 = lvl2Title.querySelector('.link-forward');
+
+        var menu2 = lvl2Title.closest('.link-forloop-2-menu');
+        if (menu2) {
+          menu2.querySelectorAll('.link-forloop-3-menu').forEach(function (el) {
+            if (submenu3 && el === submenu3) return;
+            setDisplay(el, false);
+          });
+          menu2.querySelectorAll('.link-forloop-2-title .link-forward').forEach(function (el) {
+            if (arrow2 && el === arrow2) return;
+            el.classList.remove('active');
+          });
+        }
+
+        var nextOpen2 = !isOpen(submenu3);
+        setDisplay(submenu3, nextOpen2);
+        if (arrow2) arrow2.classList.toggle('active', nextOpen2);
+      }
     });
-
-    // 点击二级菜单标题
-    $(document).on('click', '.link-forloop-2-title', function (e) {
-      e.preventDefault();
-
-      var $this = $(this);
-      var $submenu = $this.closest('.link-forloop-2-box').find('.link-forloop-3-menu').first();
-
-      // 收起同级其他三级菜单，并移除箭头高亮
-      $this.closest('.link-forloop-2-menu').find('.link-forloop-3-menu').not($submenu).slideUp(200);
-      $this
-        .closest('.link-forloop-2-menu')
-        .find('.link-forloop-2-title .link-forward')
-        .not($this.find('.link-forward'))
-        .removeClass('active');
-
-      // 切换当前点击的三级菜单
-      $submenu.stop(true, true).slideToggle(200);
-
-      // 切换当前箭头旋转
-      $this.find('.link-forward').toggleClass('active');
-    });
-  });
+  })();
 </script>

@@ -3,12 +3,60 @@
   <ul class="mega-menu-columns" tabindex="-1">
     {%- for l in link.links -%}
       <li class="{% if l.active %} active{% endif %}" role="none">
-        <a href="{{ l.url }}" class="thb-full-menu--link mega-menu-columns__heading" role="menuitem">{{ l.title }}</a>
+        <a href="{{ l.url }}" class="thb-full-menu--link mega-menu-columns__heading" role="menuitem">
+          {%- liquid
+            assign nav_collection = blank
+            if l.type == 'collection_link' and l.object != blank
+              assign nav_collection = l.object
+            endif
+          -%}
+          {%- if nav_collection and nav_collection.metafields.custom.link_color_block != blank -%}
+            <span
+              class="nav-color-block"
+              style="background-color: {{ nav_collection.metafields.custom.link_color_block }};"
+            ></span>
+          {%- endif -%}
+          {%- if nav_collection and nav_collection.metafields.custom.link_img_block != blank -%}
+            <div class="nav-img-block">
+              <img
+                src="{{ nav_collection.metafields.custom.link_img_block | image_url: width: master }}"
+                alt=""
+                width="15"
+                height="15"
+              >
+            </div>
+          {%- endif -%}
+          <span class="nav-link-text">{{ l.title }}</span>
+        </a>
         {%- if l.links.size > 0 -%}
           <ul role="menu">
             {%- for sub_link in l.links -%}
               <li class="{% if sub_link.active %} active{% endif %}" role="none">
-                <a href="{{ sub_link.url }}" class="thb-full-menu--link" role="menuitem">{{ sub_link.title }}</a>
+                <a href="{{ sub_link.url }}" class="thb-full-menu--link" role="menuitem">
+                  {%- liquid
+                    assign nav_collection = blank
+                    if sub_link.type == 'collection_link' and sub_link.object != blank
+                      assign nav_collection = sub_link.object
+                    endif
+                  -%}
+                  {%- if nav_collection and nav_collection.metafields.custom.link_color_block != blank -%}
+                    <span
+                      class="nav-color-block"
+                      style="background-color: {{ nav_collection.metafields.custom.link_color_block }};"
+                    ></span>
+                  {%- endif -%}
+                  {%- if nav_collection and nav_collection.metafields.custom.link_img_block != blank -%}
+                    <div class="nav-img-block">
+                      <img
+                        src="{{ nav_collection.metafields.custom.link_img_block | image_url: width: master }}"
+                        alt=""
+                        width="15"
+                        height="15"
+                      >
+                    </div>
+                  {%- endif -%}
+                  <span class="nav-link-text">{{ sub_link.title }}</span>
+                </a>
               </li>
             {%- endfor -%}
           </ul>

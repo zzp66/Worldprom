@@ -53,9 +53,6 @@
           endif
         endfor
 
-        if has_mega_menu
-          assign menu_has_mega_menu = true
-        endif
       -%}
       <li
         role="menuitem"
@@ -71,7 +68,29 @@
             aria-current="page"
           {% endif -%}
         >
-          {{- link.title -}}
+          {%- liquid
+            assign nav_collection = blank
+            if link.type == 'collection_link' and link.object != blank
+              assign nav_collection = link.object
+            endif
+          -%}
+          {%- if nav_collection and nav_collection.metafields.custom.link_color_block != blank -%}
+            <span
+              class="nav-color-block"
+              style="background-color: {{ nav_collection.metafields.custom.link_color_block }};"
+            ></span>
+          {%- endif -%}
+          {%- if nav_collection and nav_collection.metafields.custom.link_img_block != blank -%}
+            <div class="nav-img-block">
+              <img
+                src="{{ nav_collection.metafields.custom.link_img_block | image_url: width: master }}"
+                alt=""
+                width="15"
+                height="15"
+              >
+            </div>
+          {%- endif -%}
+          <span class="nav-link-text">{{- link.title -}}</span>
           {%- if has_sub_menu or has_mega_menu -%}{%- render 'svg-icons' with 'thb-dropdown-bottom' -%}{%- endif -%}
         </a>
         {%- if has_menu_badge -%}
@@ -101,7 +120,29 @@
                 {% endif %}
               >
                 <a href="{{ l.url }}" class="thb-full-menu--link" role="menuitem">
-                  {{- l.title -}}
+                  {%- liquid
+                    assign nav_collection = blank
+                    if l.type == 'collection_link' and l.object != blank
+                      assign nav_collection = l.object
+                    endif
+                  -%}
+                  {%- if nav_collection and nav_collection.metafields.custom.link_color_block != blank -%}
+                    <span
+                      class="nav-color-block"
+                      style="background-color: {{ nav_collection.metafields.custom.link_color_block }};"
+                    ></span>
+                  {%- endif -%}
+                  {%- if nav_collection and nav_collection.metafields.custom.link_img_block != blank -%}
+                    <div class="nav-img-block">
+                      <img
+                        src="{{ nav_collection.metafields.custom.link_img_block | image_url: width: master }}"
+                        alt=""
+                        width="15"
+                        height="15"
+                      >
+                    </div>
+                  {%- endif -%}
+                  <span class="nav-link-text">{{- l.title -}}</span>
                   {%- if has_sub_menu -%}{%- render 'svg-icons' with 'thb-dropdown-right' -%}{%- endif -%}
                 </a>
                 {%- if has_sub_menu -%}
@@ -109,7 +150,29 @@
                     {%- for sub_link in l.links -%}
                       <li class="{%- if sub_link.active %} active{% endif %}" role="none">
                         <a href="{{ sub_link.url }}" class="thb-full-menu--link" role="menuitem">
-                          {{- sub_link.title -}}
+                          {%- liquid
+                            assign nav_collection = blank
+                            if sub_link.type == 'collection_link' and sub_link.object != blank
+                              assign nav_collection = sub_link.object
+                            endif
+                          -%}
+                          {%- if nav_collection and nav_collection.metafields.custom.link_color_block != blank -%}
+                            <span
+                              class="nav-color-block"
+                              style="background-color: {{ nav_collection.metafields.custom.link_color_block }};"
+                            ></span>
+                          {%- endif -%}
+                          {%- if nav_collection and nav_collection.metafields.custom.link_img_block != blank -%}
+                            <div class="nav-img-block">
+                              <img
+                                src="{{ nav_collection.metafields.custom.link_img_block | image_url: width: master }}"
+                                alt=""
+                                width="15"
+                                height="15"
+                              >
+                            </div>
+                          {%- endif -%}
+                          <span class="nav-link-text">{{- sub_link.title -}}</span>
                         </a>
                       </li>
                     {%- endfor -%}

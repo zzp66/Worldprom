@@ -7,7 +7,31 @@
           {%- for l in link.links -%}
             <li role="none">
               <a href="{{ l.url }}" class="mega-menu-sidebar--button{% if forloop.first %} active{% endif %}" data-target="#{{ mega_menu_block.id}}-{{ forloop.index }}">
-                <span>{{ l.title }}</span>
+                <span>
+                  {%- liquid
+                    assign nav_collection = blank
+                    if l.type == 'collection_link' and l.object != blank
+                      assign nav_collection = l.object
+                    endif
+                  -%}
+                  {%- if nav_collection and nav_collection.metafields.custom.link_color_block != blank -%}
+                    <span
+                      class="nav-color-block"
+                      style="background-color: {{ nav_collection.metafields.custom.link_color_block }};"
+                    ></span>
+                  {%- endif -%}
+                  {%- if nav_collection and nav_collection.metafields.custom.link_img_block != blank -%}
+                    <div class="nav-img-block">
+                      <img
+                        src="{{ nav_collection.metafields.custom.link_img_block | image_url: width: master }}"
+                        alt=""
+                        width="15"
+                        height="15"
+                      >
+                    </div>
+                  {%- endif -%}
+                  <span class="nav-link-text">{{ l.title }}</span>
+                </span>
               </a>
             </li>
           {%- endfor -%}
@@ -26,10 +50,58 @@
                     <div class="mega-menu-sidebar--content-image">
                     {%- render 'responsive-image', image: sub_link.object.featured_image, sizes: '237x237', priority: 'low' -%}
                     </div>
-                    <span class="text-button">{{- sub_link.title -}}</span>
+                    <span class="text-button">
+                      {%- liquid
+                        assign nav_collection = blank
+                        if sub_link.type == 'collection_link' and sub_link.object != blank
+                          assign nav_collection = sub_link.object
+                        endif
+                      -%}
+                      {%- if nav_collection and nav_collection.metafields.custom.link_color_block != blank -%}
+                        <span
+                          class="nav-color-block"
+                          style="background-color: {{ nav_collection.metafields.custom.link_color_block }};"
+                        ></span>
+                      {%- endif -%}
+                      {%- if nav_collection and nav_collection.metafields.custom.link_img_block != blank -%}
+                        <div class="nav-img-block">
+                          <img
+                            src="{{ nav_collection.metafields.custom.link_img_block | image_url: width: master }}"
+                            alt=""
+                            width="15"
+                            height="15"
+                          >
+                        </div>
+                      {%- endif -%}
+                      <span class="nav-link-text">{{- sub_link.title -}}</span>
+                    </span>
                   </a>
                   {%- else -%}
-                  <a href="{{ sub_link.url }}" class="thb-full-menu--link">{{- sub_link.title -}}</a>
+                  <a href="{{ sub_link.url }}" class="thb-full-menu--link">
+                    {%- liquid
+                      assign nav_collection = blank
+                      if sub_link.type == 'collection_link' and sub_link.object != blank
+                        assign nav_collection = sub_link.object
+                      endif
+                    -%}
+                    {%- if nav_collection and nav_collection.metafields.custom.link_color_block != blank -%}
+                      <span
+                        class="nav-color-block"
+                        style="background-color: {{ nav_collection.metafields.custom.link_color_block }};"
+                      ></span>
+                    {%- endif -%}
+                    {%- if nav_collection and nav_collection.metafields.custom.link_img_block != blank -%}
+                      <div class="nav-img-block">
+                        <img
+                          src="{{ nav_collection.metafields.custom.link_img_block | image_url: width: master }}"
+                          alt=""
+                          width="15"
+                          height="15"
+                        >
+                      </div>
+                    {%- endif -%}
+                    <span class="nav-link-text">{{- sub_link.title -}}</span>
+                  </a>
                   {%- endif -%}
                 {%- elsif sub_link.type == 'product_link' -%}
                   {%- render 'product-card-simple', product_card_product: sub_link.object, show_product_image: mega_menu_block.settings.content_product_image -%}
