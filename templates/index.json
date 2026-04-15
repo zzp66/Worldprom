@@ -210,9 +210,9 @@
         "slide_NNX84T": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/B.jpg",
-            "mobile_image": "shopify://shop_images/A.jpg",
-            "slide_link": "shopify://collections/bridesmaids",
+            "image": "shopify://shop_images/Wedding.jpg",
+            "mobile_image": "shopify://shop_images/Wedding-MB.jpg",
+            "slide_link": "shopify://collections/wedding-dresses",
             "video_background": false,
             "video": "",
             "subheading": "",
@@ -262,7 +262,7 @@
         "heading_left": false,
         "description": "",
         "full_width": true,
-        "collection": "bridesmaids",
+        "collection": "wedding-dresses",
         "display_type": "carousel",
         "product_limit": 10,
         "columns_desktop": 5,

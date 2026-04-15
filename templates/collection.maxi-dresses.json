@@ -248,7 +248,7 @@
         "enable_sorting": true,
         "show_counts": true,
         "filter_color_swatches": false,
-        "facets_desktop": "sidebar",
+        "facets_desktop": "drawer",
         "seo_text": "{{ collection.description }}",
         "seo_text_custom_liquid": "",
         "seo_text_read_more": "Read more",

@@ -101,7 +101,7 @@
             "open": false,
             "content": "",
             "page": "size-guide",
-            "custom_liquid": "{{ product.description }}"
+            "custom_liquid": ""
           }
         },
         "collapsible_tab_hdTWMm": {
@@ -163,7 +163,7 @@
     "product-recommendations": {
       "type": "product-recommendations",
       "settings": {
-        "collection": "all-prom-dresses",
+        "collection": "new-arrival-long",
         "subheading": "",
         "heading": "Perfect For You",
         "heading_left": false,
