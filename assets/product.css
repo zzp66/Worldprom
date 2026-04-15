@@ -2480,6 +2480,40 @@ shopify-payment-terms {
   color: #000;
 }
 
+.custom-size-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: 20px;
+  align-items: center;
+}
+
+.custom-size-content.no-guide-image {
+  grid-template-columns: 1fr;
+}
+
+.custom-size-fields {
+  min-width: 0;
+}
+
+.custom-size-guide {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.custom-size-guide-image {
+  width: 100%;
+  display: flex;
+  display: flex;
+  align-items: center;
+}
+
+.custom-size-guide-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 .custom-field-row {
   display: flex;
   align-items: center;
@@ -2514,6 +2548,11 @@ shopify-payment-terms {
   transition: border-color 0.2s;
 }
 
+.custom-field-select {
+  appearance: auto;
+  background-color: #fff;
+}
+
 .custom-field-input:focus {
   border-color: #000;
   outline: none;
@@ -2534,6 +2573,21 @@ shopify-payment-terms {
 }
 
 @media screen and (max-width: 767px) {
+  .custom-size-content {
+    grid-template-columns: 1fr;
+  }
+
+  .custom-size-guide {
+    max-width: 260px;
+    width: 100%;
+    margin: 0 auto;
+    justify-content: center;
+  }
+
+  .custom-size-guide-image {
+    justify-content: center;
+  }
+
   .afterpay-info {
     font-size: 11px;
     line-height: 16px;

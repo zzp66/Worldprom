@@ -1,3 +1,11 @@
+{%- liquid
+  assign table_header_bg_color_value = table_header_bg_color | default: '#b3a6cc'
+  assign table_body_bg_color_value = table_body_bg_color | default: '#fdf7ff'
+  assign unit_switch_right_bg_color_value = unit_switch_right_bg_color | default: '#b3a6cc'
+  assign table_active_row_bg_color_value = table_active_row_bg_color | default: '#ebe2f9'
+  assign table_text_color_value = table_text_color | default: '#1d1d1f'
+-%}
+
 <style>
   .variant-size-table-wrapper {
     margin-top: 1.2rem;
@@ -36,7 +44,7 @@
   }
   .size-unit .unit-switch.right {
     justify-content: flex-end;
-    background: #b3a6cc;
+    background: var(--size-chart-unit-switch-right-bg, #b3a6cc);
   }
   .size-unit .switch-icon {
     width: 16px;
@@ -51,6 +59,7 @@
     width: 100%;
     border-collapse: collapse;
     text-align: center;
+    color: var(--size-chart-text-color, #1d1d1f);
   }
   .variant-size-table th,
   .variant-size-table td {
@@ -60,16 +69,16 @@
     font-size: 18px;
     font-weight: bold;
     padding: 10px;
-    background-color: #b3a6cc;
+    background-color: var(--size-chart-header-bg, #b3a6cc);
   }
   .variant-size-table td {
     font-size: 14px;
     font-weight: 400;
     padding: 8px 10px;
-    background-color: #fdf7ff;
+    background-color: var(--size-chart-body-bg, #fdf7ff);
   }
   .variant-row.active td {
-    background-color: #ebe2f9;
+    background-color: var(--size-chart-active-row-bg, #ebe2f9);
     font-weight: 600;
   }
 
@@ -83,7 +92,10 @@
   }
 </style>
 
-<div class="variant-size-table-wrapper">
+<div
+  class="variant-size-table-wrapper"
+  style="--size-chart-header-bg: {{ table_header_bg_color_value }}; --size-chart-body-bg: {{ table_body_bg_color_value }}; --size-chart-unit-switch-right-bg: {{ unit_switch_right_bg_color_value }}; --size-chart-active-row-bg: {{ table_active_row_bg_color_value }}; --size-chart-text-color: {{ table_text_color_value }};"
+>
   <div class="size-unit">
     <span class="unit">IN</span>
     <div class="unit-switch right"><span class="switch-icon"></span></div>

@@ -803,13 +803,106 @@
   (function () {
     const SIZE_TARGET = 'Free Custom';
     const FORM_ID = '{{ product_form_id }}';
+    const CUSTOM_SIZE_GUIDE_IMAGE = {% if section.settings.custom_size_guide_image %}{{ section.settings.custom_size_guide_image | image_url: width: 640 | json }}{% else %}''{% endif %};
+    const CUSTOM_SIZE_CONFIG = {
+      bust: {
+        min: {{ section.settings.custom_size_bust_min | default: 31 | json }},
+        max: {{ section.settings.custom_size_bust_max | default: 53 | json }},
+        step: {{ section.settings.custom_size_bust_step | default: 0.5 | json }},
+      },
+      waist: {
+        min: {{ section.settings.custom_size_waist_min | default: 23 | json }},
+        max: {{ section.settings.custom_size_waist_max | default: 43 | json }},
+        step: {{ section.settings.custom_size_waist_step | default: 0.5 | json }},
+      },
+      hip: {
+        min: {{ section.settings.custom_size_hip_min | default: 34 | json }},
+        max: {{ section.settings.custom_size_hip_max | default: 56 | json }},
+        step: {{ section.settings.custom_size_hip_step | default: 0.5 | json }},
+      },
+      hollowToHem: {
+        min: {{ section.settings.custom_size_hollow_to_hem_min | default: 50 | json }},
+        max: {{ section.settings.custom_size_hollow_to_hem_max | default: 65 | json }},
+        step: {{ section.settings.custom_size_hollow_to_hem_step | default: 0.5 | json }},
+      },
+    };
 
     const CUSTOM_FIELDS = [
-      { id: 'bust', label: 'Bust' },
-      { id: 'waist', label: 'Waist' },
-      { id: 'hips', label: 'Hips' },
-      { id: 'hollow-to-hem', label: 'Hollow to hem', subtext: '*including heel height' },
+      {
+        id: 'bust',
+        label: 'Bust',
+        min: Number(CUSTOM_SIZE_CONFIG.bust.min),
+        max: Number(CUSTOM_SIZE_CONFIG.bust.max),
+        step: Number(CUSTOM_SIZE_CONFIG.bust.step),
+      },
+      {
+        id: 'waist',
+        label: 'Waist',
+        min: Number(CUSTOM_SIZE_CONFIG.waist.min),
+        max: Number(CUSTOM_SIZE_CONFIG.waist.max),
+        step: Number(CUSTOM_SIZE_CONFIG.waist.step),
+      },
+      {
+        id: 'hip',
+        label: 'Hip',
+        min: Number(CUSTOM_SIZE_CONFIG.hip.min),
+        max: Number(CUSTOM_SIZE_CONFIG.hip.max),
+        step: Number(CUSTOM_SIZE_CONFIG.hip.step),
+      },
+      {
+        id: 'hollow-to-hem',
+        label: 'Hollow to hem',
+        min: Number(CUSTOM_SIZE_CONFIG.hollowToHem.min),
+        max: Number(CUSTOM_SIZE_CONFIG.hollowToHem.max),
+        step: Number(CUSTOM_SIZE_CONFIG.hollowToHem.step),
+        subtext: '*including heel height',
+      },
     ];
+
+    function normalizeFieldConfig(field) {
+      const defaults = {
+        bust: { min: 31, max: 53, step: 0.5 },
+        waist: { min: 23, max: 43, step: 0.5 },
+        hip: { min: 34, max: 56, step: 0.5 },
+        'hollow-to-hem': { min: 50, max: 65, step: 0.5 },
+      };
+
+      const fallback = defaults[field.id];
+      const min = Number.isFinite(field.min) ? field.min : fallback.min;
+      const max = Number.isFinite(field.max) ? field.max : fallback.max;
+      const step = Number.isFinite(field.step) && field.step > 0 ? field.step : fallback.step;
+
+      if (max < min) {
+        return { ...field, min: fallback.min, max: fallback.max, step: fallback.step };
+      }
+
+      return { ...field, min, max, step };
+    }
+
+    function formatRangeValue(value) {
+      return Number.isInteger(value) ? String(value) : value.toFixed(1);
+    }
+
+    function getDecimalPlaces(num) {
+      const str = String(num);
+      if (!str.includes('.')) return 0;
+      return str.split('.')[1].length;
+    }
+
+    function renderRangeOptions(field) {
+      const options = ['<option value="">Select</option>'];
+      const decimals = Math.max(getDecimalPlaces(field.step), getDecimalPlaces(field.min), getDecimalPlaces(field.max));
+      const step = field.step;
+      const epsilon = step / 1000;
+
+      for (let value = field.min; value <= field.max + epsilon; value += step) {
+        const normalizedValue = Number(value.toFixed(decimals));
+        const text = formatRangeValue(normalizedValue);
+        options.push(`<option value="${text}">${text}</option>`);
+      }
+
+      return options.join('');
+    }
 
     function renderCustomBox() {
       const mainForm = document.getElementById(FORM_ID);
@@ -822,8 +915,11 @@
         container.className = 'custom-size-container';
         container.style.display = 'none';
 
-        let fieldsHtml = CUSTOM_FIELDS.map((field) => {
+        const normalizedFields = CUSTOM_FIELDS.map(normalizeFieldConfig);
+
+        let fieldsHtml = normalizedFields.map((field) => {
           const subtextHtml = field.subtext ? `<div class="custom-field-subtext">${field.subtext}</div>` : '';
+          const optionsHtml = renderRangeOptions(field);
 
           return `
           <div class="custom-field-row">
@@ -832,16 +928,29 @@
               ${subtextHtml}
             </div>
             <div class="custom-field-input-wrapper">
-              <input type="number" step="0.1" id="ipt-${field.id}" class="custom-field-input" placeholder="Enter number">
+              <select id="ipt-${field.id}" class="custom-field-input custom-field-select">
+                ${optionsHtml}
+              </select>
             </div>
           </div>
         `;
         }).join('');
 
+        const imageHtml = CUSTOM_SIZE_GUIDE_IMAGE
+          ? `
+            <div class="custom-size-guide-image">
+              <img src="${CUSTOM_SIZE_GUIDE_IMAGE}" alt="Measurement guide">
+            </div>
+          `
+          : '';
+
         container.innerHTML = `
         <p class="custom-size-title">Custom Size Measurements</p>
-        ${fieldsHtml}
-        <p id="custom-error-msg" class="custom-error-message">Please fill in all fields with valid numbers.</p>
+        <div class="custom-size-content${CUSTOM_SIZE_GUIDE_IMAGE ? '' : ' no-guide-image'}">
+          <div class="custom-size-fields">${fieldsHtml}</div>
+          <div class="custom-size-guide">${imageHtml}</div>
+        </div>
+        <p id="custom-error-msg" class="custom-error-message">Please select all measurements.</p>
       `;
 
         const variantPicker = document.querySelector('variant-selects');
@@ -885,7 +994,7 @@
                 const input = document.getElementById('ipt-' + field.id);
                 const val = input.value.trim();
 
-                if (val === '' || isNaN(val) || parseFloat(val) <= 0) {
+                if (val === '') {
                   input.classList.add('input-error');
                   hasError = true;
                 } else {

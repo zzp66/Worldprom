@@ -469,6 +469,107 @@
       "id": "enable_video_looping",
       "default": false,
       "label": "Enable video looping"
+    },
+    {
+      "type": "header",
+      "content": "Custom size"
+    },
+    {
+      "type": "paragraph",
+      "content": "Configure custom-size dropdown ranges in inches. Supports decimals (example: 31.5). For each field, keep max >= min and step > 0 (example: step 0.5)."
+    },
+    {
+      "type": "image_picker",
+      "id": "custom_size_guide_image",
+      "label": "Custom size guide image"
+    },
+    {
+      "type": "header",
+      "content": "Custom size bust"
+    },
+    {
+      "type": "text",
+      "id": "custom_size_bust_min",
+      "label": "Bust min (inch)",
+      "default": "31"
+    },
+    {
+      "type": "text",
+      "id": "custom_size_bust_max",
+      "label": "Bust max (inch)",
+      "default": "53"
+    },
+    {
+      "type": "text",
+      "id": "custom_size_bust_step",
+      "label": "Bust step (inch)",
+      "default": "0.5"
+    },
+    {
+      "type": "header",
+      "content": "Custom size waist"
+    },
+    {
+      "type": "text",
+      "id": "custom_size_waist_min",
+      "label": "Waist min (inch)",
+      "default": "23"
+    },
+    {
+      "type": "text",
+      "id": "custom_size_waist_max",
+      "label": "Waist max (inch)",
+      "default": "43"
+    },
+    {
+      "type": "text",
+      "id": "custom_size_waist_step",
+      "label": "Waist step (inch)",
+      "default": "0.5"
+    },
+    {
+      "type": "header",
+      "content": "Custom size hip"
+    },
+    {
+      "type": "text",
+      "id": "custom_size_hip_min",
+      "label": "Hip min (inch)",
+      "default": "34"
+    },
+    {
+      "type": "text",
+      "id": "custom_size_hip_max",
+      "label": "Hip max (inch)",
+      "default": "56"
+    },
+    {
+      "type": "text",
+      "id": "custom_size_hip_step",
+      "label": "Hip step (inch)",
+      "default": "0.5"
+    },
+    {
+      "type": "header",
+      "content": "Custom size hollow to hem"
+    },
+    {
+      "type": "text",
+      "id": "custom_size_hollow_to_hem_min",
+      "label": "Hollow to hem min (inch)",
+      "default": "50"
+    },
+    {
+      "type": "text",
+      "id": "custom_size_hollow_to_hem_max",
+      "label": "Hollow to hem max (inch)",
+      "default": "65"
+    },
+    {
+      "type": "text",
+      "id": "custom_size_hollow_to_hem_step",
+      "label": "Hollow to hem step (inch)",
+      "default": "0.5"
     }
   ],
   "blocks": [
@@ -692,6 +793,40 @@
           "id": "show_size_chart_table",
           "default": false,
           "label": "Show Size Chart Table"
+        },
+        {
+          "type": "header",
+          "content": "Size chart table style"
+        },
+        {
+          "type": "color",
+          "id": "size_chart_table_header_bg_color",
+          "label": "Table header background",
+          "default": "#b3a6cc"
+        },
+        {
+          "type": "color",
+          "id": "size_chart_table_body_bg_color",
+          "label": "Table body background",
+          "default": "#fdf7ff"
+        },
+        {
+          "type": "color",
+          "id": "size_chart_unit_switch_right_bg_color",
+          "label": "Unit switch active background",
+          "default": "#b3a6cc"
+        },
+        {
+          "type": "color",
+          "id": "size_chart_table_active_row_bg_color",
+          "label": "Table active row background",
+          "default": "#ebe2f9"
+        },
+        {
+          "type": "color",
+          "id": "size_chart_table_text_color",
+          "label": "Table text color",
+          "default": "#1d1d1f"
         },
         {
           "type": "header",

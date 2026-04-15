@@ -98,7 +98,13 @@
       </fieldset>
       {% if block.settings.show_size_chart_table != false %}
         {% if option.name == 'Size' %}
-          {% render 'size-chart-table' %}
+          {% render 'size-chart-table',
+            table_header_bg_color: block.settings.size_chart_table_header_bg_color,
+            table_body_bg_color: block.settings.size_chart_table_body_bg_color,
+            unit_switch_right_bg_color: block.settings.size_chart_unit_switch_right_bg_color,
+            table_active_row_bg_color: block.settings.size_chart_table_active_row_bg_color,
+            table_text_color: block.settings.size_chart_table_text_color
+          %}
         {% endif %}
       {% endif %}
     </div>
