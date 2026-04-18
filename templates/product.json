@@ -53,6 +53,11 @@
             "color_picker_use_variants": false,
             "variant_is_disabled": true,
             "show_size_chart_table": true,
+            "size_chart_table_header_bg_color": "#bebebe",
+            "size_chart_table_body_bg_color": "#ffffff",
+            "size_chart_unit_switch_right_bg_color": "#1d1d1f",
+            "size_chart_table_active_row_bg_color": "#efefef",
+            "size_chart_table_text_color": "#1d1d1f",
             "sizing_guide_variant": "Size",
             "sizing_guide_text": "Sizing guide",
             "sizing_guide_page": "size-guide"
@@ -147,7 +152,20 @@
         "display_captions": true,
         "hide_variants": false,
         "lightbox": false,
-        "enable_video_looping": true
+        "enable_video_looping": true,
+        "custom_size_guide_image": "shopify://shop_images/Worldprom-0415.png",
+        "custom_size_bust_min": "31",
+        "custom_size_bust_max": "53",
+        "custom_size_bust_step": "0.5",
+        "custom_size_waist_min": "23",
+        "custom_size_waist_max": "43",
+        "custom_size_waist_step": "0.5",
+        "custom_size_hip_min": "34",
+        "custom_size_hip_max": "56",
+        "custom_size_hip_step": "0.5",
+        "custom_size_hollow_to_hem_min": "50",
+        "custom_size_hollow_to_hem_max": "65",
+        "custom_size_hollow_to_hem_step": "0.5"
       }
     },
     "spacer_MVWGLV": {
