@@ -1,5 +1,6 @@
 {%- assign product_form_id = 'product-form-' | append: section.id -%}
 {%- assign outline_button = false -%}
+{%- assign sizing_popup = '' -%}
 {% for block in section.blocks %}
   {%- case block.type -%}
     {%- when 'estimate_time' -%}
@@ -197,28 +198,55 @@
                 assign sizing_guide_variant = block.settings.sizing_guide_variant | default: 'Size' | downcase
               -%}
               {%- if option_slug == sizing_guide_variant -%}
-                {%- if block.settings.sizing_guide_text != '' -%}
-                  {%- capture sizing_link -%}
-                  <modal-opener class="product-popup-modal__opener no-js-hidden" data-modal="#PopupModal-{{ block.id }}">
-                    <button id="ProductPopup-{{ block.id }}" class="product-popup-modal__button text-button" type="button" aria-haspopup="dialog">{{ block.settings.sizing_guide_text }}</button>
-                  </modal-opener>
+                {%- capture sizing_link -%}
+                  {%- if block.settings.sizing_guide_text != blank -%}
+                    <modal-opener class="product-popup-modal__opener no-js-hidden" data-modal="#PopupModal-{{ block.id }}">
+                      <button id="ProductPopup-{{ block.id }}" class="product-popup-modal__button text-button" type="button" aria-haspopup="dialog">{{ block.settings.sizing_guide_text }}</button>
+                    </modal-opener>
+                  {%- endif -%}
+                  {%- if block.settings.custom_sizing_guide_text != blank -%}
+                    <modal-opener class="product-popup-modal__opener no-js-hidden" data-modal="#PopupModalCustom-{{ block.id }}">
+                      <button id="ProductPopupCustom-{{ block.id }}" class="product-popup-modal__button text-button" type="button" aria-haspopup="dialog">{{ block.settings.custom_sizing_guide_text }}</button>
+                    </modal-opener>
+                  {%- endif -%}
                 {%- endcapture -%}
-                  {%- capture sizing_popup -%}
-                <modal-dialog id="PopupModal-{{ block.id }}" class="product-popup-modal">
-                  <div role="dialog" aria-label="{{ block.settings.sizing_guide_text }}" aria-modal="true" class="product-popup-modal__content" tabindex="-1">
-                    <div class="product-popup-modal__content-header">
-                      <h5>{{ block.settings.sizing_guide_page.title }}</h5>
-                      <button id="ModalClose-{{ block.id }}" type="button" class="product-popup-modal__toggle" aria-label="{{ 'accessibility.close' | t }}">{% render 'svg-icons' with 'close' %}</button>
-                    </div>
-                    <scroll-shadow>
-                      <div class="product-popup-modal__content-info">
-                        {{ block.settings.sizing_guide_page.content }}
+
+                {%- if block.settings.sizing_guide_text != blank -%}
+                  {%- capture sizing_popup_default -%}
+                    <modal-dialog id="PopupModal-{{ block.id }}" class="product-popup-modal">
+                      <div role="dialog" aria-label="{{ block.settings.sizing_guide_text }}" aria-modal="true" class="product-popup-modal__content" tabindex="-1">
+                        <div class="product-popup-modal__content-header">
+                          <h5>{{ block.settings.sizing_guide_page.title }}</h5>
+                          <button id="ModalClose-{{ block.id }}" type="button" class="product-popup-modal__toggle" aria-label="{{ 'accessibility.close' | t }}">{% render 'svg-icons' with 'close' %}</button>
+                        </div>
+                        <scroll-shadow>
+                          <div class="product-popup-modal__content-info">
+                            {{ block.settings.sizing_guide_page.content }}
+                          </div>
+                        </scroll-shadow>
                       </div>
-                    </scroll-shadow>
-                  </div>
-                </modal-dialog>
-                <script src="{{ 'modal-dialog.js' | asset_url }}" defer="defer"></script>
-                {%- endcapture -%}
+                    </modal-dialog>
+                  {%- endcapture -%}
+                  {%- assign sizing_popup = sizing_popup | append: sizing_popup_default -%}
+                {%- endif -%}
+
+                {%- if block.settings.custom_sizing_guide_text != blank -%}
+                  {%- capture sizing_popup_custom -%}
+                    <modal-dialog id="PopupModalCustom-{{ block.id }}" class="product-popup-modal">
+                      <div role="dialog" aria-label="{{ block.settings.custom_sizing_guide_text }}" aria-modal="true" class="product-popup-modal__content" tabindex="-1">
+                        <div class="product-popup-modal__content-header">
+                          <h5>{{ block.settings.custom_sizing_guide_modal_title | default: block.settings.custom_sizing_guide_text }}</h5>
+                          <button id="ModalClose-Custom-{{ block.id }}" type="button" class="product-popup-modal__toggle" aria-label="{{ 'accessibility.close' | t }}">{% render 'svg-icons' with 'close' %}</button>
+                        </div>
+                        <scroll-shadow>
+                          <div class="product-popup-modal__content-info">
+                            {%- render 'sizing-guide-custom-table', block: block -%}
+                          </div>
+                        </scroll-shadow>
+                      </div>
+                    </modal-dialog>
+                  {%- endcapture -%}
+                  {%- assign sizing_popup = sizing_popup | append: sizing_popup_custom -%}
                 {%- endif -%}
               {%- endif -%}
               {% render 'product-option',
@@ -798,6 +826,9 @@
 {%- endif -%}
 
 {{ sizing_popup }}
+{%- if sizing_popup != blank -%}
+  <script src="{{ 'modal-dialog.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
 
 <script>
   (function () {

@@ -1,0 +1,136 @@
+<div class="sizing-guide-custom">
+  {%- if block.settings.custom_sizing_guide_richtext != blank or block.settings.custom_sizing_guide_image != blank -%}
+    <div class="sizing-guide-custom__intro{% if block.settings.custom_sizing_guide_image == blank %} sizing-guide-custom__intro--full{%- endif -%}">
+      {%- if block.settings.custom_sizing_guide_richtext != blank -%}
+        <div class="sizing-guide-custom__text rte">
+          {{ block.settings.custom_sizing_guide_richtext }}
+        </div>
+      {%- endif -%}
+      {%- if block.settings.custom_sizing_guide_image != blank -%}
+        <div class="sizing-guide-custom__image">
+          {%- render 'responsive-image', image: block.settings.custom_sizing_guide_image, sizes: '420x0' -%}
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="sizing-guide-custom__table-wrap">
+    <table class="sizing-guide-custom__table" role="table">
+      <thead>
+        <tr>
+          <th rowspan="2">SIZE</th>
+          <th colspan="2">BUST</th>
+          <th colspan="2">WAIST</th>
+          <th colspan="2">HIP</th>
+          <th colspan="2">LENGTH</th>
+        </tr>
+        <tr>
+          <th>CM</th>
+          <th>INCH</th>
+          <th>CM</th>
+          <th>INCH</th>
+          <th>CM</th>
+          <th>INCH</th>
+          <th>CM</th>
+          <th>INCH</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>US2</td><td>83</td><td>32 1/2</td><td>65</td><td>25 1/2</td><td>91</td><td>35 3/4</td><td>147</td><td>58</td></tr>
+        <tr><td>US4</td><td>85</td><td>33 1/2</td><td>68</td><td>26 1/2</td><td>92</td><td>36 3/4</td><td>147</td><td>58</td></tr>
+        <tr><td>US6</td><td>88</td><td>34 1/2</td><td>70</td><td>27 1/2</td><td>96</td><td>37 3/4</td><td>150</td><td>59</td></tr>
+        <tr><td>US8</td><td>90</td><td>35 1/2</td><td>72</td><td>28 1/2</td><td>98</td><td>38 3/4</td><td>150</td><td>59</td></tr>
+        <tr><td>US10</td><td>93</td><td>36 1/2</td><td>75</td><td>29 1/2</td><td>101</td><td>39 3/4</td><td>152</td><td>60</td></tr>
+        <tr><td>US12</td><td>97</td><td>38</td><td>79</td><td>31</td><td>105</td><td>41 1/4</td><td>152</td><td>60</td></tr>
+        <tr><td>US14</td><td>100</td><td>39 1/2</td><td>83</td><td>32 1/2</td><td>109</td><td>42 3/4</td><td>155</td><td>61</td></tr>
+        <tr><td>US16</td><td>104</td><td>41</td><td>86</td><td>34</td><td>112</td><td>44</td><td>155</td><td>61</td></tr>
+        <tr><td>US16W</td><td>109</td><td>43</td><td>92</td><td>36 1/4</td><td>116</td><td>45 1/2</td><td>155</td><td>61</td></tr>
+        <tr><td>US18W</td><td>114</td><td>45</td><td>98</td><td>38 1/2</td><td>121</td><td>47 1/2</td><td>155</td><td>61</td></tr>
+        <tr><td>US20W</td><td>119</td><td>47</td><td>104</td><td>40 3/4</td><td>126</td><td>49 1/2</td><td>155</td><td>61</td></tr>
+        <tr><td>US22W</td><td>124</td><td>49</td><td>109</td><td>43</td><td>131</td><td>51 1/2</td><td>155</td><td>61</td></tr>
+        <tr><td>US24W</td><td>129</td><td>51</td><td>114</td><td>45 1/4</td><td>136</td><td>53 1/2</td><td>155</td><td>61</td></tr>
+        <tr><td>US26W</td><td>134</td><td>53</td><td>119</td><td>47.5</td><td>141</td><td>55 1/2</td><td>155</td><td>61</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .sizing-guide-custom {
+    color: #2e2e38;
+  }
+  .sizing-guide-custom__intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 220px;
+    gap: 20px;
+    margin-bottom: 20px;
+    align-items: start;
+  }
+  .sizing-guide-custom__intro--full {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sizing-guide-custom__text > *:last-child {
+    margin-bottom: 0;
+  }
+  .sizing-guide-custom__image img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    display: block;
+  }
+  .sizing-guide-custom__table-wrap {
+    overflow: visible;
+  }
+  .sizing-guide-custom__table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.25;
+    color: #2f3340;
+  }
+  .sizing-guide-custom__table th,
+  .sizing-guide-custom__table td {
+    padding: 10px 6px;
+    border-right: 1px solid #f4effa;
+    border-bottom: 1px solid #f4effa;
+    word-break: break-word;
+  }
+  .sizing-guide-custom__table thead th {
+    background: #b3a6cc;
+    font-weight: 700;
+  }
+  .sizing-guide-custom__table thead tr:nth-child(2) th {
+    font-weight: 500;
+    background: #b7abcd;
+  }
+  .sizing-guide-custom__table tbody td {
+    background: #f2ebf8;
+    font-weight: 400;
+  }
+  .sizing-guide-custom__table tbody td:first-child {
+    font-weight: 700;
+  }
+  .sizing-guide-custom__table tr th:first-child,
+  .sizing-guide-custom__table tr td:first-child {
+    border-left: 1px solid #f4effa;
+  }
+  .sizing-guide-custom__table thead tr:first-child th {
+    border-top: 1px solid #f4effa;
+  }
+
+  @media screen and (max-width: 767px) {
+    .sizing-guide-custom__intro {
+      grid-template-columns: 1fr;
+    }
+    .sizing-guide-custom__table {
+      font-size: 11px;
+    }
+    .sizing-guide-custom__table th,
+    .sizing-guide-custom__table td {
+      padding: 8px 4px;
+    }
+  }
+</style>
