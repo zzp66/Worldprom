@@ -58,9 +58,13 @@
             "size_chart_unit_switch_right_bg_color": "#1d1d1f",
             "size_chart_table_active_row_bg_color": "#efefef",
             "size_chart_table_text_color": "#1d1d1f",
-            "sizing_guide_variant": "Size",
-            "sizing_guide_text": "Sizing guide",
-            "sizing_guide_page": "size-guide"
+            "sizing_guide_variant": "",
+            "sizing_guide_text": "",
+            "sizing_guide_page": "",
+            "custom_sizing_guide_text": "Size Guide",
+            "custom_sizing_guide_modal_title": "Size Guide",
+            "custom_sizing_guide_richtext": "<ul><li><strong>BUST</strong><br/>Wear a thin, unpadded bra. Wrap the tape snugly around the fullest part of your bust, straight and parallel to the floor — do not pull tight.<br/></li><li><strong>WAIST</strong><br/>Find your natural waist (the narrowest part). Wrap the tape comfortably loose, leaving space to breathe and move.<br/></li><li><strong>HIPS</strong><br/>Stand with feet together. Measure around the fullest part of your hips, keeping the tape smooth and level.<br/></li><li><strong>Hollow to Hem (With Shoes & Heels)</strong><br/>Stand straight wearing your shoes/heels. Measure vertically from the neck hollow straight down to the floor, including your full heel height.</li></ul>",
+            "custom_sizing_guide_image": "shopify://shop_images/Worldprom-0415.png"
           }
         },
         "custom_option_T6Kyh8": {
