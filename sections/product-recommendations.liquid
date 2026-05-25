@@ -1,4 +1,12 @@
 {{- 'product-grid.css' | asset_url | stylesheet_tag -}}
+<style>
+  /* Only prevent vertical movement inside carousel, without blocking page scroll */
+  .section-product-recommendations theme-scroll .theme-scroll--inner {
+    overflow-y: hidden !important;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+</style>
 {%- liquid
   assign section_subheading = section.settings.subheading
   assign section_heading = section.settings.heading
@@ -89,6 +97,122 @@
 {%- unless settings.cart_recommendations -%}
   <script src="{{ 'product-recommendations.js' | asset_url }}" defer="defer"></script>
 {%- endunless -%}
+
+<script>
+  (function () {
+    const root = document.querySelector('.section-product-recommendations');
+    if (!root) return;
+
+    // Allow vertical page scroll; only hijack when user intends horizontal swipe.
+    root.querySelectorAll('theme-scroll .theme-scroll--inner').forEach((viewport) => {
+      let startX = 0;
+      let startY = 0;
+      let lastX = 0;
+      let isHorizontal = null; // null until we decide
+      let scrollEl = null;
+      let originalScrollBehavior = '';
+
+      function resolveScrollEl() {
+        // Prefer the element that actually scrolls horizontally (OverlayScrollbars can wrap / swap viewport behavior).
+        const candidates = [
+          viewport,
+          viewport.querySelector('[data-overlayscrollbars-viewport]'),
+          viewport.closest('[data-overlayscrollbars-viewport]'),
+          viewport.closest('theme-scroll')?.querySelector('[data-overlayscrollbars-viewport]'),
+          viewport.closest('theme-scroll')
+        ].filter(Boolean);
+
+        for (const el of candidates) {
+          try {
+            if (el.scrollWidth > el.clientWidth + 1) return el;
+          } catch (err) {}
+        }
+
+        // Fallback: walk up a bit to find a horizontally scrollable container.
+        let el = viewport;
+        for (let i = 0; i < 4 && el; i++) {
+          if (el.scrollWidth > el.clientWidth + 1) return el;
+          el = el.parentElement;
+        }
+        return viewport;
+      }
+
+      function onStart(e) {
+        const t = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]);
+        if (!t) return;
+        startX = lastX = t.clientX;
+        startY = t.clientY;
+        isHorizontal = null;
+        scrollEl = resolveScrollEl();
+        originalScrollBehavior = scrollEl && scrollEl.style ? scrollEl.style.scrollBehavior : '';
+      }
+
+      function onMove(e) {
+        const t = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]);
+        if (!t) return;
+
+        const dxTotal = t.clientX - startX;
+        const dyTotal = t.clientY - startY;
+
+        if (isHorizontal === null) {
+          // Small threshold to avoid accidental lock.
+          const ax = Math.abs(dxTotal);
+          const ay = Math.abs(dyTotal);
+          if (ax < 6 && ay < 6) return;
+          isHorizontal = ax > ay;
+        }
+
+        if (!isHorizontal) return; // let page scroll normally
+
+        // Horizontal intent: prevent vertical "rubber band" and manually scroll X.
+        e.preventDefault();
+        const dx = t.clientX - lastX;
+        const target = scrollEl || viewport;
+        if (target && target.style) target.style.scrollBehavior = 'auto';
+        if (target && typeof target.scrollBy === 'function') {
+          target.scrollBy({ left: -dx, top: 0, behavior: 'auto' });
+        } else if (target) {
+          target.scrollLeft -= dx;
+        }
+        lastX = t.clientX;
+      }
+
+      function onEnd() {
+        const target = scrollEl || viewport;
+        if (target && target.style) {
+          target.style.scrollBehavior = originalScrollBehavior || '';
+        }
+        scrollEl = null;
+        isHorizontal = null;
+      }
+
+      viewport.addEventListener('touchstart', onStart, { passive: true });
+      viewport.addEventListener('touchmove', onMove, { passive: false });
+      viewport.addEventListener('touchend', onEnd, { passive: true });
+      viewport.addEventListener('touchcancel', onEnd, { passive: true });
+
+      // Desktop: don't let carousel swallow vertical wheel scrolling.
+      // If the intent is vertical scroll, forward it to the page.
+      viewport.addEventListener(
+        'wheel',
+        (e) => {
+          // If this is a touch device, ignore (handled by touch listeners above).
+          if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return;
+
+          // Shift+wheel or dominant deltaX should keep default horizontal behavior.
+          const ax = Math.abs(e.deltaX || 0);
+          const ay = Math.abs(e.deltaY || 0);
+          if (e.shiftKey || ax > ay) return;
+
+          // Vertical intent: scroll page and prevent the carousel from hijacking.
+          e.preventDefault();
+          window.scrollBy({ top: e.deltaY, left: 0, behavior: 'auto' });
+        },
+        { passive: false }
+      );
+    });
+  })();
+</script>
 {% schema %}
 {
   "name": "Product recommendations",
