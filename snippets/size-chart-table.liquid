@@ -4,6 +4,60 @@
   assign unit_switch_right_bg_color_value = unit_switch_right_bg_color | default: '#b3a6cc'
   assign table_active_row_bg_color_value = table_active_row_bg_color | default: '#ebe2f9'
   assign table_text_color_value = table_text_color | default: '#1d1d1f'
+
+  assign length_type_metafield = product.metafields.shopify['skirt-dress-length-type']
+  assign length_type_key = ''
+
+  if length_type_metafield != blank and length_type_metafield.value != blank
+    if length_type_metafield.type contains 'list.'
+      for length_option in length_type_metafield.value
+        capture length_option_label
+          if length_option.label != blank
+            echo length_option.label
+          elsif length_option.name != blank
+            echo length_option.name
+          elsif length_option.handle != blank
+            echo length_option.handle
+          else
+            echo length_option | metafield_text: field: 'label'
+          endif
+        endcapture
+        assign length_option_label = length_option_label | strip
+        if length_option_label == blank
+          capture length_option_label
+            echo length_option | metafield_text: field: 'name'
+          endcapture
+          assign length_option_label = length_option_label | strip
+        endif
+        if length_option_label != blank
+          assign length_type_key = length_option_label
+          break
+        endif
+      endfor
+    else
+      assign length_option = length_type_metafield.value
+      capture length_option_label
+        if length_option.label != blank
+          echo length_option.label
+        elsif length_option.name != blank
+          echo length_option.name
+        elsif length_option.handle != blank
+          echo length_option.handle
+        else
+          echo length_option | metafield_text: field: 'label'
+        endif
+      endcapture
+      assign length_type_key = length_option_label | strip
+    endif
+  endif
+
+  assign length_type_key = length_type_key | downcase | strip
+
+  if length_type_metafield != blank
+    assign length_type_metafield_json = length_type_metafield.value | json
+  else
+    assign length_type_metafield_json = 'null'
+  endif
 -%}
 
 <style>
@@ -94,6 +148,7 @@
 
 <div
   class="variant-size-table-wrapper"
+  data-size-chart-type="{{ length_type_key | escape }}"
   style="--size-chart-header-bg: {{ table_header_bg_color_value }}; --size-chart-body-bg: {{ table_body_bg_color_value }}; --size-chart-unit-switch-right-bg: {{ unit_switch_right_bg_color_value }}; --size-chart-active-row-bg: {{ table_active_row_bg_color_value }}; --size-chart-text-color: {{ table_text_color_value }};"
 >
   <div class="size-unit">
@@ -137,84 +192,301 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+    const lengthTypeMetafieldValue = {{ length_type_metafield_json }};
 
-    // ---------------- 1) 尺码数据 ----------------
-    const sizeTable = {
-      "US0":   { cm:{bust:80,waist:60,hip:87.5,length:147}, in:{bust:"31½",waist:"23½",hip:"34½",length:58}},
-      "US2":   { cm:{bust:83,waist:65,hip:91,length:147}, in:{bust:"32½",waist:"25½",hip:"35¾",length:58}},
-      "US4":   { cm:{bust:85,waist:68,hip:92,length:147}, in:{bust:"33½",waist:"26½",hip:"36¼",length:58}},
-      "US6":   { cm:{bust:88,waist:70,hip:96,length:150}, in:{bust:"34½",waist:"27½",hip:"37¾",length:59}},
-      "US8":   { cm:{bust:90,waist:72,hip:98,length:150}, in:{bust:"35½",waist:"28½",hip:"38¾",length:59}},
-      "US10":  { cm:{bust:93,waist:75,hip:101,length:152}, in:{bust:"36½",waist:"29½",hip:"39¾",length:60}},
-      "US12":  { cm:{bust:97,waist:79,hip:105,length:152}, in:{bust:"38",waist:"31",hip:"41¼",length:60}},
-      "US14":  { cm:{bust:100,waist:83,hip:109,length:155}, in:{bust:"39½",waist:"32½",hip:"42¾",length:61}},
-      "US16":  { cm:{bust:104,waist:86,hip:112,length:155}, in:{bust:"41",waist:"34",hip:"44",length:61}},
-      "US16W": { cm:{bust:109,waist:92,hip:116,length:155}, in:{bust:"43",waist:"36¼",hip:"45½",length:61}},
-      "US18W": { cm:{bust:114,waist:98,hip:121,length:155}, in:{bust:"45",waist:"38½",hip:"47½",length:61}},
-      "US20W": { cm:{bust:119,waist:104,hip:126,length:155}, in:{bust:"47",waist:"40¾",hip:"49½",length:61}},
-      "US22W": { cm:{bust:124,waist:109,hip:131,length:155}, in:{bust:"49",waist:"43",hip:"51½",length:61}},
-      "US24W": { cm:{bust:129,waist:114,hip:136,length:155}, in:{bust:"51",waist:"45¼",hip:"53¼",length:61}},
-      "US26W": { cm:{bust:134,waist:119,hip:141,length:155}, in:{bust:"53",waist:"47½",hip:"55½",length:61}}
+    const CHART_TYPE_ALIASES = {
+      maxi: 'dress',
+      floor_length: 'dress',
+      'floor length': 'dress',
+      ankle_length: 'ankle_length',
+      'ankle length': 'ankle_length',
+      tea_length: 'tea_length',
+      'tea length': 'tea_length',
+      knee: 'knee_length',
+      knee_length: 'knee_length',
+      short: 'short_skirt',
+      mini: 'short_skirt'
     };
 
-    const normalizedSizeTable = {};
-    Object.keys(sizeTable).forEach(k=>{
-      normalizedSizeTable[k.toUpperCase().replace(/\s+/g,'').replace(/[^A-Z0-9]/g,'')] = sizeTable[k];
-    });
+    const sizeChartProfiles = {
+      // Maxi / Floor Length
+      dress: {
+        US0: { cm: { bust: 81.3, waist: 64.8, hip: 90.2, length: 144.8 }, in: { bust: '32', waist: '25½', hip: '35½', length: 57 } },
+        US2: { cm: { bust: 83.8, waist: 67.3, hip: 92.7, length: 147.3 }, in: { bust: '33', waist: '26½', hip: '36½', length: 58 } },
+        US4: { cm: { bust: 86.4, waist: 69.9, hip: 95.3, length: 147.3 }, in: { bust: '34', waist: '27½', hip: '37½', length: 58 } },
+        US6: { cm: { bust: 88.9, waist: 72.4, hip: 97.8, length: 149.9 }, in: { bust: '35', waist: '28½', hip: '38½', length: 59 } },
+        US8: { cm: { bust: 91.4, waist: 74.9, hip: 100.3, length: 149.9 }, in: { bust: '36', waist: '29½', hip: '39½', length: 59 } },
+        US10: { cm: { bust: 95.3, waist: 78.7, hip: 104.1, length: 152.4 }, in: { bust: '37½', waist: '31', hip: '41', length: 60 } },
+        US12: { cm: { bust: 99.1, waist: 82.6, hip: 108, length: 152.4 }, in: { bust: '39', waist: '32½', hip: '42½', length: 60 } },
+        US14: { cm: { bust: 104.1, waist: 88.3, hip: 113, length: 154.9 }, in: { bust: '41', waist: '34¾', hip: '44½', length: 61 } },
+        US16: { cm: { bust: 109.9, waist: 94.6, hip: 118.7, length: 154.9 }, in: { bust: '43¼', waist: '37¼', hip: '46¾', length: 61 } },
+        US18: { cm: { bust: 115.6, waist: 101, hip: 124.5, length: 154.9 }, in: { bust: '45½', waist: '39¾', hip: '49', length: 61 } },
+        US20: { cm: { bust: 121.3, waist: 107.3, hip: 130.2, length: 154.9 }, in: { bust: '47¾', waist: '42¼', hip: '51¼', length: 61 } },
+        US22: { cm: { bust: 127, waist: 113.7, hip: 135.9, length: 154.9 }, in: { bust: '50', waist: '44¾', hip: '53½', length: 61 } },
+        US24: { cm: { bust: 134.6, waist: 121.9, hip: 143.5, length: 154.9 }, in: { bust: '53', waist: '48', hip: '56½', length: 61 } },
+        US26: { cm: { bust: 142.2, waist: 130.2, hip: 151.1, length: 154.9 }, in: { bust: '56', waist: '51¼', hip: '59½', length: 61 } }
+      },
+
+      // WORLDPROM Dress Size Chart（Ankle Length）
+      ankle_length: {
+        US0: { cm: { bust: 81.3, waist: 64.8, hip: 90.2, length: 132.1 }, in: { bust: '32', waist: '25½', hip: '35½', length: 52 } },
+        US2: { cm: { bust: 83.8, waist: 67.3, hip: 92.7, length: 134.6 }, in: { bust: '33', waist: '26½', hip: '36½', length: 53 } },
+        US4: { cm: { bust: 86.4, waist: 69.9, hip: 95.3, length: 134.6 }, in: { bust: '34', waist: '27½', hip: '37½', length: 53 } },
+        US6: { cm: { bust: 88.9, waist: 72.4, hip: 97.8, length: 137.2 }, in: { bust: '35', waist: '28½', hip: '38½', length: 54 } },
+        US8: { cm: { bust: 91.4, waist: 74.9, hip: 100.3, length: 137.2 }, in: { bust: '36', waist: '29½', hip: '39½', length: 54 } },
+        US10: { cm: { bust: 95.3, waist: 78.7, hip: 104.1, length: 137.2 }, in: { bust: '37½', waist: '31', hip: '41', length: 54 } },
+        US12: { cm: { bust: 99.1, waist: 82.6, hip: 108, length: 137.2 }, in: { bust: '39', waist: '32½', hip: '42½', length: 54 } },
+        US14: { cm: { bust: 104.1, waist: 88.3, hip: 113, length: 139.7 }, in: { bust: '41', waist: '34¾', hip: '44½', length: 55 } },
+        US16: { cm: { bust: 109.9, waist: 94.6, hip: 118.7, length: 139.7 }, in: { bust: '43¼', waist: '37¼', hip: '46¾', length: 55 } },
+        US18: { cm: { bust: 115.6, waist: 101, hip: 124.5, length: 142.2 }, in: { bust: '45½', waist: '39¾', hip: '49', length: 56 } },
+        US20: { cm: { bust: 121.3, waist: 107.3, hip: 130.2, length: 142.2 }, in: { bust: '47¾', waist: '42¼', hip: '51¼', length: 56 } },
+        US22: { cm: { bust: 127, waist: 113.7, hip: 135.9, length: 142.2 }, in: { bust: '50', waist: '44¾', hip: '53½', length: 56 } },
+        US24: { cm: { bust: 134.6, waist: 121.9, hip: 143.5, length: 142.2 }, in: { bust: '53', waist: '48', hip: '56½', length: 56 } },
+        US26: { cm: { bust: 142.2, waist: 130.2, hip: 151.1, length: 142.2 }, in: { bust: '56', waist: '51¼', hip: '59½', length: 56 } }
+      },
+
+      // WORLDPROM Dress Size Chart（Tea Length）
+      tea_length: {
+        US0: { cm: { bust: 81.3, waist: 64.8, hip: 90.2, length: 111.8 }, in: { bust: '32', waist: '25½', hip: '35½', length: 44 } },
+        US2: { cm: { bust: 83.8, waist: 67.3, hip: 92.7, length: 116.8 }, in: { bust: '33', waist: '26½', hip: '36½', length: 46 } },
+        US4: { cm: { bust: 86.4, waist: 69.9, hip: 95.3, length: 116.8 }, in: { bust: '34', waist: '27½', hip: '37½', length: 46 } },
+        US6: { cm: { bust: 88.9, waist: 72.4, hip: 97.8, length: 116.8 }, in: { bust: '35', waist: '28½', hip: '38½', length: 46 } },
+        US8: { cm: { bust: 91.4, waist: 74.9, hip: 100.3, length: 116.8 }, in: { bust: '36', waist: '29½', hip: '39½', length: 46 } },
+        US10: { cm: { bust: 95.3, waist: 78.7, hip: 104.1, length: 119.4 }, in: { bust: '37½', waist: '31', hip: '41', length: 47 } },
+        US12: { cm: { bust: 99.1, waist: 82.6, hip: 108, length: 119.4 }, in: { bust: '39', waist: '32½', hip: '42½', length: 47 } },
+        US14: { cm: { bust: 104.1, waist: 88.3, hip: 113, length: 121.9 }, in: { bust: '41', waist: '34¾', hip: '44½', length: 48 } },
+        US16: { cm: { bust: 109.9, waist: 94.6, hip: 118.7, length: 121.9 }, in: { bust: '43¼', waist: '37¼', hip: '46¾', length: 48 } },
+        US18: { cm: { bust: 115.6, waist: 101, hip: 124.5, length: 121.9 }, in: { bust: '45½', waist: '39¾', hip: '49', length: 48 } },
+        US20: { cm: { bust: 121.3, waist: 107.3, hip: 130.2, length: 121.9 }, in: { bust: '47¾', waist: '42¼', hip: '51¼', length: 48 } },
+        US22: { cm: { bust: 127, waist: 113.7, hip: 135.9, length: 121.9 }, in: { bust: '50', waist: '44¾', hip: '53½', length: 48 } },
+        US24: { cm: { bust: 134.6, waist: 121.9, hip: 143.5, length: 121.9 }, in: { bust: '53', waist: '48', hip: '56½', length: 48 } },
+        US26: { cm: { bust: 142.2, waist: 130.2, hip: 151.1, length: 121.9 }, in: { bust: '56', waist: '51¼', hip: '59½', length: 48 } }
+      },
+
+      // WORLDPROM Dress Size Chart（Knee）
+      knee_length: {
+        US0: { cm: { bust: 81.3, waist: 64.8, hip: 90.2, length: 94 }, in: { bust: '32', waist: '25½', hip: '35½', length: 37 } },
+        US2: { cm: { bust: 83.8, waist: 67.3, hip: 92.7, length: 96.5 }, in: { bust: '33', waist: '26½', hip: '36½', length: 38 } },
+        US4: { cm: { bust: 86.4, waist: 69.9, hip: 95.3, length: 96.5 }, in: { bust: '34', waist: '27½', hip: '37½', length: 38 } },
+        US6: { cm: { bust: 88.9, waist: 72.4, hip: 97.8, length: 96.5 }, in: { bust: '35', waist: '28½', hip: '38½', length: 38 } },
+        US8: { cm: { bust: 91.4, waist: 74.9, hip: 100.3, length: 96.5 }, in: { bust: '36', waist: '29½', hip: '39½', length: 38 } },
+        US10: { cm: { bust: 95.3, waist: 78.7, hip: 104.1, length: 99.1 }, in: { bust: '37½', waist: '31', hip: '41', length: 39 } },
+        US12: { cm: { bust: 99.1, waist: 82.6, hip: 108, length: 99.1 }, in: { bust: '39', waist: '32½', hip: '42½', length: 39 } },
+        US14: { cm: { bust: 104.1, waist: 88.3, hip: 113, length: 99.1 }, in: { bust: '41', waist: '34¾', hip: '44½', length: 39 } },
+        US16: { cm: { bust: 109.9, waist: 94.6, hip: 118.7, length: 99.1 }, in: { bust: '43¼', waist: '37¼', hip: '46¾', length: 39 } },
+        US18: { cm: { bust: 115.6, waist: 101, hip: 124.5, length: 101.6 }, in: { bust: '45½', waist: '39¾', hip: '49', length: 40 } },
+        US20: { cm: { bust: 121.3, waist: 107.3, hip: 130.2, length: 101.6 }, in: { bust: '47¾', waist: '42¼', hip: '51¼', length: 40 } },
+        US22: { cm: { bust: 127, waist: 113.7, hip: 135.9, length: 101.6 }, in: { bust: '50', waist: '44¾', hip: '53½', length: 40 } },
+        US24: { cm: { bust: 134.6, waist: 121.9, hip: 143.5, length: 104.1 }, in: { bust: '53', waist: '48', hip: '56½', length: 41 } },
+        US26: { cm: { bust: 142.2, waist: 130.2, hip: 151.1, length: 104.1 }, in: { bust: '56', waist: '51¼', hip: '59½', length: 41 } }
+      },
+
+      // WORLDPROM Dress Size Chart（Short / Mini）
+      short_skirt: {
+        US0: { cm: { bust: 81.3, waist: 64.8, hip: 90.2, length: 71.1 }, in: { bust: '32', waist: '25½', hip: '35½', length: 28 } },
+        US2: { cm: { bust: 83.8, waist: 67.3, hip: 92.7, length: 73.7 }, in: { bust: '33', waist: '26½', hip: '36½', length: 29 } },
+        US4: { cm: { bust: 86.4, waist: 69.9, hip: 95.3, length: 73.7 }, in: { bust: '34', waist: '27½', hip: '37½', length: 29 } },
+        US6: { cm: { bust: 88.9, waist: 72.4, hip: 97.8, length: 76.2 }, in: { bust: '35', waist: '28½', hip: '38½', length: 30 } },
+        US8: { cm: { bust: 91.4, waist: 74.9, hip: 100.3, length: 76.2 }, in: { bust: '36', waist: '29½', hip: '39½', length: 30 } },
+        US10: { cm: { bust: 95.3, waist: 78.7, hip: 104.1, length: 76.2 }, in: { bust: '37½', waist: '31', hip: '41', length: 30 } },
+        US12: { cm: { bust: 99.1, waist: 82.6, hip: 108, length: 76.2 }, in: { bust: '39', waist: '32½', hip: '42½', length: 30 } },
+        US14: { cm: { bust: 104.1, waist: 88.3, hip: 113, length: 78.7 }, in: { bust: '41', waist: '34¾', hip: '44½', length: 31 } },
+        US16: { cm: { bust: 109.9, waist: 94.6, hip: 118.7, length: 78.7 }, in: { bust: '43¼', waist: '37¼', hip: '46¾', length: 31 } },
+        US18: { cm: { bust: 115.6, waist: 101, hip: 124.5, length: 81.3 }, in: { bust: '45½', waist: '39¾', hip: '49', length: 32 } },
+        US20: { cm: { bust: 121.3, waist: 107.3, hip: 130.2, length: 81.3 }, in: { bust: '47¾', waist: '42¼', hip: '51¼', length: 32 } },
+        US22: { cm: { bust: 127, waist: 113.7, hip: 135.9, length: 81.3 }, in: { bust: '50', waist: '44¾', hip: '53½', length: 32 } },
+        US24: { cm: { bust: 134.6, waist: 121.9, hip: 143.5, length: 83.8 }, in: { bust: '53', waist: '48', hip: '56½', length: 33 } },
+        US26: { cm: { bust: 142.2, waist: 130.2, hip: 151.1, length: 83.8 }, in: { bust: '56', waist: '51¼', hip: '59½', length: 33 } }
+      }
+    };
+
+    function extractChartSource(raw) {
+      if (raw == null || raw === '') return '';
+      if (typeof raw === 'object') {
+        if (Array.isArray(raw)) {
+          return extractChartSource(raw[0]);
+        }
+        return raw.handle || (raw.system && raw.system.handle) || raw.label || raw.name || '';
+      }
+      return String(raw);
+    }
+
+    function toChartSlug(source) {
+      return String(source)
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, '_')
+        .replace(/-+/g, '_')
+        .replace(/^gid:\/\/shopify\/[^/]+\//, '')
+        .replace(/[^a-z0-9_]/g, '');
+    }
+
+    function normalizeChartTypeKey(raw) {
+      const fromLiquid = {{ length_type_key | json }};
+      let source = extractChartSource(raw != null && raw !== '' ? raw : fromLiquid);
+
+      if (!source && lengthTypeMetafieldValue) {
+        source = extractChartSource(lengthTypeMetafieldValue);
+      }
+
+      if (!source || source === 'default') return null;
+
+      const slug = toChartSlug(source);
+      if (!slug) return null;
+
+      if (CHART_TYPE_ALIASES[slug]) return CHART_TYPE_ALIASES[slug];
+      if (sizeChartProfiles[slug]) return slug;
+
+      if (slug.includes('floor') && slug.includes('length')) return 'dress';
+      if (slug.includes('ankle')) return 'ankle_length';
+      if (slug.includes('tea')) return 'tea_length';
+      if (slug.includes('knee')) return 'knee_length';
+      if (slug.includes('short') || slug.includes('mini')) return 'short_skirt';
+      if (slug.includes('maxi')) return 'dress';
+
+      return null;
+    }
+
+    const PLUS_SIZE_ALIASES = [
+      ['US16W', 'US16'],
+      ['US18W', 'US18'],
+      ['US20W', 'US20'],
+      ['US22W', 'US22'],
+      ['US24W', 'US24'],
+      ['US26W', 'US26']
+    ];
+
+    function normalizeSizeKey(sizeRaw) {
+      return String(sizeRaw)
+        .toUpperCase()
+        .trim()
+        .replace(/\s+/g, '')
+        .replace(/[^A-Z0-9]/g, '');
+    }
+
+    function buildNormalizedLookup(table) {
+      const normalized = {};
+      Object.keys(table).forEach(function (key) {
+        normalized[normalizeSizeKey(key)] = table[key];
+      });
+      PLUS_SIZE_ALIASES.forEach(function (pair) {
+        const wKey = normalizeSizeKey(pair[0]);
+        const srcKey = normalizeSizeKey(pair[1]);
+        if (normalized[srcKey] && !normalized[wKey]) {
+          normalized[wKey] = normalized[srcKey];
+        }
+      });
+      return normalized;
+    }
+
+    const scriptEl = document.currentScript;
+    const wrapper = scriptEl && scriptEl.previousElementSibling?.classList?.contains('variant-size-table-wrapper')
+      ? scriptEl.previousElementSibling
+      : document.querySelector('.variant-size-table-wrapper');
+
+    if (!wrapper) return;
+
+    const rows = Array.from(wrapper.querySelectorAll('.variant-row'));
+
+    function hideAll() {
+      rows.forEach(function (r) {
+        r.style.display = 'none';
+      });
+      wrapper.classList.add('hidden');
+    }
+
+    const activeChartType = normalizeChartTypeKey(wrapper.dataset.sizeChartType);
+    const activeSizeTable = activeChartType ? sizeChartProfiles[activeChartType] : null;
+
+    if (!activeSizeTable) {
+      hideAll();
+      return;
+    }
+
+    wrapper.classList.remove('hidden');
+
+    const normalizedSizeTable = buildNormalizedLookup(activeSizeTable);
 
     const productVariants = {{ product.variants | json }};
     const productOptions = {{ product.options | json }};
-    const sizeIndex = (productOptions||[]).findIndex(opt=>String(opt).toLowerCase()==='size');
-
-    const wrapper = document.querySelector('.variant-size-table-wrapper');
-    const rows = Array.from(document.querySelectorAll('.variant-row'));
-    const sizeValues = rows.map(r=>r.dataset.size);
+    const sizeIndex = (productOptions || []).findIndex(function (opt) {
+      return String(opt).toLowerCase() === 'size';
+    });
+    const sizeValues = rows.map(function (r) {
+      return r.dataset.size;
+    });
     let currentUnit = 'cm';
 
-    function lookupSizeData(sizeRaw, unit){
-      const norm = String(sizeRaw).toUpperCase().trim().replace(/\s+/g,'').replace(/[^A-Z0-9]/g,'');
-      return normalizedSizeTable[norm]? normalizedSizeTable[norm][unit]:null;
+    function formatCmValue(value) {
+      const num = Number(value);
+      if (!Number.isFinite(num)) return value;
+      return Number.isInteger(num) ? num : num.toFixed(1);
     }
 
-    function renderTable(unit){
-      rows.forEach(row=>{
-        const size=row.dataset.size;
-        const d=lookupSizeData(size,unit);
-        if(d){
-          row.querySelector('.bust').textContent=d.bust;
-          row.querySelector('.waist').textContent=d.waist;
-          row.querySelector('.hip').textContent=d.hip;
-          row.querySelector('.length').textContent=d.length;
-        }else{
-          row.querySelectorAll('td:not(:first-child)').forEach(td=>td.textContent='-');
+    function lookupSizeData(sizeRaw, unit) {
+      const row = normalizedSizeTable[normalizeSizeKey(sizeRaw)];
+      if (!row) return null;
+
+      const data = row[unit];
+      if (!data) return null;
+
+      if (unit === 'cm') {
+        return {
+          bust: formatCmValue(data.bust),
+          waist: formatCmValue(data.waist),
+          hip: formatCmValue(data.hip),
+          length: formatCmValue(data.length)
+        };
+      }
+
+      return data;
+    }
+
+    function renderTable(unit) {
+      rows.forEach(function (row) {
+        const size = row.dataset.size;
+        const d = lookupSizeData(size, unit);
+        if (d) {
+          row.querySelector('.bust').textContent = d.bust;
+          row.querySelector('.waist').textContent = d.waist;
+          row.querySelector('.hip').textContent = d.hip;
+          row.querySelector('.length').textContent = d.length;
+        } else {
+          row.querySelectorAll('td:not(:first-child)').forEach(function (td) {
+            td.textContent = '-';
+          });
         }
       });
     }
+
     renderTable(currentUnit);
 
-    // ---- 滑块切换动画 ----
-    const sizeUnitWrapper=document.querySelector('.size-unit');
-    const unitSwitch=sizeUnitWrapper.querySelector('.unit-switch');
-    sizeUnitWrapper.addEventListener('click',function(e){
+    const sizeUnitWrapper = wrapper.querySelector('.size-unit');
+    const unitSwitch = sizeUnitWrapper.querySelector('.unit-switch');
+    sizeUnitWrapper.addEventListener('click', function (e) {
       e.preventDefault();
       unitSwitch.classList.toggle('right');
-      const toUnit=unitSwitch.classList.contains('right')?'cm':'in';
-      if(toUnit!==currentUnit){ currentUnit=toUnit; renderTable(currentUnit); }
+      const toUnit = unitSwitch.classList.contains('right') ? 'cm' : 'in';
+      if (toUnit !== currentUnit) {
+        currentUnit = toUnit;
+        renderTable(currentUnit);
+      }
     });
 
-    // ---- 三行窗口逻辑（已修复边界：首/末项仍显示三行） ----
-    function show3Rows(idx){
+    function show3Rows(idx) {
       if (!Array.isArray(rows) || rows.length === 0) return;
       const n = rows.length;
 
-      // 若总行数 <= 3 则全部显示
       if (n <= 3) {
-        rows.forEach((r,i)=>{ r.style.display='table-row'; r.classList.toggle('active', i===idx); });
+        rows.forEach(function (r, i) {
+          r.style.display = 'table-row';
+          r.classList.toggle('active', i === idx);
+        });
         return;
       }
 
-      // 边界处理：首项 -> 0,1,2 ; 末项 -> n-3,n-2,n-1 ; 其它 -> idx-1,idx,idx+1
-      let start, end;
+      let start;
+      let end;
       if (idx <= 0) {
         start = 0;
         end = 2;
@@ -226,7 +498,7 @@
         end = idx + 1;
       }
 
-      rows.forEach((r,i)=>{
+      rows.forEach(function (r, i) {
         if (i >= start && i <= end) {
           r.style.display = 'table-row';
         } else {
@@ -236,36 +508,51 @@
       });
     }
 
-    function hideAll(){ rows.forEach(r=>r.style.display='none'); wrapper.classList.add('hidden'); }
-    function showWrapper(){ wrapper.classList.remove('hidden'); }
-
-    function handleVariantObject(v){
-      if(!v||sizeIndex===-1)return;
-      const sizeVal=v.options[sizeIndex];
-      if(!sizeVal)return;
-      if(String(sizeVal).toLowerCase().trim()==='free custom'){ hideAll();return;}
-      showWrapper();
-      const idx=sizeValues.findIndex(s=>s===sizeVal);
-      if(idx!==-1){ show3Rows(idx); }
-      else{
-        const normalized=String(sizeVal).toUpperCase().replace(/\s+/g,'').replace(/[^A-Z0-9]/g,'');
-        const found=sizeValues.findIndex(s=>String(s).toUpperCase().replace(/\s+/g,'').replace(/[^A-Z0-9]/g,'')===normalized);
-        if(found!==-1) show3Rows(found);
-        else hideAll();
-      }
+    function showWrapper() {
+      wrapper.classList.remove('hidden');
     }
 
-    document.addEventListener('variant:change',e=>{ handleVariantObject(e.detail&&e.detail.variant?e.detail.variant:null); });
+    function handleVariantObject(v) {
+      if (!v || sizeIndex === -1) return;
+      const sizeVal = v.options[sizeIndex];
+      if (!sizeVal) return;
+      if (String(sizeVal).toLowerCase().trim() === 'free custom') {
+        hideAll();
+        return;
+      }
 
-    const variantInput=document.querySelector('[name="id"]');
-    if(variantInput){
-      variantInput.addEventListener('change',function(){
-        const v=productVariants.find(x=>String(x.id)===String(this.value));
-        if(v)handleVariantObject(v);
+      showWrapper();
+      const idx = sizeValues.findIndex(function (s) {
+        return s === sizeVal;
+      });
+      if (idx !== -1) {
+        show3Rows(idx);
+        return;
+      }
+
+      const normalized = normalizeSizeKey(sizeVal);
+      const found = sizeValues.findIndex(function (s) {
+        return normalizeSizeKey(s) === normalized;
+      });
+      if (found !== -1) show3Rows(found);
+      else hideAll();
+    }
+
+    document.addEventListener('variant:change', function (e) {
+      handleVariantObject(e.detail && e.detail.variant ? e.detail.variant : null);
+    });
+
+    const variantInput = document.querySelector('[name="id"]');
+    if (variantInput) {
+      variantInput.addEventListener('change', function () {
+        const v = productVariants.find(function (x) {
+          return String(x.id) === String(this.value);
+        }, this);
+        if (v) handleVariantObject(v);
       });
     }
 
-    const initialVariant={{ product.selected_or_first_available_variant | json }};
+    const initialVariant = {{ product.selected_or_first_available_variant | json }};
     handleVariantObject(initialVariant);
   });
 </script>

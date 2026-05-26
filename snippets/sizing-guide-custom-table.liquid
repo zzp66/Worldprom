@@ -1,137 +1,742 @@
-<div class="sizing-guide-custom">
-  {%- if block.settings.custom_sizing_guide_richtext != blank or block.settings.custom_sizing_guide_image != blank -%}
-    <div class="sizing-guide-custom__intro{% if block.settings.custom_sizing_guide_image == blank %} sizing-guide-custom__intro--full{%- endif -%}">
-      {%- if block.settings.custom_sizing_guide_richtext != blank -%}
-        <div class="sizing-guide-custom__text rte">
-          {{ block.settings.custom_sizing_guide_richtext }}
+{%- liquid
+  assign measure_text = block.settings.custom_sizing_guide_measure_richtext
+  if measure_text == blank
+    assign measure_text = block.settings.custom_sizing_guide_richtext
+  endif
+
+  assign hollow_text = block.settings.custom_sizing_guide_hollow_richtext
+  if hollow_text == blank
+    assign hollow_text = '<p><strong>Hollow to Hem (Without Heels)</strong></p><p>Stand straight barefoot.</p><p>Measure vertically from the hollow at the base of your neck straight down to the floor along the front of your body.</p><p>This measurement excludes shoe and heel height.</p>'
+  endif
+
+  assign length_types = 'floor,ankle,tea,knee,short' | split: ','
+  assign length_labels = 'Floor Length,Ankle Length,Tea Length,Knee Length,Short & Mini Length' | split: ','
+-%}
+
+<div class="worldprom-size-guide">
+  <div class="worldprom-size-guide__table-section">
+    <p class="worldprom-size-guide__table-title">
+      {{ block.settings.custom_sizing_guide_table_title | default: 'WORLDPROM Dress Size Chart' }}
+    </p>
+    <div class="worldprom-size-guide__table-scroll">
+      <table class="worldprom-size-guide__table" role="table">
+        <thead>
+          <tr>
+            <th rowspan="2" scope="col">SIZE</th>
+            <th colspan="2" scope="colgroup">BUST</th>
+            <th colspan="2" scope="colgroup">WAIST</th>
+            <th colspan="2" scope="colgroup">HIPS</th>
+            <th colspan="2" scope="colgroup">Floor Length</th>
+            <th colspan="2" scope="colgroup">Ankle Length</th>
+            <th colspan="2" scope="colgroup">Tea Length</th>
+            <th colspan="2" scope="colgroup">Knee Length</th>
+            <th colspan="2" scope="colgroup">Short &amp; Mini Length</th>
+          </tr>
+          <tr>
+            <th scope="col">INCH</th>
+            <th scope="col">CM</th>
+            <th scope="col">INCH</th>
+            <th scope="col">CM</th>
+            <th scope="col">INCH</th>
+            <th scope="col">CM</th>
+            <th scope="col">INCH</th>
+            <th scope="col">CM</th>
+            <th scope="col">INCH</th>
+            <th scope="col">CM</th>
+            <th scope="col">INCH</th>
+            <th scope="col">CM</th>
+            <th scope="col">INCH</th>
+            <th scope="col">CM</th>
+            <th scope="col">INCH</th>
+            <th scope="col">CM</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%- render 'sizing-guide-table-row',
+            size: 'US0',
+            bust_in: '32',
+            bust_cm: '81.3',
+            waist_in: '25½',
+            waist_cm: '64.8',
+            hip_in: '35½',
+            hip_cm: '90.2',
+            floor_in: '57',
+            floor_cm: '144.8',
+            ankle_in: '52',
+            ankle_cm: '132.1',
+            tea_in: '44',
+            tea_cm: '111.8',
+            knee_in: '37',
+            knee_cm: '94',
+            short_in: '28',
+            short_cm: '71.1'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US2',
+            bust_in: '33',
+            bust_cm: '83.8',
+            waist_in: '26½',
+            waist_cm: '67.3',
+            hip_in: '36½',
+            hip_cm: '92.7',
+            floor_in: '58',
+            floor_cm: '147.3',
+            ankle_in: '53',
+            ankle_cm: '134.6',
+            tea_in: '46',
+            tea_cm: '116.8',
+            knee_in: '38',
+            knee_cm: '96.5',
+            short_in: '29',
+            short_cm: '73.7'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US4',
+            bust_in: '34',
+            bust_cm: '86.4',
+            waist_in: '27½',
+            waist_cm: '69.9',
+            hip_in: '37½',
+            hip_cm: '95.3',
+            floor_in: '58',
+            floor_cm: '147.3',
+            ankle_in: '53',
+            ankle_cm: '134.6',
+            tea_in: '46',
+            tea_cm: '116.8',
+            knee_in: '38',
+            knee_cm: '96.5',
+            short_in: '29',
+            short_cm: '73.7'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US6',
+            bust_in: '35',
+            bust_cm: '88.9',
+            waist_in: '28½',
+            waist_cm: '72.4',
+            hip_in: '38½',
+            hip_cm: '97.8',
+            floor_in: '59',
+            floor_cm: '149.9',
+            ankle_in: '54',
+            ankle_cm: '137.2',
+            tea_in: '46',
+            tea_cm: '116.8',
+            knee_in: '38',
+            knee_cm: '96.5',
+            short_in: '30',
+            short_cm: '76.2'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US8',
+            bust_in: '36',
+            bust_cm: '91.4',
+            waist_in: '29½',
+            waist_cm: '74.9',
+            hip_in: '39½',
+            hip_cm: '100.3',
+            floor_in: '59',
+            floor_cm: '149.9',
+            ankle_in: '54',
+            ankle_cm: '137.2',
+            tea_in: '46',
+            tea_cm: '116.8',
+            knee_in: '38',
+            knee_cm: '96.5',
+            short_in: '30',
+            short_cm: '76.2'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US10',
+            bust_in: '37½',
+            bust_cm: '95.3',
+            waist_in: '31',
+            waist_cm: '78.7',
+            hip_in: '41',
+            hip_cm: '104.1',
+            floor_in: '60',
+            floor_cm: '152.4',
+            ankle_in: '54',
+            ankle_cm: '137.2',
+            tea_in: '47',
+            tea_cm: '119.4',
+            knee_in: '39',
+            knee_cm: '99.1',
+            short_in: '30',
+            short_cm: '76.2'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US12',
+            bust_in: '39',
+            bust_cm: '99.1',
+            waist_in: '32½',
+            waist_cm: '82.6',
+            hip_in: '42½',
+            hip_cm: '108',
+            floor_in: '60',
+            floor_cm: '152.4',
+            ankle_in: '54',
+            ankle_cm: '137.2',
+            tea_in: '47',
+            tea_cm: '119.4',
+            knee_in: '39',
+            knee_cm: '99.1',
+            short_in: '30',
+            short_cm: '76.2'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US14',
+            bust_in: '41',
+            bust_cm: '104.1',
+            waist_in: '34¾',
+            waist_cm: '88.3',
+            hip_in: '44½',
+            hip_cm: '113',
+            floor_in: '61',
+            floor_cm: '154.9',
+            ankle_in: '55',
+            ankle_cm: '139.7',
+            tea_in: '48',
+            tea_cm: '121.9',
+            knee_in: '39',
+            knee_cm: '99.1',
+            short_in: '31',
+            short_cm: '78.7'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US16',
+            bust_in: '43¼',
+            bust_cm: '109.9',
+            waist_in: '37¼',
+            waist_cm: '94.6',
+            hip_in: '46¾',
+            hip_cm: '118.7',
+            floor_in: '61',
+            floor_cm: '154.9',
+            ankle_in: '55',
+            ankle_cm: '139.7',
+            tea_in: '48',
+            tea_cm: '121.9',
+            knee_in: '39',
+            knee_cm: '99.1',
+            short_in: '31',
+            short_cm: '78.7'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US16W',
+            bust_in: '43¼',
+            bust_cm: '109.9',
+            waist_in: '37¼',
+            waist_cm: '94.6',
+            hip_in: '46¾',
+            hip_cm: '118.7',
+            floor_in: '61',
+            floor_cm: '154.9',
+            ankle_in: '55',
+            ankle_cm: '139.7',
+            tea_in: '48',
+            tea_cm: '121.9',
+            knee_in: '39',
+            knee_cm: '99.1',
+            short_in: '31',
+            short_cm: '78.7'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US18',
+            bust_in: '45½',
+            bust_cm: '115.6',
+            waist_in: '39¾',
+            waist_cm: '101',
+            hip_in: '49',
+            hip_cm: '124.5',
+            floor_in: '61',
+            floor_cm: '154.9',
+            ankle_in: '56',
+            ankle_cm: '142.2',
+            tea_in: '48',
+            tea_cm: '121.9',
+            knee_in: '40',
+            knee_cm: '101.6',
+            short_in: '32',
+            short_cm: '81.3'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US18W',
+            bust_in: '45½',
+            bust_cm: '115.6',
+            waist_in: '39¾',
+            waist_cm: '101',
+            hip_in: '49',
+            hip_cm: '124.5',
+            floor_in: '61',
+            floor_cm: '154.9',
+            ankle_in: '56',
+            ankle_cm: '142.2',
+            tea_in: '48',
+            tea_cm: '121.9',
+            knee_in: '40',
+            knee_cm: '101.6',
+            short_in: '32',
+            short_cm: '81.3'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US20',
+            bust_in: '47¾',
+            bust_cm: '121.3',
+            waist_in: '42¼',
+            waist_cm: '107.3',
+            hip_in: '51¼',
+            hip_cm: '130.2',
+            floor_in: '61',
+            floor_cm: '154.9',
+            ankle_in: '56',
+            ankle_cm: '142.2',
+            tea_in: '48',
+            tea_cm: '121.9',
+            knee_in: '40',
+            knee_cm: '101.6',
+            short_in: '32',
+            short_cm: '81.3'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US20W',
+            bust_in: '47¾',
+            bust_cm: '121.3',
+            waist_in: '42¼',
+            waist_cm: '107.3',
+            hip_in: '51¼',
+            hip_cm: '130.2',
+            floor_in: '61',
+            floor_cm: '154.9',
+            ankle_in: '56',
+            ankle_cm: '142.2',
+            tea_in: '48',
+            tea_cm: '121.9',
+            knee_in: '40',
+            knee_cm: '101.6',
+            short_in: '32',
+            short_cm: '81.3'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US22',
+            bust_in: '50',
+            bust_cm: '127',
+            waist_in: '44¾',
+            waist_cm: '113.7',
+            hip_in: '53½',
+            hip_cm: '135.9',
+            floor_in: '61',
+            floor_cm: '154.9',
+            ankle_in: '56',
+            ankle_cm: '142.2',
+            tea_in: '48',
+            tea_cm: '121.9',
+            knee_in: '40',
+            knee_cm: '101.6',
+            short_in: '32',
+            short_cm: '81.3'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US22W',
+            bust_in: '50',
+            bust_cm: '127',
+            waist_in: '44¾',
+            waist_cm: '113.7',
+            hip_in: '53½',
+            hip_cm: '135.9',
+            floor_in: '61',
+            floor_cm: '154.9',
+            ankle_in: '56',
+            ankle_cm: '142.2',
+            tea_in: '48',
+            tea_cm: '121.9',
+            knee_in: '40',
+            knee_cm: '101.6',
+            short_in: '32',
+            short_cm: '81.3'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US24',
+            bust_in: '53',
+            bust_cm: '134.6',
+            waist_in: '48',
+            waist_cm: '121.9',
+            hip_in: '56½',
+            hip_cm: '143.5',
+            floor_in: '61',
+            floor_cm: '154.9',
+            ankle_in: '56',
+            ankle_cm: '142.2',
+            tea_in: '48',
+            tea_cm: '121.9',
+            knee_in: '41',
+            knee_cm: '104.1',
+            short_in: '33',
+            short_cm: '83.8'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US24W',
+            bust_in: '53',
+            bust_cm: '134.6',
+            waist_in: '48',
+            waist_cm: '121.9',
+            hip_in: '56½',
+            hip_cm: '143.5',
+            floor_in: '61',
+            floor_cm: '154.9',
+            ankle_in: '56',
+            ankle_cm: '142.2',
+            tea_in: '48',
+            tea_cm: '121.9',
+            knee_in: '41',
+            knee_cm: '104.1',
+            short_in: '33',
+            short_cm: '83.8'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US26',
+            bust_in: '56',
+            bust_cm: '142.2',
+            waist_in: '51¼',
+            waist_cm: '130.2',
+            hip_in: '59½',
+            hip_cm: '151.1',
+            floor_in: '61',
+            floor_cm: '154.9',
+            ankle_in: '56',
+            ankle_cm: '142.2',
+            tea_in: '48',
+            tea_cm: '121.9',
+            knee_in: '41',
+            knee_cm: '104.1',
+            short_in: '33',
+            short_cm: '83.8'
+          -%}
+          {%- render 'sizing-guide-table-row',
+            size: 'US26W',
+            bust_in: '56',
+            bust_cm: '142.2',
+            waist_in: '51¼',
+            waist_cm: '130.2',
+            hip_in: '59½',
+            hip_cm: '151.1',
+            floor_in: '61',
+            floor_cm: '154.9',
+            ankle_in: '56',
+            ankle_cm: '142.2',
+            tea_in: '48',
+            tea_cm: '121.9',
+            knee_in: '41',
+            knee_cm: '104.1',
+            short_in: '33',
+            short_cm: '83.8'
+          -%}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {%- if measure_text != blank or block.settings.custom_sizing_guide_image != blank -%}
+    <div class="worldprom-size-guide__measure">
+      {%- if measure_text != blank -%}
+        <div class="worldprom-size-guide__measure-text rte">
+          {{ measure_text }}
         </div>
       {%- endif -%}
       {%- if block.settings.custom_sizing_guide_image != blank -%}
-        <div class="sizing-guide-custom__image">
-          {%- render 'responsive-image', image: block.settings.custom_sizing_guide_image, sizes: '420x0' -%}
+        <div class="worldprom-size-guide__measure-image">
+          {%- render 'responsive-image', image: block.settings.custom_sizing_guide_image, sizes: '480x0' -%}
         </div>
       {%- endif -%}
     </div>
   {%- endif -%}
 
-  <div class="sizing-guide-custom__table-wrap">
-    <table class="sizing-guide-custom__table" role="table">
-      <thead>
-        <tr>
-          <th rowspan="2">SIZE</th>
-          <th colspan="2">BUST</th>
-          <th colspan="2">WAIST</th>
-          <th colspan="2">HIP</th>
-          <th colspan="2">LENGTH</th>
-        </tr>
-        <tr>
-          <th>CM</th>
-          <th>INCH</th>
-          <th>CM</th>
-          <th>INCH</th>
-          <th>CM</th>
-          <th>INCH</th>
-          <th>CM</th>
-          <th>INCH</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>US0</td><td>80</td><td>31 1/2</td><td>60</td><td>23 1/2</td><td>87.5</td><td>34 1/2</td><td>147</td><td>58</td></tr>
-        <tr><td>US2</td><td>83</td><td>32 1/2</td><td>65</td><td>25 1/2</td><td>91</td><td>35 3/4</td><td>147</td><td>58</td></tr>
-        <tr><td>US4</td><td>85</td><td>33 1/2</td><td>68</td><td>26 1/2</td><td>92</td><td>36 3/4</td><td>147</td><td>58</td></tr>
-        <tr><td>US6</td><td>88</td><td>34 1/2</td><td>70</td><td>27 1/2</td><td>96</td><td>37 3/4</td><td>150</td><td>59</td></tr>
-        <tr><td>US8</td><td>90</td><td>35 1/2</td><td>72</td><td>28 1/2</td><td>98</td><td>38 3/4</td><td>150</td><td>59</td></tr>
-        <tr><td>US10</td><td>93</td><td>36 1/2</td><td>75</td><td>29 1/2</td><td>101</td><td>39 3/4</td><td>152</td><td>60</td></tr>
-        <tr><td>US12</td><td>97</td><td>38</td><td>79</td><td>31</td><td>105</td><td>41 1/4</td><td>152</td><td>60</td></tr>
-        <tr><td>US14</td><td>100</td><td>39 1/2</td><td>83</td><td>32 1/2</td><td>109</td><td>42 3/4</td><td>155</td><td>61</td></tr>
-        <tr><td>US16</td><td>104</td><td>41</td><td>86</td><td>34</td><td>112</td><td>44</td><td>155</td><td>61</td></tr>
-        <tr><td>US16W</td><td>109</td><td>43</td><td>92</td><td>36 1/4</td><td>116</td><td>45 1/2</td><td>155</td><td>61</td></tr>
-        <tr><td>US18W</td><td>114</td><td>45</td><td>98</td><td>38 1/2</td><td>121</td><td>47 1/2</td><td>155</td><td>61</td></tr>
-        <tr><td>US20W</td><td>119</td><td>47</td><td>104</td><td>40 3/4</td><td>126</td><td>49 1/2</td><td>155</td><td>61</td></tr>
-        <tr><td>US22W</td><td>124</td><td>49</td><td>109</td><td>43</td><td>131</td><td>51 1/2</td><td>155</td><td>61</td></tr>
-        <tr><td>US24W</td><td>129</td><td>51</td><td>114</td><td>45 1/4</td><td>136</td><td>53 1/2</td><td>155</td><td>61</td></tr>
-        <tr><td>US26W</td><td>134</td><td>53</td><td>119</td><td>47.5</td><td>141</td><td>55 1/2</td><td>155</td><td>61</td></tr>
-      </tbody>
-    </table>
+  <div class="worldprom-size-guide__lengths">
+    <div class="worldprom-size-guide__lengths-grid">
+      {%- for length_type in length_types -%}
+        {%- assign index = forloop.index0 -%}
+        {%- assign length_image_setting = length_images[index] -%}
+        <div class="worldprom-size-guide__length-card">
+          <div class="worldprom-size-guide__length-media">
+            {%- case length_type -%}
+              {%- when 'floor' -%}
+                {%- if block.settings.custom_sizing_guide_length_floor_image != blank -%}
+                  {%- render 'responsive-image',
+                    image: block.settings.custom_sizing_guide_length_floor_image,
+                    sizes: '240x0'
+                  -%}
+                {%- else -%}
+                  <div class="worldprom-size-guide__length-placeholder" aria-hidden="true"></div>
+                {%- endif -%}
+              {%- when 'ankle' -%}
+                {%- if block.settings.custom_sizing_guide_length_ankle_image != blank -%}
+                  {%- render 'responsive-image',
+                    image: block.settings.custom_sizing_guide_length_ankle_image,
+                    sizes: '240x0'
+                  -%}
+                {%- else -%}
+                  <div class="worldprom-size-guide__length-placeholder" aria-hidden="true"></div>
+                {%- endif -%}
+              {%- when 'tea' -%}
+                {%- if block.settings.custom_sizing_guide_length_tea_image != blank -%}
+                  {%- render 'responsive-image',
+                    image: block.settings.custom_sizing_guide_length_tea_image,
+                    sizes: '240x0'
+                  -%}
+                {%- else -%}
+                  <div class="worldprom-size-guide__length-placeholder" aria-hidden="true"></div>
+                {%- endif -%}
+              {%- when 'knee' -%}
+                {%- if block.settings.custom_sizing_guide_length_knee_image != blank -%}
+                  {%- render 'responsive-image',
+                    image: block.settings.custom_sizing_guide_length_knee_image,
+                    sizes: '240x0'
+                  -%}
+                {%- else -%}
+                  <div class="worldprom-size-guide__length-placeholder" aria-hidden="true"></div>
+                {%- endif -%}
+              {%- when 'short' -%}
+                {%- if block.settings.custom_sizing_guide_length_short_image != blank -%}
+                  {%- render 'responsive-image',
+                    image: block.settings.custom_sizing_guide_length_short_image,
+                    sizes: '240x0'
+                  -%}
+                {%- else -%}
+                  <div class="worldprom-size-guide__length-placeholder" aria-hidden="true"></div>
+                {%- endif -%}
+            {%- endcase -%}
+          </div>
+          <p class="worldprom-size-guide__length-label">{{ length_labels[index] }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- if hollow_text != blank -%}
+      <div class="worldprom-size-guide__hollow rte">
+        {{ hollow_text }}
+      </div>
+    {%- endif -%}
   </div>
 </div>
 
 <style>
-  .sizing-guide-custom {
+  .product-popup-modal--worldprom-size-guide .product-popup-modal__content {
+    max-width: min(96vw, 1200px);
+  }
+
+  .worldprom-size-guide {
     color: #2e2e38;
   }
-  .sizing-guide-custom__intro {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 220px;
-    gap: 20px;
-    margin-bottom: 20px;
-    align-items: start;
+
+  .worldprom-size-guide__table-section {
+    margin-bottom: 28px;
   }
-  .sizing-guide-custom__intro--full {
-    grid-template-columns: minmax(0, 1fr);
+
+  .worldprom-size-guide__table-title {
+    margin: 0 0 12px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #2f3340;
   }
-  .sizing-guide-custom__text > *:last-child {
-    margin-bottom: 0;
+
+  .worldprom-size-guide__table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid #e8e0f2;
+    border-radius: 4px;
   }
-  .sizing-guide-custom__image img {
+
+  .worldprom-size-guide__table {
     width: 100%;
-    height: auto;
-    border-radius: 6px;
-    display: block;
-  }
-  .sizing-guide-custom__table-wrap {
-    overflow: visible;
-  }
-  .sizing-guide-custom__table {
-    width: 100%;
-    table-layout: fixed;
+    min-width: 960px;
     border-collapse: separate;
     border-spacing: 0;
     text-align: center;
-    font-size: 14px;
-    line-height: 1.25;
+    font-size: 12px;
+    line-height: 1.3;
     color: #2f3340;
   }
-  .sizing-guide-custom__table th,
-  .sizing-guide-custom__table td {
-    padding: 10px 6px;
+
+  .worldprom-size-guide__table th,
+  .worldprom-size-guide__table td {
+    padding: 8px 5px;
     border-right: 1px solid #f4effa;
     border-bottom: 1px solid #f4effa;
-    word-break: break-word;
+    white-space: nowrap;
   }
-  .sizing-guide-custom__table thead th {
+
+  .worldprom-size-guide__table thead th {
     background: #b3a6cc;
     font-weight: 700;
+    vertical-align: middle;
   }
-  .sizing-guide-custom__table thead tr:nth-child(2) th {
+
+  .worldprom-size-guide__table thead tr:nth-child(2) th {
     font-weight: 500;
     background: #b7abcd;
+    font-size: 11px;
   }
-  .sizing-guide-custom__table tbody td {
+
+  .worldprom-size-guide__table tbody td {
     background: #f2ebf8;
     font-weight: 400;
   }
-  .sizing-guide-custom__table tbody td:first-child {
+
+  .worldprom-size-guide__table tbody td:first-child {
     font-weight: 700;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: #ebe2f9;
+    box-shadow: 1px 0 0 #f4effa;
   }
-  .sizing-guide-custom__table tr th:first-child,
-  .sizing-guide-custom__table tr td:first-child {
-    border-left: 1px solid #f4effa;
+
+  .worldprom-size-guide__measure {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(200px, 280px);
+    gap: 24px;
+    align-items: center;
+    margin-bottom: 30px;
   }
-  .sizing-guide-custom__table thead tr:first-child th {
-    border-top: 1px solid #f4effa;
+
+  .worldprom-size-guide__measure-text > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .worldprom-size-guide__measure-text li {
+    margin-bottom: 14px;
+  }
+
+  .worldprom-size-guide__measure-text li:last-child {
+    margin-bottom: 0;
+  }
+
+  .worldprom-size-guide__measure-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 6px;
+  }
+
+  .worldprom-size-guide__lengths-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .worldprom-size-guide__length-card {
+    text-align: center;
+  }
+
+  .worldprom-size-guide__length-media {
+    margin-bottom: 8px;
+  }
+
+  .worldprom-size-guide__length-media img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+  }
+
+  .worldprom-size-guide__length-placeholder {
+    aspect-ratio: 3 / 5;
+    background: linear-gradient(180deg, #f2ebf8 0%, #e8dff0 100%);
+    border-radius: 4px;
+  }
+
+  .worldprom-size-guide__length-label {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #4a4f5c;
+  }
+
+  .worldprom-size-guide__hollow {
+    margin: 0 auto;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .worldprom-size-guide__hollow p {
+    margin: 0;
+  }
+
+  .worldprom-size-guide__hollow p strong{
+    font-size: 16px;
+    font-weight: bold;
+    color: #b3a6cc;
+  }
+
+  .worldprom-size-guide__hollow > *:last-child {
+    margin-bottom: 0;
+  }
+
+  @media screen and (max-width: 989px) {
+    .worldprom-size-guide__lengths-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
 
   @media screen and (max-width: 767px) {
-    .sizing-guide-custom__intro {
+    .worldprom-size-guide__table-title {
+      font-size: 16px;
+    }
+
+    .worldprom-size-guide__table {
+      font-size: 10px;
+      min-width: 880px;
+    }
+
+    .worldprom-size-guide__table th,
+    .worldprom-size-guide__table td {
+      padding: 6px 4px;
+    }
+
+    .worldprom-size-guide__measure {
       grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
     }
-    .sizing-guide-custom__table {
-      font-size: 11px;
+
+    .worldprom-size-guide__measure-image {
+      max-width: 280px;
+      margin: 0 auto;
     }
-    .sizing-guide-custom__table th,
-    .sizing-guide-custom__table td {
-      padding: 8px 4px;
+
+    .worldprom-size-guide__lengths-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .worldprom-size-guide__length-label {
+      font-size: 10px;
+    }
+
+    .worldprom-size-guide__hollow {
+      font-size: 13px;
+      text-align: left;
+    }
+  }
+
+  @media screen and (max-width: 479px) {
+    .worldprom-size-guide__lengths-grid {
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      gap: 12px;
+      padding-bottom: 4px;
+      scroll-snap-type: x mandatory;
+    }
+
+    .worldprom-size-guide__length-card {
+      flex: 0 0 42%;
+      max-width: 42%;
+      scroll-snap-align: start;
     }
   }
 </style>

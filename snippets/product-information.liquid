@@ -232,7 +232,7 @@
 
                 {%- if block.settings.custom_sizing_guide_text != blank -%}
                   {%- capture sizing_popup_custom -%}
-                    <modal-dialog id="PopupModalCustom-{{ block.id }}" class="product-popup-modal">
+                    <modal-dialog id="PopupModalCustom-{{ block.id }}" class="product-popup-modal product-popup-modal--worldprom-size-guide">
                       <div role="dialog" aria-label="{{ block.settings.custom_sizing_guide_text }}" aria-modal="true" class="product-popup-modal__content" tabindex="-1">
                         <div class="product-popup-modal__content-header">
                           <h5>{{ block.settings.custom_sizing_guide_modal_title | default: block.settings.custom_sizing_guide_text }}</h5>
