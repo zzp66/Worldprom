@@ -112,12 +112,16 @@
   .variant-size-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
     text-align: center;
     color: var(--size-chart-text-color, #1d1d1f);
   }
   .variant-size-table th,
   .variant-size-table td {
+    width: 20%;
     border: 1px solid #ccc;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   .variant-size-table th {
     font-size: 18px;
