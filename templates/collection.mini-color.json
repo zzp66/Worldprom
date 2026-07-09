@@ -214,34 +214,10 @@
     },
     "product-grid": {
       "type": "main-collection-product-grid",
-      "blocks": {
-        "promotion_drfqyk": {
-          "type": "promotion",
-          "settings": {
-            "promotion_collection": "",
-            "promotion_position": 1,
-            "promotion_width": "1",
-            "image": "shopify://shop_images/3_9c70664e-caa0-43ee-bc11-ec3a737018ec.jpg",
-            "title": "",
-            "heading_size": "h3",
-            "text": "",
-            "link_label": "",
-            "link": "",
-            "content_position": "bottom-left",
-            "text_alignment": "left",
-            "color_text": "#4e693d",
-            "color_bg": "#fff6df",
-            "color_button_text": "#fff6df"
-          }
-        }
-      },
-      "block_order": [
-        "promotion_drfqyk"
-      ],
       "custom_css": [],
       "settings": {
         "full_width": true,
-        "products_per_page": 31,
+        "products_per_page": 32,
         "columns_desktop": 4,
         "pagination_type": "paginated",
         "enable_filtering": true,
