@@ -187,6 +187,25 @@ product_brand: 'Parker'
 	{%- if settings.cart_recommendations -%}
 	<script src="{{ 'product-recommendations.js' | asset_url }}" defer="defer"></script>
 	{%- endif -%}
+	{%- comment -%}
+	  普通产品继续用 Siblings 选色，隐藏原生 Color；
+	  仅 product.high-variant 模板显示原生 Color。
+	{%- endcomment -%}
+	<style id="wp-color-option-visibility">
+		body:not(.template-product-high-variant) fieldset[data-handle="color"],
+		body:not(.template-product-high-variant) .product-form__input.product-form__input--color.product-form__input--color--regular {
+			display: none !important;
+		}
+		body.template-product-high-variant fieldset[data-handle="color"],
+		body.template-product-high-variant .product-form__input--color,
+		body.template-product-high-variant .product-form__input.product-form__input--color.product-form__input--color--regular {
+			display: flex !important;
+			flex-wrap: wrap !important;
+		}
+	</style>
+	{%- if template.name == 'product' and template.suffix == 'high-variant' -%}
+		<script src="{{ 'product-hv-runtime.js' | asset_url }}" defer="defer"></script>
+	{%- endif -%}
 	{%- if settings.cart_terms_conditions_enable -%}
 		<script src="{{ 'terms-checkbox.js' | asset_url }}" defer="defer"></script>
 	{%- endif -%}

@@ -126,9 +126,10 @@
   },
   "platform_customizations": {
     "custom_css": [
-      "/* 精准定位促销徽章并隐藏 */.product-card--badges .badge.onsale {display: none !important; /* !important 确保样式优先级，避免被原有样式覆盖 */}",
-      "fieldset[data-handle=\"color\"] {display: none !important;}",
-      ".product-form__input.product-form__input--color.product-form__input--color--regular {display: none !important;}"
+      "/* 精准定位促销徽章并隐藏 */.product-card--badges .badge.onsale {display: none !important;}",
+      "/* 普通产品隐藏原生 Color（用 Siblings）；high-variant 模板除外 */body:not(.template-product-high-variant) fieldset[data-handle=\"color\"] {display: none !important;}",
+      "body:not(.template-product-high-variant) .product-form__input.product-form__input--color.product-form__input--color--regular {display: none !important;}",
+      "body.template-product-high-variant fieldset[data-handle=\"color\"], body.template-product-high-variant .product-form__input--color {display: flex !important; flex-wrap: wrap !important;}"
     ]
   }
 }

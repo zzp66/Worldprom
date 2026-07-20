@@ -9,6 +9,58 @@
     assign sizes = '375x0,770x0'
     assign is_video = false
     assign use_video = settings.products_use_video
+    assign hv_color_match = false
+    assign hv_card_url_suffix = ''
+
+    if collection and product_card_product.template_suffix == 'high-variant'
+      assign collection_handle_down = collection.handle | downcase
+      for option in product_card_product.options_with_values
+        assign opt_name_down = option.name | downcase
+        if opt_name_down == 'color' or opt_name_down == 'colour'
+          for option_value in option.values
+            assign ov_handle = option_value | downcase | handleize
+            if ov_handle == collection_handle_down
+              assign hv_color_match = true
+              assign hv_matched_variant = option_value.variant
+              if hv_matched_variant and hv_matched_variant.featured_media
+                assign featured_media = hv_matched_variant.featured_media
+              endif
+              if option_value.id
+                assign hv_card_url_suffix = '?option_values=' | append: option_value.id
+              endif
+              break
+            endif
+          endfor
+          if hv_color_match
+            break
+          endif
+          for tag in product_card_product.tags
+            assign tag_handle = tag | downcase | handleize
+            if tag_handle == collection_handle_down
+              for option_value in option.values
+                assign ov_down = option_value | downcase
+                assign tag_down = tag | downcase
+                if ov_down == tag_down
+                  assign hv_color_match = true
+                  assign hv_matched_variant = option_value.variant
+                  if hv_matched_variant and hv_matched_variant.featured_media
+                    assign featured_media = hv_matched_variant.featured_media
+                  endif
+                  if option_value.id
+                    assign hv_card_url_suffix = '?option_values=' | append: option_value.id
+                  endif
+                  break
+                endif
+              endfor
+              if hv_color_match
+                break
+              endif
+            endif
+          endfor
+          break
+        endif
+      endfor
+    endif
 
     if featured_media.media_type != 'image'
       if featured_media.media_type == 'video' and use_video
@@ -48,7 +100,7 @@
   <product-card class="product-card text-{{ product_content_alignment }}">
     <div class="product-card--image-wrapper">
       <a
-        href="{{ product_card_product.url | within: collection }}"
+        href="{{ product_card_product.url | within: collection }}{{ hv_card_url_suffix }}"
         title="{{ product_card_product.title | escape }}"
         class="product-card--image-link"
       ></a>
@@ -175,7 +227,7 @@
       {%- endif -%}
       <div class="product-card-text-with-review">
         <a
-          href="{{ product_card_product.url | within: collection }}"
+          href="{{ product_card_product.url | within: collection }}{{ hv_card_url_suffix }}"
           title="{{ product_card_product.title | escape }}"
           class="product-card-title"
         >

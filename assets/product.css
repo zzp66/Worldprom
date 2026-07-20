@@ -277,6 +277,19 @@
   padding-left: 1px;
 }
 
+/* high-variant: override theme Custom CSS that hides native Color swatches */
+body.template-product-high-variant fieldset[data-handle="color"],
+body.template-product-high-variant .product-form__input--color,
+body.template-product-high-variant .product-form__input.product-form__input--color.product-form__input--color--regular {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  visibility: visible !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  opacity: 1 !important;
+}
+
 .variations .product-form__input--color input[type="radio"]+label {
   width: 32px;
   height: 32px;

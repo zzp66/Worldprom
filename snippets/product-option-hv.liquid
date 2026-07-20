@@ -1,0 +1,254 @@
+{%- liquid
+  if sticky
+    assign appended = '--sticky'
+  endif
+
+  assign handle = option.name | replace: ' ', '-' | downcase | escape
+-%}
+{%- case option_type -%}
+  {%- when 'dropdown' -%}
+    <fieldset
+      class="product-form__input product-form__input--dropdown"
+      data-index="option{{ forloop.index }}"
+      data-handle="{{ handle }}"
+    >
+      <div class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}{{ appended }}">
+        {{ option.name }}
+      </div>
+      <div class="product-form__input-wrapper">
+        <div class="select">
+          <select
+            id="Option-{{ section.id }}-{{ forloop.index0 }}{{ appended }}"
+            name="options[{{ option.name | escape | append: appended }}]"
+            form="{{ product_form_id }}"
+          >
+            {%- for option_value in option.values -%}
+              <option
+                value="{{ option_value | escape }}"
+                data-option-value-id="{{ option_value.id }}"
+                {% if option_value.product_url %}
+                  data-product-url="{{ option_value.product_url }}"
+                {% endif %}
+                {% if option_value.selected %}
+                  selected="selected"
+                {% endif %}
+                {% unless option_value.available %}
+                  disabled
+                {% endunless %}
+              >
+                {{ option_value }}
+              </option>
+            {%- endfor -%}
+          </select>
+          <div class="select-arrow">{%- render 'svg-icons' with 'thb-select' -%}</div>
+        </div>
+        {{ sizing_link }}
+      </div>
+    </fieldset>
+  {%- when 'button' -%}
+    <div class="option-chose-box">
+      <fieldset
+        class="product-form__input product-form__input--block"
+        data-index="option{{ forloop.index }}"
+        data-handle="{{ handle }}"
+      >
+        <div class="form__label">
+          {{ option.name }}
+          <span class="form__label__value">{{ option.selected_value }}</span>
+        </div>
+        <div class="product-form__input-wrapper {% if option.name =='Size' %}product-form__input-wrapper-size{% endif %}">
+          {%- for option_value in option.values -%}
+            {%- assign tooltip_text = '' -%}
+            {%- if option_value.variant -%}
+              {%- assign tooltip_text = option_value.variant.metafields.custom.option_value_tooltiptext.value -%}
+            {%- endif -%}
+
+            <div class="option-value-box">
+              <div class="option-value-item">
+                <input
+                  type="radio"
+                  id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}{{ appended }}"
+                  name="{{ option.name | append: appended }}"
+                  value="{{ option_value | escape }}"
+                  form="{{ product_form_id }}"
+                  data-option-value-id="{{ option_value.id }}"
+                  {% if option_value.product_url %}
+                    data-product-url="{{ option_value.product_url }}"
+                  {% endif %}
+                  {% if option_value.selected %}
+                    checked
+                  {% endif %}
+                  {% unless option_value.available %}
+                    disabled
+                  {% endunless %}
+                >
+                <label
+                  for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}{{ appended }}"
+                  {% unless option_value.available %}
+                    class="disabled"
+                  {% endunless %}
+                >
+                  <span>{{ option_value }}</span>
+                </label>
+              </div>
+              {%- if tooltip_text != blank -%}
+                <div class="option-value-icon">
+                  <img
+                    src="https://cdn.shopify.com/s/files/1/0742/6628/0191/files/shark-1_98ca9bf3-7e04-4df0-966f-53d0f29f4b51.png?v=1761292639"
+                    alt=""
+                  >
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+
+          {{ sizing_link }}
+        </div>
+      </fieldset>
+      {% if block.settings.show_size_chart_table != false %}
+        {% if option.name == 'Size' %}
+          {% render 'size-chart-table',
+            table_header_bg_color: block.settings.size_chart_table_header_bg_color,
+            table_body_bg_color: block.settings.size_chart_table_body_bg_color,
+            unit_switch_right_bg_color: block.settings.size_chart_unit_switch_right_bg_color,
+            table_active_row_bg_color: block.settings.size_chart_table_active_row_bg_color,
+            table_text_color: block.settings.size_chart_table_text_color
+          %}
+        {% endif %}
+      {% endif %}
+    </div>
+  {%- when 'color' -%}
+    {%- liquid
+      assign custom_colors = settings.color_swatches | newline_to_br | split: '<br />'
+      assign key_array = ''
+      assign val_array = ''
+
+      for color in custom_colors
+        assign key = color | split: ':' | first | rstrip
+        assign value = color | split: ':' | last | lstrip
+        assign key_array = key_array | append: ',' | append: key
+        assign val_array = val_array | append: ',' | append: value
+      endfor
+
+      assign key_array = key_array | remove_first: ',' | strip_newlines | downcase | split: ','
+      assign val_array = val_array | remove_first: ',' | split: ','
+
+      assign variant_image_size = '40'
+      case color_picker_size
+        when 'large'
+          assign variant_image_size = '72'
+        when 'xlarge'
+          assign variant_image_size = '104'
+      endcase
+    -%}
+    <fieldset
+      class="product-form__input product-form__input--color product-form__input--color--{{ color_picker_size }}"
+      data-use-images="{{ color_picker_use_variants }}"
+      data-index="option{{ forloop.index }}"
+      data-handle="{{ handle }}"
+      data-option-name="color"
+      data-hv-option="1"
+      style="display: flex !important; flex-wrap: wrap !important;"
+    >
+      <div class="form__label">
+        {{ option.name }}
+        <span class="form__label__value">{{ option.selected_value }}</span>{{ sizing_link }}
+      </div>
+      <div class="product-form__input-wrapper">
+        {%- for option_value in option.values -%}
+          {%- liquid
+            assign color_value = option_value | downcase | strip
+            assign bg_value = ''
+            assign swatch_focal_point = ''
+
+            for custom_color in key_array
+              if custom_color == color_value
+                assign color_value = val_array[forloop.index0] | strip
+                break
+              endif
+            endfor
+
+            if color_value contains '.'
+              assign file_bg = color_value | file_url
+              if file_bg contains '//'
+                assign bg_value = file_bg
+                assign color_value = 'var(--bg-body)'
+              endif
+            endif
+
+            if color_picker_use_variants and option_value.variant
+              if option_value.variant.featured_media
+                assign variant_bg = option_value.variant.featured_media | image_url: width: variant_image_size
+                if variant_bg contains '//'
+                  assign bg_value = variant_bg
+                endif
+              elsif option_value.variant.image
+                assign variant_bg = option_value.variant.image | image_url: width: variant_image_size
+                if variant_bg contains '//'
+                  assign bg_value = variant_bg
+                endif
+              endif
+            endif
+
+            if option_value.swatch.image != blank
+              assign swatch_image_url = option_value.swatch.image | image_url: width: variant_image_size
+              if swatch_image_url contains '//'
+                assign bg_value = swatch_image_url
+                assign swatch_focal_point = option_value.swatch.image.presentation.focal_point
+              endif
+            elsif option_value.swatch.color != blank
+              assign color_value = 'rgb(' | append: option_value.swatch.color.rgb | append: ')'
+            endif
+          -%}
+          <input
+            type="radio"
+            id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}{{ appended }}"
+            name="{{ option.name | append: appended }}"
+            value="{{ option_value | escape }}"
+            form="{{ product_form_id }}"
+            data-option-value-id="{{ option_value.id }}"
+            data-color-label="{{ option_value | escape }}"
+            {% if option_value.product_url %}
+              data-product-url="{{ option_value.product_url }}"
+            {% endif %}
+            {% if option_value.selected %}
+              checked
+            {% endif %}
+            {% unless option_value.available %}
+              disabled
+            {% endunless %}
+          >
+          <label
+            for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}{{ appended }}"
+            {% if bg_value contains '//' %}
+              style="--option-color: {{ color_value | escape }}; --option-color-image: url('{{ bg_value | escape }}');{% if swatch_focal_point != blank %} --object-position: {{ swatch_focal_point }};{% endif %}"
+            {% else %}
+              style="--option-color: {{ color_value | escape }}; --option-color-image: none;"
+            {% endif %}
+            {% unless option_value.available %}
+              class="disabled"
+            {% endunless %}
+          >
+            {{ option_value }}
+          </label>
+        {%- endfor -%}
+        {{ sizing_link }}
+      </div>
+    </fieldset>
+    <script>
+      (function () {
+        document.querySelectorAll('fieldset[data-handle="color"], .product-form__input--color').forEach(function (el) {
+          el.style.setProperty('display', 'flex', 'important');
+          el.style.setProperty('flex-wrap', 'wrap', 'important');
+          el.style.setProperty('visibility', 'visible', 'important');
+          el.style.setProperty('opacity', '1', 'important');
+        });
+        document.querySelectorAll('.product-form__input--color label[style]').forEach(function (label) {
+          var style = label.getAttribute('style') || '';
+          if (style.indexOf("url('')") !== -1 || style.indexOf('url("")') !== -1) {
+            label.style.setProperty('--option-color-image', 'none');
+          }
+        });
+      })();
+    </script>
+{%- endcase -%}
