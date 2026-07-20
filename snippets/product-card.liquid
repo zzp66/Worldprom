@@ -10,53 +10,98 @@
     assign is_video = false
     assign use_video = settings.products_use_video
     assign hv_color_match = false
-    assign hv_card_url_suffix = ''
+    assign hv_collection = collection
+    if collection_context != blank
+      assign hv_collection = collection_context
+    endif
+    assign hv_card_url = product_card_product.url
+    if hv_collection != blank
+      assign hv_card_url = product_card_product.url | within: hv_collection
+    endif
+    assign hv_matched_color_name = ''
 
-    if collection and product_card_product.template_suffix == 'high-variant'
-      assign collection_handle_down = collection.handle | downcase
+    if hv_collection != blank and product_card_product.template_suffix == 'high-variant'
+      assign col_handle = hv_collection.handle | downcase | strip
+      assign col_title_down = hv_collection.title | downcase | strip
+      assign col_title_handle = hv_collection.title | downcase | handleize
+      assign col_parts = col_handle | split: '-'
+
       for option in product_card_product.options_with_values
         assign opt_name_down = option.name | downcase
-        if opt_name_down == 'color' or opt_name_down == 'colour'
-          for option_value in option.values
-            assign ov_handle = option_value | downcase | handleize
-            if ov_handle == collection_handle_down
-              assign hv_color_match = true
-              assign hv_matched_variant = option_value.variant
-              if hv_matched_variant and hv_matched_variant.featured_media
-                assign featured_media = hv_matched_variant.featured_media
-              endif
-              if option_value.id
-                assign hv_card_url_suffix = '?option_values=' | append: option_value.id
-              endif
-              break
-            endif
-          endfor
-          if hv_color_match
-            break
+        assign is_color_option = false
+        if opt_name_down contains 'color' or opt_name_down contains 'colour' or opt_name_down contains 'couleur' or opt_name_down contains 'farbe'
+          assign is_color_option = true
+        endif
+        assign color_swatches_variant_option = settings.color_swatches_variant_option | downcase | split: ', '
+        if color_swatches_variant_option contains opt_name_down
+          assign is_color_option = true
+        endif
+
+        unless is_color_option
+          continue
+        endunless
+
+        for option_value in option.values
+          assign ov_name = option_value.name | default: option_value | append: ''
+          assign ov_down = ov_name | downcase | strip
+          assign ov_handle = ov_down | handleize
+          assign matched = false
+
+          if ov_handle == col_handle or ov_handle == col_title_handle or ov_down == col_title_down
+            assign matched = true
           endif
-          for tag in product_card_product.tags
-            assign tag_handle = tag | downcase | handleize
-            if tag_handle == collection_handle_down
-              for option_value in option.values
-                assign ov_down = option_value | downcase
-                assign tag_down = tag | downcase
-                if ov_down == tag_down
-                  assign hv_color_match = true
-                  assign hv_matched_variant = option_value.variant
-                  if hv_matched_variant and hv_matched_variant.featured_media
-                    assign featured_media = hv_matched_variant.featured_media
-                  endif
-                  if option_value.id
-                    assign hv_card_url_suffix = '?option_values=' | append: option_value.id
-                  endif
+
+          unless matched
+            for part in col_parts
+              if part == ov_handle and ov_handle != blank
+                assign matched = true
+                break
+              endif
+            endfor
+          endunless
+
+          unless matched
+            for tag in product_card_product.tags
+              assign tag_down = tag | downcase | strip
+              assign tag_handle = tag_down | handleize
+              if tag_handle == col_handle or tag_down == col_title_down or tag_handle == col_title_handle
+                if tag_down == ov_down or tag_handle == ov_handle
+                  assign matched = true
+                  break
+                endif
+              endif
+            endfor
+          endunless
+
+          if matched
+            assign hv_color_match = true
+            assign hv_matched_color_name = ov_down
+            assign hv_matched_variant = option_value.variant
+
+            if hv_matched_variant and hv_matched_variant.featured_media
+              assign featured_media = hv_matched_variant.featured_media
+            else
+              for media in product_card_product.media
+                assign media_hay = media.preview_image.src | default: media.src | append: '|' | append: media.alt | append: '|' | append: media | downcase
+                if media_hay contains ov_down
+                  assign featured_media = media
                   break
                 endif
               endfor
-              if hv_color_match
-                break
+            endif
+
+            if option_value.id
+              if hv_card_url contains '?'
+                assign hv_card_url = hv_card_url | append: '&option_values=' | append: option_value.id
+              else
+                assign hv_card_url = hv_card_url | append: '?option_values=' | append: option_value.id
               endif
             endif
-          endfor
+            break
+          endif
+        endfor
+
+        if hv_color_match
           break
         endif
       endfor
@@ -97,10 +142,10 @@
     # Product card image options
     assign product_image_fit = settings.product_image_fit
   -%}
-  <product-card class="product-card text-{{ product_content_alignment }}">
+  <product-card class="product-card text-{{ product_content_alignment }}"{% if hv_matched_color_name != blank %} data-hv-collection-color="{{ hv_matched_color_name | escape }}"{% endif %}>
     <div class="product-card--image-wrapper">
       <a
-        href="{{ product_card_product.url | within: collection }}{{ hv_card_url_suffix }}"
+        href="{{ hv_card_url }}"
         title="{{ product_card_product.title | escape }}"
         class="product-card--image-link"
       ></a>
@@ -227,7 +272,7 @@
       {%- endif -%}
       <div class="product-card-text-with-review">
         <a
-          href="{{ product_card_product.url | within: collection }}{{ hv_card_url_suffix }}"
+          href="{{ hv_card_url }}"
           title="{{ product_card_product.title | escape }}"
           class="product-card-title"
         >

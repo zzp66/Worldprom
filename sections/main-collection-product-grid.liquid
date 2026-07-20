@@ -106,7 +106,7 @@
                         {% assign handleSize = handleSize | plus: 1 %}
                         {% assign featured = product %}
                         <div class="products--column">
-                          {%- render 'product-card', product_card_product: product -%}
+                          {%- render 'product-card', product_card_product: product, collection_context: collection -%}
                         </div>
                       {% endif %}
                     {% endfor %}
@@ -143,7 +143,7 @@
                         {% assign featured = product %}
 
                         <div class="products--column">
-                          {%- render 'product-card', product_card_product: product -%}
+                          {%- render 'product-card', product_card_product: product, collection_context: collection -%}
                         </div>
                       {% endif %}
                     {% endif %}

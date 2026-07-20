@@ -53,7 +53,7 @@
 									{%- endif -%}
 								{%- endfor -%}
 								<div class="carousel__slide">
-									{% render 'product-card', product_card_product: product %}
+									{% render 'product-card', product_card_product: product, collection_context: featured_collection %}
 								</div>
 							{%- endfor -%}
 						{%- else -%}

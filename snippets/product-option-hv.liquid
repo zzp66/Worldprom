@@ -155,8 +155,27 @@
         <span class="form__label__value">{{ option.selected_value }}</span>{{ sizing_link }}
       </div>
       <div class="product-form__input-wrapper">
-        {%- for option_value in option.values -%}
+        {%- liquid
+          assign hv_color_order = ''
+          for option_value in option.values
+            if option_value.selected
+              assign hv_color_order = hv_color_order | append: forloop.index0 | append: ','
+            endif
+          endfor
+          for option_value in option.values
+            unless option_value.selected
+              assign hv_color_order = hv_color_order | append: forloop.index0 | append: ','
+            endunless
+          endfor
+          assign hv_color_order_indexes = hv_color_order | split: ','
+        -%}
+        {%- for idx_str in hv_color_order_indexes -%}
+          {%- if idx_str == blank -%}
+            {%- continue -%}
+          {%- endif -%}
           {%- liquid
+            assign ov_index = idx_str | plus: 0
+            assign option_value = option.values[ov_index]
             assign color_value = option_value | downcase | strip
             assign bg_value = ''
             assign swatch_focal_point = ''
@@ -202,7 +221,7 @@
           -%}
           <input
             type="radio"
-            id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}{{ appended }}"
+            id="{{ section.id }}-{{ option.position }}-{{ ov_index }}{{ appended }}"
             name="{{ option.name | append: appended }}"
             value="{{ option_value | escape }}"
             form="{{ product_form_id }}"
@@ -219,7 +238,7 @@
             {% endunless %}
           >
           <label
-            for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}{{ appended }}"
+            for="{{ section.id }}-{{ option.position }}-{{ ov_index }}{{ appended }}"
             {% if bg_value contains '//' %}
               style="--option-color: {{ color_value | escape }}; --option-color-image: url('{{ bg_value | escape }}');{% if swatch_focal_point != blank %} --object-position: {{ swatch_focal_point }};{% endif %}"
             {% else %}
