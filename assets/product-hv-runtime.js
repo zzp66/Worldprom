@@ -135,7 +135,26 @@
             if (newPicker) {
               const newVariations = newPicker.querySelector('.variations');
               const oldVariations = picker.querySelector('.variations');
-              if (newVariations && oldVariations) oldVariations.innerHTML = newVariations.innerHTML;
+              const sizeTable =
+                typeof picker.preserveSizeTable === 'function'
+                  ? picker.preserveSizeTable(oldVariations)
+                  : (() => {
+                      const el = oldVariations?.querySelector('.variant-size-table-wrapper');
+                      if (el) el.remove();
+                      return el || null;
+                    })();
+              if (newVariations && oldVariations) {
+                oldVariations.innerHTML = newVariations.innerHTML;
+                if (typeof picker.restoreSizeTable === 'function') {
+                  picker.restoreSizeTable(oldVariations, sizeTable);
+                } else if (sizeTable) {
+                  const host =
+                    oldVariations.querySelector('[data-handle="size"]')?.closest('.option-chose-box') ||
+                    oldVariations;
+                  oldVariations.querySelectorAll('.variant-size-table-wrapper').forEach((el) => el.remove());
+                  host.appendChild(sizeTable);
+                }
+              }
               const newVariantJson = newPicker.querySelector('[data-selected-variant]');
               const oldVariantJson = picker.querySelector('[data-selected-variant]');
               if (newVariantJson && oldVariantJson) oldVariantJson.textContent = newVariantJson.textContent;

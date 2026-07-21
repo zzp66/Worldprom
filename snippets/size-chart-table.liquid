@@ -202,13 +202,19 @@
       maxi: 'dress',
       floor_length: 'dress',
       'floor length': 'dress',
+      floor: 'dress',
+      dress: 'dress',
+      midi: 'tea_length',
       ankle_length: 'ankle_length',
       'ankle length': 'ankle_length',
+      ankle: 'ankle_length',
       tea_length: 'tea_length',
       'tea length': 'tea_length',
+      tea: 'tea_length',
       knee: 'knee_length',
       knee_length: 'knee_length',
       short: 'short_skirt',
+      short_skirt: 'short_skirt',
       mini: 'short_skirt'
     };
 
@@ -325,14 +331,7 @@
         .replace(/[^a-z0-9_]/g, '');
     }
 
-    function normalizeChartTypeKey(raw) {
-      const fromLiquid = {{ length_type_key | json }};
-      let source = extractChartSource(raw != null && raw !== '' ? raw : fromLiquid);
-
-      if (!source && lengthTypeMetafieldValue) {
-        source = extractChartSource(lengthTypeMetafieldValue);
-      }
-
+    function resolveChartTypeFromSource(source) {
       if (!source || source === 'default') return null;
 
       const slug = toChartSlug(source);
@@ -343,11 +342,37 @@
 
       if (slug.includes('floor') && slug.includes('length')) return 'dress';
       if (slug.includes('ankle')) return 'ankle_length';
-      if (slug.includes('tea')) return 'tea_length';
+      if (slug.includes('tea') || slug.includes('midi')) return 'tea_length';
       if (slug.includes('knee')) return 'knee_length';
       if (slug.includes('short') || slug.includes('mini')) return 'short_skirt';
       if (slug.includes('maxi')) return 'dress';
 
+      return null;
+    }
+
+    function normalizeChartTypeKey(raw) {
+      const fromLiquid = {{ length_type_key | json }};
+      const candidates = [];
+
+      if (raw != null && raw !== '') candidates.push(raw);
+      if (fromLiquid) candidates.push(fromLiquid);
+
+      if (lengthTypeMetafieldValue) {
+        if (Array.isArray(lengthTypeMetafieldValue)) {
+          lengthTypeMetafieldValue.forEach(function (item) {
+            candidates.push(item);
+          });
+        } else {
+          candidates.push(lengthTypeMetafieldValue);
+        }
+      }
+
+      for (let i = 0; i < candidates.length; i++) {
+        const resolved = resolveChartTypeFromSource(extractChartSource(candidates[i]));
+        if (resolved) return resolved;
+      }
+
+      // 未配置裙长 metafield 或无法映射时不显示尺码表，避免信息错误
       return null;
     }
 
@@ -516,9 +541,31 @@
       wrapper.classList.remove('hidden');
     }
 
+    function getSizeValueFromVariant(v) {
+      if (!v) return null;
+      if (Array.isArray(v.options) && sizeIndex !== -1 && v.options[sizeIndex] != null) {
+        return v.options[sizeIndex];
+      }
+      if (sizeIndex === 0 && v.option1 != null) return v.option1;
+      if (sizeIndex === 1 && v.option2 != null) return v.option2;
+      if (sizeIndex === 2 && v.option3 != null) return v.option3;
+
+      // 高变体 / 选项顺序不确定时，从 options 里找像尺码的值
+      if (Array.isArray(v.options)) {
+        const match = v.options.find(function (opt) {
+          const key = normalizeSizeKey(opt);
+          return sizeValues.some(function (s) {
+            return normalizeSizeKey(s) === key;
+          }) || String(opt).toLowerCase().trim() === 'free custom';
+        });
+        if (match != null) return match;
+      }
+      return null;
+    }
+
     function handleVariantObject(v) {
-      if (!v || sizeIndex === -1) return;
-      const sizeVal = v.options[sizeIndex];
+      if (!v) return;
+      const sizeVal = getSizeValueFromVariant(v);
       if (!sizeVal) return;
       if (String(sizeVal).toLowerCase().trim() === 'free custom') {
         hideAll();

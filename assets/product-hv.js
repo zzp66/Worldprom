@@ -173,7 +173,79 @@ class VariantSelectsHV extends HTMLElement {
     return ids;
   }
 
+  getColorOrder() {
+    const colorFieldset = Array.from(this.querySelectorAll('fieldset')).find((fieldset) =>
+      this.isColorFieldset(fieldset)
+    );
+    if (!colorFieldset) return [];
+
+    return Array.from(colorFieldset.querySelectorAll('input[type="radio"], select option'))
+      .map((option) => option.value)
+      .filter(Boolean);
+  }
+
+  restoreColorOrder(colorOrder) {
+    if (!colorOrder.length) return;
+
+    const colorFieldset = Array.from(this.querySelectorAll('fieldset')).find((fieldset) =>
+      this.isColorFieldset(fieldset)
+    );
+    const wrapper = colorFieldset?.querySelector('.product-form__input-wrapper');
+    if (!wrapper) return;
+
+    const pairs = new Map();
+    wrapper.querySelectorAll('input[type="radio"]').forEach((input) => {
+      const label = input.id
+        ? wrapper.querySelector(`label[for="${CSS.escape(input.id)}"]`)
+        : null;
+      pairs.set(input.value, { input, label });
+    });
+
+    colorOrder.forEach((value) => {
+      const pair = pairs.get(value);
+      if (!pair) return;
+      wrapper.appendChild(pair.input);
+      if (pair.label) wrapper.appendChild(pair.label);
+    });
+  }
+
+  preserveSizeTable(oldVariations) {
+    if (!oldVariations) return null;
+    const sizeTable = oldVariations.querySelector('.variant-size-table-wrapper');
+    if (!sizeTable) return null;
+    // Detach before innerHTML replace so initialized listeners stay intact
+    sizeTable.remove();
+    return sizeTable;
+  }
+
+  restoreSizeTable(oldVariations, sizeTable) {
+    if (!oldVariations || !sizeTable) return;
+
+    // Section HTML 里的尺码表脚本不会执行，去掉未初始化副本
+    oldVariations.querySelectorAll('.variant-size-table-wrapper').forEach((el) => {
+      const next = el.nextElementSibling;
+      el.remove();
+      if (
+        next &&
+        next.tagName === 'SCRIPT' &&
+        (next.textContent || '').includes('sizeChartProfiles')
+      ) {
+        next.remove();
+      }
+    });
+
+    const sizeHost =
+      oldVariations.querySelector('[data-handle="size"]')?.closest('.option-chose-box') ||
+      oldVariations.querySelector('.product-form__input-wrapper-size')?.closest('.option-chose-box') ||
+      oldVariations;
+    sizeHost.appendChild(sizeTable);
+  }
+
   updateFromResponse(doc, focusId, replaceGallery) {
+    const colorOrder = this.getColorOrder();
+    const oldVariations = this.querySelector('.variations');
+    const sizeTable = this.preserveSizeTable(oldVariations);
+
     if (replaceGallery) {
       const newGallery = doc.querySelector('[id^="hv-media-gallery-"]');
       const oldGallery = this.productWrapper?.querySelector('[id^="hv-media-gallery-"]');
@@ -191,9 +263,10 @@ class VariantSelectsHV extends HTMLElement {
     const newPicker = doc.querySelector('variant-selects-hv');
     if (newPicker) {
       const newVariations = newPicker.querySelector('.variations');
-      const oldVariations = this.querySelector('.variations');
       if (newVariations && oldVariations) {
         oldVariations.innerHTML = newVariations.innerHTML;
+        this.restoreSizeTable(oldVariations, sizeTable);
+        this.restoreColorOrder(colorOrder);
       }
 
       const newVariantJson = newPicker.querySelector('[data-selected-variant]');

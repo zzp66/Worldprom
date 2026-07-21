@@ -106,7 +106,8 @@
         </div>
       </fieldset>
       {% if block.settings.show_size_chart_table != false %}
-        {% if option.name == 'Size' %}
+        {% assign size_option_name = option.name | downcase %}
+        {% if size_option_name == 'size' %}
           {% render 'size-chart-table',
             table_header_bg_color: block.settings.size_chart_table_header_bg_color,
             table_body_bg_color: block.settings.size_chart_table_body_bg_color,
