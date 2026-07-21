@@ -41,12 +41,20 @@
     return null;
   }
 
+  function normalizeColorToken(value) {
+    return String(value || '')
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '');
+  }
+
   function getColorNeedles(picker) {
     const needles = [];
     picker.querySelectorAll('fieldset').forEach((fieldset) => {
       if (!isColorFieldset(fieldset)) return;
       fieldset.querySelectorAll('input[type="radio"]').forEach((input) => {
-        const label = (input.dataset.colorLabel || input.value || '').trim().toLowerCase();
+        const label = normalizeColorToken(input.dataset.colorLabel || input.value);
         if (label) needles.push(label);
       });
     });
@@ -55,15 +63,18 @@
 
   function mediaMatchesColor(el, colorNeedle, allNeedles) {
     if (!el || !colorNeedle) return true;
+    const assignedColor = normalizeColorToken(el.dataset.hvColor);
+    if (assignedColor) return assignedColor === colorNeedle;
+
     const img = el.querySelector('img');
-    const haystack = [
+    const haystack = normalizeColorToken([
       img?.currentSrc || '',
       img?.src || '',
       img?.getAttribute('srcset') || '',
       img?.alt || '',
       el.getAttribute('data-media-id') || '',
       el.innerHTML || ''
-    ].join('|').toLowerCase();
+    ].join('|'));
 
     if (!haystack.includes(colorNeedle)) return false;
 
@@ -77,7 +88,7 @@
 
   function filterGalleryByColor(productWrapper, picker, colorValue) {
     if (!productWrapper || !colorValue) return;
-    const colorNeedle = String(colorValue).trim().toLowerCase();
+    const colorNeedle = normalizeColorToken(colorValue);
     if (!colorNeedle) return;
 
     const allNeedles = getColorNeedles(picker);

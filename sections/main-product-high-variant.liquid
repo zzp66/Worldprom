@@ -80,11 +80,11 @@
     endfor
   endif
 
-  assign active_color_needle = active_color_label | downcase | strip
+  assign active_color_needle = active_color_label | handleize | remove: '-'
   assign other_color_needles = '|'
   if color_option
     for ov in color_option.values
-      assign ov_label = ov.name | default: ov | append: '' | downcase | strip
+      assign ov_label = ov.name | default: ov | append: '' | handleize | remove: '-'
       if ov_label != blank and ov_label != active_color_needle
         assign other_color_needles = other_color_needles | append: ov_label | append: '|'
       endif
@@ -152,7 +152,8 @@
                   media_aspect_ratio: media_aspect_ratio,
                   hide_variants: false,
                   priority: 'high',
-                  display_captions: display_captions
+                  display_captions: display_captions,
+                  hv_color: active_color_label
                 -%}
               {%- endif -%}
               {%- for media in product.media -%}
@@ -164,7 +165,7 @@
 
                   assign show_media = false
                   assign media_src = media.preview_image.src | default: media.src
-                  assign media_haystack = media_src | append: '|' | append: media.alt | append: '|' | append: media | downcase
+                  assign media_haystack = media_src | append: '|' | append: media.alt | append: '|' | append: media | handleize | remove: '-'
 
                   if active_color_needle != blank
                     if media_haystack contains active_color_needle
@@ -225,7 +226,8 @@
                     media_aspect_ratio: media_aspect_ratio,
                     hide_variants: false,
                     priority: priority,
-                    display_captions: display_captions
+                    display_captions: display_captions,
+                    hv_color: active_color_label
                   -%}
                 {%- endif -%}
               {%- endfor -%}
@@ -253,7 +255,8 @@
                       forloop: false,
                       variant_images: variant_images,
                       media_aspect_ratio: media_aspect_ratio,
-                      hide_variants: false
+                      hide_variants: false,
+                      hv_color: active_color_label
                     -%}
                   {%- endif -%}
                   {%- for media in product.media -%}
@@ -265,7 +268,7 @@
 
                       assign show_media = false
                       assign media_src = media.preview_image.src | default: media.src
-                      assign media_haystack = media_src | append: '|' | append: media.alt | append: '|' | append: media | downcase
+                      assign media_haystack = media_src | append: '|' | append: media.alt | append: '|' | append: media | handleize | remove: '-'
 
                       if active_color_needle != blank
                         if media_haystack contains active_color_needle
@@ -311,7 +314,8 @@
                         forloop: forloop,
                         variant_images: variant_images,
                         media_aspect_ratio: media_aspect_ratio,
-                        hide_variants: false
+                        hide_variants: false,
+                        hv_color: active_color_label
                       -%}
                     {%- endif -%}
                   {%- endfor -%}

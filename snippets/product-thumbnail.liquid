@@ -42,6 +42,9 @@
 <div
   id="Thumb-{{ section.id }}-{{ media.id }}"
   class="product-thumbnail{% if is_active %} is-active{% endif %}{% if variant_images contains media.src %} product-images__slide-item--variant{% endif %}{% if is_selected %} is-initial-selected{% endif %}"
+  {% if hv_color != blank %}
+    data-hv-color="{{ hv_color | escape }}"
+  {% endif %}
   {% if image_set %}
     data-set-name="{{ image_set_group }}"
     data-group="{{ image_set_full }}"

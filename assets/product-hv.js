@@ -45,16 +45,24 @@ class VariantSelectsHV extends HTMLElement {
     return null;
   }
 
+  normalizeColorToken(value) {
+    return String(value || '')
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '');
+  }
+
   getColorNeedles() {
     const needles = [];
     this.querySelectorAll('fieldset').forEach((fieldset) => {
       if (!this.isColorFieldset(fieldset)) return;
       fieldset.querySelectorAll('input[type="radio"]').forEach((input) => {
-        const label = (input.dataset.colorLabel || input.value || '').trim().toLowerCase();
+        const label = this.normalizeColorToken(input.dataset.colorLabel || input.value);
         if (label) needles.push(label);
       });
       fieldset.querySelectorAll('select option').forEach((option) => {
-        const label = (option.dataset.colorLabel || option.value || '').trim().toLowerCase();
+        const label = this.normalizeColorToken(option.dataset.colorLabel || option.value);
         if (label) needles.push(label);
       });
     });
@@ -63,15 +71,18 @@ class VariantSelectsHV extends HTMLElement {
 
   mediaMatchesColor(el, colorNeedle, allNeedles) {
     if (!el || !colorNeedle) return true;
+    const assignedColor = this.normalizeColorToken(el.dataset.hvColor);
+    if (assignedColor) return assignedColor === colorNeedle;
+
     const img = el.querySelector('img');
-    const haystack = [
+    const haystack = this.normalizeColorToken([
       img?.currentSrc || '',
       img?.src || '',
       img?.getAttribute('srcset') || '',
       img?.alt || '',
       el.getAttribute('data-media-id') || '',
       el.innerHTML || ''
-    ].join('|').toLowerCase();
+    ].join('|'));
 
     if (!haystack.includes(colorNeedle)) return false;
 
@@ -85,7 +96,7 @@ class VariantSelectsHV extends HTMLElement {
 
   filterGalleryByColor(colorValue) {
     if (!this.productWrapper || !colorValue) return;
-    const colorNeedle = String(colorValue).trim().toLowerCase();
+    const colorNeedle = this.normalizeColorToken(colorValue);
     if (!colorNeedle) return;
 
     const allNeedles = this.getColorNeedles();
