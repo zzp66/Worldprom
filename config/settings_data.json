@@ -121,15 +121,25 @@
           "button_horizontal_position": "bottom_left",
           "button_vertical_position": "lowest"
         }
+      },
+      "2200952712151285029": {
+        "type": "shopify://apps/microsoft-clarity/blocks/brandAgents_js/31c3d126-8116-4b4a-8ba1-baeda7c4aeea",
+        "disabled": false,
+        "settings": {}
+      },
+      "2567389343055140935": {
+        "type": "shopify://apps/microsoft-clarity/blocks/clarity_js/31c3d126-8116-4b4a-8ba1-baeda7c4aeea",
+        "disabled": false,
+        "settings": {}
       }
     }
   },
   "platform_customizations": {
     "custom_css": [
       "/* 精准定位促销徽章并隐藏 */.product-card--badges .badge.onsale {display: none !important;}",
-      "/* 普通产品隐藏原生 Color（用 Siblings）；high-variant 模板除外 */body:not(.template-product-high-variant) fieldset[data-handle=\"color\"] {display: none !important;}",
+      " /* 普通产品隐藏原生 Color（用 Siblings）；high-variant 模板除外 */body:not(.template-product-high-variant) fieldset[data-handle=\"color\"] {display: none !important;}",
       "body:not(.template-product-high-variant) .product-form__input.product-form__input--color.product-form__input--color--regular {display: none !important;}",
-      "body.template-product-high-variant fieldset[data-handle=\"color\"], body.template-product-high-variant .product-form__input--color {display: flex !important; flex-wrap: wrap !important;}"
+      "body.template-product-high-variant fieldset[data-handle=\"color\"],body.template-product-high-variant .product-form__input--color {display: flex !important; flex-wrap: wrap !important;}"
     ]
   }
 }
