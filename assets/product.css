@@ -2394,19 +2394,14 @@ shopify-payment-terms {
   position: relative;
 }
 
-.product-form__input--color .option-value-box--color .option-value-icon {
-  width: 12px;
-  height: 12px;
-  top: -2px;
-  right: -2px;
-  z-index: 10;
-  pointer-events: none;
+.product-form__input--color .option-value-box--color label .sib-color-item-icon {
+  text-indent: 0;
+  color: initial;
 }
 
-.product-form__input--color .option-value-box--color .option-value-icon img {
-  width: 100%;
-  height: auto;
-  display: block;
+.product-form__input--color .option-value-box--color .sib-color-item-icon img {
+  max-height: 20px;
+  width: auto;
 }
 
 /* .option-value-item::before {
