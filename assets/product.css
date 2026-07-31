@@ -2389,6 +2389,26 @@ shopify-payment-terms {
   position: relative;
 }
 
+.product-form__input--color .option-value-box--color {
+  display: inline-flex;
+  position: relative;
+}
+
+.product-form__input--color .option-value-box--color .option-value-icon {
+  width: 12px;
+  height: 12px;
+  top: -2px;
+  right: -2px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.product-form__input--color .option-value-box--color .option-value-icon img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 /* .option-value-item::before {
   content: url("https://cdn.shopify.com/s/files/1/0742/6628/0191/files/shark-1.png?v=1760978281");
   position: absolute;

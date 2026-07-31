@@ -58,10 +58,26 @@
         </div>
         <div class="product-form__input-wrapper {% if option.name =='Size' %}product-form__input-wrapper-size{% endif %}">
           {%- for option_value in option.values -%}
-            {%- assign tooltip_text = '' -%}
-            {%- if option_value.variant -%}
-              {%- assign tooltip_text = option_value.variant.metafields.custom.option_value_tooltiptext.value -%}
-            {%- endif -%}
+            {%- liquid
+              assign tooltip_text = ''
+              assign option_value_label = option_value.name | default: option_value | append: ''
+
+              if option_value.variant
+                assign tooltip_text = option_value.variant.metafields.custom.option_value_tooltiptext.value
+              endif
+
+              # Fallback: any variant that includes this option value (matches classic product-option.liquid)
+              if tooltip_text == blank
+                for variant in product.variants
+                  if variant.options contains option_value_label
+                    assign tooltip_text = variant.metafields.custom.option_value_tooltiptext.value
+                    if tooltip_text != blank
+                      break
+                    endif
+                  endif
+                endfor
+              endif
+            -%}
 
             <div class="option-value-box">
               <div class="option-value-item">
@@ -170,16 +186,33 @@
           endfor
           assign hv_color_order_indexes = hv_color_order | split: ','
         -%}
-        {%- for idx_str in hv_color_order_indexes -%}
+          {%- for idx_str in hv_color_order_indexes -%}
           {%- if idx_str == blank -%}
             {%- continue -%}
           {%- endif -%}
           {%- liquid
             assign ov_index = idx_str | plus: 0
             assign option_value = option.values[ov_index]
+            assign option_value_label = option_value.name | default: option_value | append: ''
             assign color_value = option_value | downcase | strip
             assign bg_value = ''
             assign swatch_focal_point = ''
+            assign tooltip_text = ''
+
+            if option_value.variant
+              assign tooltip_text = option_value.variant.metafields.custom.option_value_tooltiptext.value
+            endif
+
+            if tooltip_text == blank
+              for variant in product.variants
+                if variant.options contains option_value_label
+                  assign tooltip_text = variant.metafields.custom.option_value_tooltiptext.value
+                  if tooltip_text != blank
+                    break
+                  endif
+                endif
+              endfor
+            endif
 
             for custom_color in key_array
               if custom_color == color_value
@@ -220,37 +253,47 @@
               assign color_value = 'rgb(' | append: option_value.swatch.color.rgb | append: ')'
             endif
           -%}
-          <input
-            type="radio"
-            id="{{ section.id }}-{{ option.position }}-{{ ov_index }}{{ appended }}"
-            name="{{ option.name | append: appended }}"
-            value="{{ option_value | escape }}"
-            form="{{ product_form_id }}"
-            data-option-value-id="{{ option_value.id }}"
-            data-color-label="{{ option_value | escape }}"
-            {% if option_value.product_url %}
-              data-product-url="{{ option_value.product_url }}"
-            {% endif %}
-            {% if option_value.selected %}
-              checked
-            {% endif %}
-            {% unless option_value.available %}
-              disabled
-            {% endunless %}
-          >
-          <label
-            for="{{ section.id }}-{{ option.position }}-{{ ov_index }}{{ appended }}"
-            {% if bg_value contains '//' %}
-              style="--option-color: {{ color_value | escape }}; --option-color-image: url('{{ bg_value | escape }}');{% if swatch_focal_point != blank %} --object-position: {{ swatch_focal_point }};{% endif %}"
-            {% else %}
-              style="--option-color: {{ color_value | escape }}; --option-color-image: none;"
-            {% endif %}
-            {% unless option_value.available %}
-              class="disabled"
-            {% endunless %}
-          >
-            {{ option_value }}
-          </label>
+          <div class="option-value-box option-value-box--color">
+            <input
+              type="radio"
+              id="{{ section.id }}-{{ option.position }}-{{ ov_index }}{{ appended }}"
+              name="{{ option.name | append: appended }}"
+              value="{{ option_value | escape }}"
+              form="{{ product_form_id }}"
+              data-option-value-id="{{ option_value.id }}"
+              data-color-label="{{ option_value | escape }}"
+              {% if option_value.product_url %}
+                data-product-url="{{ option_value.product_url }}"
+              {% endif %}
+              {% if option_value.selected %}
+                checked
+              {% endif %}
+              {% unless option_value.available %}
+                disabled
+              {% endunless %}
+            >
+            <label
+              for="{{ section.id }}-{{ option.position }}-{{ ov_index }}{{ appended }}"
+              {% if bg_value contains '//' %}
+                style="--option-color: {{ color_value | escape }}; --option-color-image: url('{{ bg_value | escape }}');{% if swatch_focal_point != blank %} --object-position: {{ swatch_focal_point }};{% endif %}"
+              {% else %}
+                style="--option-color: {{ color_value | escape }}; --option-color-image: none;"
+              {% endif %}
+              {% unless option_value.available %}
+                class="disabled"
+              {% endunless %}
+            >
+              {{ option_value }}
+            </label>
+            {%- if tooltip_text != blank -%}
+              <div class="option-value-icon">
+                <img
+                  src="https://cdn.shopify.com/s/files/1/0742/6628/0191/files/shark-1_98ca9bf3-7e04-4df0-966f-53d0f29f4b51.png?v=1761292639"
+                  alt=""
+                >
+              </div>
+            {%- endif -%}
+          </div>
         {%- endfor -%}
         {{ sizing_link }}
       </div>
