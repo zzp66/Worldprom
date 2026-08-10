@@ -9,15 +9,64 @@
  */
 {
   "sections": {
+    "slideshow_qi3NF6": {
+      "type": "slideshow",
+      "blocks": {
+        "slide_p8mGJz": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/mini-PC.jpg",
+            "mobile_image": "shopify://shop_images/mini-MB.jpg",
+            "slide_link": "shopify://collections/mini-dresses",
+            "video_background": false,
+            "video": "",
+            "subheading": "",
+            "badge_text": "",
+            "heading": "",
+            "heading_size": "h1-xlarge",
+            "content": "",
+            "description_size": "small",
+            "content_position": "bottom-center",
+            "text_alignment": "center",
+            "content_size": "large",
+            "color_text": "#ffffff",
+            "color_button_text": "#151515",
+            "color_badge_text": "#151515",
+            "overlay_color": "#1d1d1d",
+            "overlay_opacity": 0,
+            "overlay_gradient": "",
+            "button_1_text": "",
+            "button_1_link": "",
+            "button_1_outline": false,
+            "button_2_text": "",
+            "button_2_link": "",
+            "button_2_outline": true
+          }
+        }
+      },
+      "block_order": [
+        "slide_p8mGJz"
+      ],
+      "settings": {
+        "desktop_height": "desktop-height-image",
+        "mobile_height": "mobile-height-image",
+        "full_width": true,
+        "autoplay": false,
+        "autoplay_length": 10,
+        "transition": "swipe",
+        "disable_top_spacing": true,
+        "disable_bottom_spacing": true
+      }
+    },
     "16479477632637c9a7": {
       "type": "slideshow",
       "blocks": {
         "164794776393e76b8e-2": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/banner-03.18.png",
-            "mobile_image": "shopify://shop_images/m-banner-03.18.png",
-            "slide_link": "shopify://collections/floral-dresses",
+            "image": "shopify://shop_images/Homecoming_Banner-pc_1.webp",
+            "mobile_image": "shopify://shop_images/Homecoming_Banner-_1.webp",
+            "slide_link": "shopify://collections/homecoming-dresses",
             "video_background": false,
             "video": "",
             "subheading": "",
@@ -124,55 +173,6 @@
         "spacer_desktop": 35,
         "border_separator": false,
         "section_width": "full-width-row"
-      }
-    },
-    "slideshow_qi3NF6": {
-      "type": "slideshow",
-      "blocks": {
-        "slide_p8mGJz": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/mini-PC.jpg",
-            "mobile_image": "shopify://shop_images/mini-MB.jpg",
-            "slide_link": "shopify://collections/mini-dresses",
-            "video_background": false,
-            "video": "",
-            "subheading": "",
-            "badge_text": "",
-            "heading": "",
-            "heading_size": "h1-xlarge",
-            "content": "",
-            "description_size": "small",
-            "content_position": "bottom-center",
-            "text_alignment": "center",
-            "content_size": "large",
-            "color_text": "#ffffff",
-            "color_button_text": "#151515",
-            "color_badge_text": "#151515",
-            "overlay_color": "#1d1d1d",
-            "overlay_opacity": 0,
-            "overlay_gradient": "",
-            "button_1_text": "",
-            "button_1_link": "",
-            "button_1_outline": false,
-            "button_2_text": "",
-            "button_2_link": "",
-            "button_2_outline": true
-          }
-        }
-      },
-      "block_order": [
-        "slide_p8mGJz"
-      ],
-      "settings": {
-        "desktop_height": "desktop-height-image",
-        "mobile_height": "mobile-height-image",
-        "full_width": true,
-        "autoplay": false,
-        "autoplay_length": 10,
-        "transition": "swipe",
-        "disable_top_spacing": true,
-        "disable_bottom_spacing": true
       }
     },
     "featured_collection_4mWWqn": {
@@ -492,9 +492,9 @@
     "spacer_DmQtcM",
     "collection_list_VHV4Tw",
     "featured_collection_fGHJxg",
-    "spacer_AnPdfg",
     "slideshow_qi3NF6",
     "featured_collection_4mWWqn",
+    "spacer_AnPdfg",
     "spacer_kfpHVh",
     "slideshow_zwXLKG",
     "featured_collection_YPRmkP",
