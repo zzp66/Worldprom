@@ -136,9 +136,7 @@
         "collapsible_tab_hdTWMm",
         "4fd23485-293f-46a0-8a4c-34d0e25ea41b"
       ],
-      "custom_css": [
-        "fieldset[data-handle=\"color\"], .product-form__input--color {display: flex !important; flex-wrap: wrap !important;}"
-      ],
+      "custom_css": [],
       "settings": {
         "full_width": true,
         "enable_sticky_add_to_cart": false,

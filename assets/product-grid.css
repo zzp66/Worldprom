@@ -372,6 +372,10 @@
   gap: 4px;
 }
 
+.product-card--badges .badge.onsale {
+  display: none !important;
+}
+
 .product-card--badges.bottom {
   bottom: 8px;
 }
