@@ -149,7 +149,7 @@
         "media_aspect_ratio": "portrait",
         "display_captions": true,
         "hide_variants": false,
-        "hv_gallery_mode": "per_color",
+        "hv_gallery_mode": "shared_detail",
         "lightbox": false,
         "enable_video_looping": true,
         "custom_size_bust_min": "31",

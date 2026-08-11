@@ -9,6 +9,7 @@
 
   assign display_captions = section.settings.display_captions
   assign hide_variants = section.settings.hide_variants
+  assign hv_gallery_mode = section.settings.hv_gallery_mode | default: 'per_color'
   assign featured_media = product.selected_or_first_available_variant.featured_media
 
   assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src'
@@ -90,6 +91,22 @@
       endif
     endfor
   endif
+
+  if hv_gallery_mode == 'shared_detail' and active_featured_media == blank and active_color_needle != blank
+    for media in product.media
+      assign media_src = media.preview_image.src | default: media.src
+      assign media_alt = media.alt | default: ''
+      assign media_alt_down = media_alt | downcase
+      assign media_haystack = media_src | append: '|' | append: media_alt | handleize | remove: '-'
+      if media_alt_down contains '#shared' or media_haystack contains 'shared'
+        continue
+      endif
+      if media_haystack contains active_color_needle
+        assign active_featured_media = media
+        break
+      endif
+    endfor
+  endif
 -%}
 {%- if media_layout == 'thumbnails' -%}
   {%- assign slider_prefix = '-thumbnails' -%}
@@ -123,7 +140,12 @@
           id="MediaGallery-{{ section.id }}"
           data-hide-variants="{{ hide_variants }}"
         >
-          <div id="hv-media-gallery-{{ section.id }}" class="product-image-container product-image-container--{{ media_layout }}" data-hv-filter="1">
+          <div
+            id="hv-media-gallery-{{ section.id }}"
+            class="product-image-container product-image-container--{{ media_layout }}"
+            data-hv-filter="1"
+            data-hv-gallery-mode="{{ hv_gallery_mode }}"
+          >
             <product-slider{{ slider_prefix }}
               id="Product-Slider"
               class="product-images product-images--{{ media_layout }}"
@@ -135,102 +157,171 @@
                 assign image_index = -1
                 assign shown_media_ids = ''
               -%}
-              {%- if active_featured_media != null -%}
-                {%- liquid
-                  assign image_index = image_index | plus: 1
-                  assign first_image = active_featured_media.preview_image
-                  assign shown_media_ids = shown_media_ids | append: active_featured_media.id | append: ','
-                  assign hv_media_count = hv_media_count | plus: 1
-                -%}
-                {%- render 'product-media',
-                  product: product,
-                  section: section,
-                  forloop: false,
-                  media: active_featured_media,
-                  sizes: sizes,
-                  variant_images: variant_images,
-                  media_aspect_ratio: media_aspect_ratio,
-                  hide_variants: false,
-                  priority: 'high',
-                  display_captions: display_captions,
-                  hv_color: active_color_label
-                -%}
-              {%- endif -%}
-              {%- for media in product.media -%}
-                {%- liquid
-                  assign media_id_str = media.id | append: ','
-                  if shown_media_ids contains media_id_str
-                    continue
-                  endif
-
-                  assign show_media = false
-                  assign media_src = media.preview_image.src | default: media.src
-                  assign media_haystack = media_src | append: '|' | append: media.alt | append: '|' | append: media | handleize | remove: '-'
-
-                  if active_color_needle != blank
-                    if media_haystack contains active_color_needle
-                      assign show_media = true
-                      assign longer_other_match = false
-                      assign active_len = active_color_needle | size
-                      assign other_parts = other_color_needles | split: '|'
-                      for other_needle in other_parts
-                        if other_needle != blank
-                          assign other_len = other_needle | size
-                          if other_len > active_len and media_haystack contains other_needle
-                            assign longer_other_match = true
-                            break
-                          endif
-                        endif
-                      endfor
-                      if longer_other_match
-                        assign show_media = false
-                      endif
-                    elsif attachment_filter_ready
-                      assign src_key = '|' | append: media_src | append: '|'
-                      if color_media_srcs contains src_key
-                        assign show_media = true
-                      endif
-                    endif
-                  elsif attachment_filter_ready
-                    assign src_key = '|' | append: media_src | append: '|'
-                    if color_media_srcs contains src_key
-                      assign show_media = true
-                    elsif variant_images contains media_src
-                      assign show_media = false
-                    else
-                      assign show_media = true
-                    endif
-                  else
-                    assign show_media = true
-                  endif
-                -%}
-                {%- if show_media -%}
+              {%- if hv_gallery_mode == 'shared_detail' -%}
+                {%- if active_featured_media != null -%}
                   {%- liquid
-                    if media.media_type == 'image'
-                      assign image_index = image_index | default: 0 | plus: 1
-                    endif
-                    assign priority = false
-                    if image_index == 0
-                      assign first_image = media.preview_image
-                      assign priority = 'high'
-                    endif
+                    assign image_index = image_index | plus: 1
+                    assign first_image = active_featured_media.preview_image
+                    assign shown_media_ids = shown_media_ids | append: active_featured_media.id | append: ','
                     assign hv_media_count = hv_media_count | plus: 1
                   -%}
                   {%- render 'product-media',
                     product: product,
                     section: section,
-                    forloop: forloop,
-                    media: media,
+                    forloop: false,
+                    media: active_featured_media,
                     sizes: sizes,
                     variant_images: variant_images,
                     media_aspect_ratio: media_aspect_ratio,
                     hide_variants: false,
-                    priority: priority,
+                    priority: 'high',
+                    display_captions: display_captions,
+                    hv_color: active_color_label,
+                    hv_role: 'hero'
+                  -%}
+                {%- endif -%}
+                {%- for media in product.media -%}
+                  {%- liquid
+                    assign media_id_str = media.id | append: ','
+                    if shown_media_ids contains media_id_str
+                      continue
+                    endif
+
+                    assign media_src = media.preview_image.src | default: media.src
+                    assign media_alt = media.alt | default: ''
+                    assign media_alt_down = media_alt | downcase
+                    assign media_haystack = media_src | append: '|' | append: media_alt | handleize | remove: '-'
+                    assign is_shared_media = false
+                    if media_alt_down contains '#shared' or media_haystack contains 'shared'
+                      assign is_shared_media = true
+                    endif
+                  -%}
+                  {%- if is_shared_media -%}
+                    {%- liquid
+                      if media.media_type == 'image'
+                        assign image_index = image_index | default: 0 | plus: 1
+                      endif
+                      assign priority = false
+                      if image_index == 0
+                        assign first_image = media.preview_image
+                        assign priority = 'high'
+                      endif
+                      assign shown_media_ids = shown_media_ids | append: media.id | append: ','
+                      assign hv_media_count = hv_media_count | plus: 1
+                    -%}
+                    {%- render 'product-media',
+                      product: product,
+                      section: section,
+                      forloop: forloop,
+                      media: media,
+                      sizes: sizes,
+                      variant_images: variant_images,
+                      media_aspect_ratio: media_aspect_ratio,
+                      hide_variants: false,
+                      priority: priority,
+                      display_captions: display_captions,
+                      hv_role: 'shared'
+                    -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- else -%}
+                {%- if active_featured_media != null -%}
+                  {%- liquid
+                    assign image_index = image_index | plus: 1
+                    assign first_image = active_featured_media.preview_image
+                    assign shown_media_ids = shown_media_ids | append: active_featured_media.id | append: ','
+                    assign hv_media_count = hv_media_count | plus: 1
+                  -%}
+                  {%- render 'product-media',
+                    product: product,
+                    section: section,
+                    forloop: false,
+                    media: active_featured_media,
+                    sizes: sizes,
+                    variant_images: variant_images,
+                    media_aspect_ratio: media_aspect_ratio,
+                    hide_variants: false,
+                    priority: 'high',
                     display_captions: display_captions,
                     hv_color: active_color_label
                   -%}
                 {%- endif -%}
-              {%- endfor -%}
+                {%- for media in product.media -%}
+                  {%- liquid
+                    assign media_id_str = media.id | append: ','
+                    if shown_media_ids contains media_id_str
+                      continue
+                    endif
+
+                    assign show_media = false
+                    assign media_src = media.preview_image.src | default: media.src
+                    assign media_haystack = media_src | append: '|' | append: media.alt | append: '|' | append: media | handleize | remove: '-'
+
+                    if active_color_needle != blank
+                      if media_haystack contains active_color_needle
+                        assign show_media = true
+                        assign longer_other_match = false
+                        assign active_len = active_color_needle | size
+                        assign other_parts = other_color_needles | split: '|'
+                        for other_needle in other_parts
+                          if other_needle != blank
+                            assign other_len = other_needle | size
+                            if other_len > active_len and media_haystack contains other_needle
+                              assign longer_other_match = true
+                              break
+                            endif
+                          endif
+                        endfor
+                        if longer_other_match
+                          assign show_media = false
+                        endif
+                      elsif attachment_filter_ready
+                        assign src_key = '|' | append: media_src | append: '|'
+                        if color_media_srcs contains src_key
+                          assign show_media = true
+                        endif
+                      endif
+                    elsif attachment_filter_ready
+                      assign src_key = '|' | append: media_src | append: '|'
+                      if color_media_srcs contains src_key
+                        assign show_media = true
+                      elsif variant_images contains media_src
+                        assign show_media = false
+                      else
+                        assign show_media = true
+                      endif
+                    else
+                      assign show_media = true
+                    endif
+                  -%}
+                  {%- if show_media -%}
+                    {%- liquid
+                      if media.media_type == 'image'
+                        assign image_index = image_index | default: 0 | plus: 1
+                      endif
+                      assign priority = false
+                      if image_index == 0
+                        assign first_image = media.preview_image
+                        assign priority = 'high'
+                      endif
+                      assign hv_media_count = hv_media_count | plus: 1
+                    -%}
+                    {%- render 'product-media',
+                      product: product,
+                      section: section,
+                      forloop: forloop,
+                      media: media,
+                      sizes: sizes,
+                      variant_images: variant_images,
+                      media_aspect_ratio: media_aspect_ratio,
+                      hide_variants: false,
+                      priority: priority,
+                      display_captions: display_captions,
+                      hv_color: active_color_label
+                    -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
               {%- if media_layout == 'thumbnails' and hv_media_count > 1 -%}
                 {%- render 'slideshow-arrows' -%}
               {%- endif -%}
@@ -241,84 +332,134 @@
                   id="Product-Thumbnails"
                   class="product-thumbnail-container"
                   data-hide-variants="{{ hide_variants }}"
+                  data-hv-gallery-mode="{{ hv_gallery_mode }}"
                 >
                   {%- liquid
                     assign thumb_shown_ids = ''
                   -%}
-                  {%- if active_featured_media != null -%}
-                    {%- liquid
-                      assign thumb_shown_ids = thumb_shown_ids | append: active_featured_media.id | append: ','
-                    -%}
-                    {%- render 'product-thumbnail',
-                      product: product,
-                      media: active_featured_media,
-                      forloop: false,
-                      variant_images: variant_images,
-                      media_aspect_ratio: media_aspect_ratio,
-                      hide_variants: false,
-                      hv_color: active_color_label
-                    -%}
-                  {%- endif -%}
-                  {%- for media in product.media -%}
-                    {%- liquid
-                      assign media_id_str = media.id | append: ','
-                      if thumb_shown_ids contains media_id_str
-                        continue
-                      endif
-
-                      assign show_media = false
-                      assign media_src = media.preview_image.src | default: media.src
-                      assign media_haystack = media_src | append: '|' | append: media.alt | append: '|' | append: media | handleize | remove: '-'
-
-                      if active_color_needle != blank
-                        if media_haystack contains active_color_needle
-                          assign show_media = true
-                          assign longer_other_match = false
-                          assign active_len = active_color_needle | size
-                          assign other_parts = other_color_needles | split: '|'
-                          for other_needle in other_parts
-                            if other_needle != blank
-                              assign other_len = other_needle | size
-                              if other_len > active_len and media_haystack contains other_needle
-                                assign longer_other_match = true
-                                break
-                              endif
-                            endif
-                          endfor
-                          if longer_other_match
-                            assign show_media = false
-                          endif
-                        elsif attachment_filter_ready
-                          assign src_key = '|' | append: media_src | append: '|'
-                          if color_media_srcs contains src_key
-                            assign show_media = true
-                          endif
-                        endif
-                      elsif attachment_filter_ready
-                        assign src_key = '|' | append: media_src | append: '|'
-                        if color_media_srcs contains src_key
-                          assign show_media = true
-                        elsif variant_images contains media_src
-                          assign show_media = false
-                        else
-                          assign show_media = true
-                        endif
-                      else
-                        assign show_media = true
-                      endif
-                    -%}
-                    {%- if show_media -%}
+                  {%- if hv_gallery_mode == 'shared_detail' -%}
+                    {%- if active_featured_media != null -%}
+                      {%- liquid
+                        assign thumb_shown_ids = thumb_shown_ids | append: active_featured_media.id | append: ','
+                      -%}
                       {%- render 'product-thumbnail',
                         product: product,
-                        media: media,
-                        forloop: forloop,
+                        media: active_featured_media,
+                        forloop: false,
+                        variant_images: variant_images,
+                        media_aspect_ratio: media_aspect_ratio,
+                        hide_variants: false,
+                        hv_color: active_color_label,
+                        hv_role: 'hero'
+                      -%}
+                    {%- endif -%}
+                    {%- for media in product.media -%}
+                      {%- liquid
+                        assign media_id_str = media.id | append: ','
+                        if thumb_shown_ids contains media_id_str
+                          continue
+                        endif
+
+                        assign media_src = media.preview_image.src | default: media.src
+                        assign media_alt = media.alt | default: ''
+                        assign media_alt_down = media_alt | downcase
+                        assign media_haystack = media_src | append: '|' | append: media_alt | handleize | remove: '-'
+                        assign is_shared_media = false
+                        if media_alt_down contains '#shared' or media_haystack contains 'shared'
+                          assign is_shared_media = true
+                        endif
+                      -%}
+                      {%- if is_shared_media -%}
+                        {%- liquid
+                          assign thumb_shown_ids = thumb_shown_ids | append: media.id | append: ','
+                        -%}
+                        {%- render 'product-thumbnail',
+                          product: product,
+                          media: media,
+                          forloop: forloop,
+                          variant_images: variant_images,
+                          media_aspect_ratio: media_aspect_ratio,
+                          hide_variants: false,
+                          hv_role: 'shared'
+                        -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                  {%- else -%}
+                    {%- if active_featured_media != null -%}
+                      {%- liquid
+                        assign thumb_shown_ids = thumb_shown_ids | append: active_featured_media.id | append: ','
+                      -%}
+                      {%- render 'product-thumbnail',
+                        product: product,
+                        media: active_featured_media,
+                        forloop: false,
                         variant_images: variant_images,
                         media_aspect_ratio: media_aspect_ratio,
                         hide_variants: false,
                         hv_color: active_color_label
                       -%}
                     {%- endif -%}
-                  {%- endfor -%}
+                    {%- for media in product.media -%}
+                      {%- liquid
+                        assign media_id_str = media.id | append: ','
+                        if thumb_shown_ids contains media_id_str
+                          continue
+                        endif
+
+                        assign show_media = false
+                        assign media_src = media.preview_image.src | default: media.src
+                        assign media_haystack = media_src | append: '|' | append: media.alt | append: '|' | append: media | handleize | remove: '-'
+
+                        if active_color_needle != blank
+                          if media_haystack contains active_color_needle
+                            assign show_media = true
+                            assign longer_other_match = false
+                            assign active_len = active_color_needle | size
+                            assign other_parts = other_color_needles | split: '|'
+                            for other_needle in other_parts
+                              if other_needle != blank
+                                assign other_len = other_needle | size
+                                if other_len > active_len and media_haystack contains other_needle
+                                  assign longer_other_match = true
+                                  break
+                                endif
+                              endif
+                            endfor
+                            if longer_other_match
+                              assign show_media = false
+                            endif
+                          elsif attachment_filter_ready
+                            assign src_key = '|' | append: media_src | append: '|'
+                            if color_media_srcs contains src_key
+                              assign show_media = true
+                            endif
+                          endif
+                        elsif attachment_filter_ready
+                          assign src_key = '|' | append: media_src | append: '|'
+                          if color_media_srcs contains src_key
+                            assign show_media = true
+                          elsif variant_images contains media_src
+                            assign show_media = false
+                          else
+                            assign show_media = true
+                          endif
+                        else
+                          assign show_media = true
+                        endif
+                      -%}
+                      {%- if show_media -%}
+                        {%- render 'product-thumbnail',
+                          product: product,
+                          media: media,
+                          forloop: forloop,
+                          variant_images: variant_images,
+                          media_aspect_ratio: media_aspect_ratio,
+                          hide_variants: false,
+                          hv_color: active_color_label
+                        -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                  {%- endif -%}
                 </div>
               </scroll-shadow>
             {%- else -%}
@@ -1685,6 +1826,23 @@
       "default": false,
       "label": "Hide unselected variants' media",
       "info": "Media for the unselected variants will be hidden."
+    },
+    {
+      "type": "select",
+      "id": "hv_gallery_mode",
+      "label": "High-variant gallery mode",
+      "info": "Per color: each color has its own image set. Shared detail: 1 hero per color + SHARED detail images that stay when switching colors.",
+      "options": [
+        {
+          "value": "per_color",
+          "label": "Per color image set (default)"
+        },
+        {
+          "value": "shared_detail",
+          "label": "Shared detail images (swap hero only)"
+        }
+      ],
+      "default": "per_color"
     },
     {
       "type": "checkbox",

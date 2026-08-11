@@ -88,6 +88,7 @@
 
   function filterGalleryByColor(productWrapper, picker, colorValue) {
     if (!productWrapper || !colorValue) return;
+    if (isSharedDetailMode(productWrapper)) return;
     const colorNeedle = normalizeColorToken(colorValue);
     if (!colorNeedle) return;
 
@@ -105,6 +106,11 @@
       const slides = root.querySelectorAll('.product-images__slide, .product-thumbnail, [data-media-id]');
       let firstVisible = null;
       slides.forEach((slide) => {
+        if (slide.dataset.hvRole === 'shared') {
+          slide.hidden = false;
+          slide.style.display = '';
+          return;
+        }
         const match = mediaMatchesColor(slide, colorNeedle, allNeedles);
         slide.hidden = !match;
         slide.style.display = match ? '' : 'none';
@@ -122,6 +128,11 @@
     }
   }
 
+  function isSharedDetailMode(productWrapper) {
+    const gallery = productWrapper?.querySelector('[id^="hv-media-gallery-"]');
+    return (gallery?.dataset.hvGalleryMode || 'per_color') === 'shared_detail';
+  }
+
   function enhancePicker(picker) {
     if (!picker || picker.dataset.hvRuntimeEnhanced === '1') return;
     picker.dataset.hvRuntimeEnhanced = '1';
@@ -129,7 +140,9 @@
     const productWrapper = picker.closest('.thb-product-detail') || document.querySelector('.thb-product-detail');
     unhideColorPickers(picker);
     fixColorSwatches(picker);
-    filterGalleryByColor(productWrapper, picker, getSelectedColorValue(picker));
+    if (!isSharedDetailMode(productWrapper)) {
+      filterGalleryByColor(productWrapper, picker, getSelectedColorValue(picker));
+    }
 
     if (typeof picker.updateFromResponse === 'function') {
       const originalUpdate = picker.updateFromResponse.bind(picker);
@@ -181,7 +194,7 @@
         }
 
         const colorValue = getSelectedColorValue(picker);
-        if (colorChanged) {
+        if (colorChanged && !isSharedDetailMode(productWrapper)) {
           filterGalleryByColor(productWrapper, picker, colorValue);
         }
         fixColorSwatches(picker);
@@ -224,7 +237,7 @@
 
         originalChange(event);
         // After color change completes asynchronously, filter once more on next ticks
-        if (colorChanged) {
+        if (colorChanged && !isSharedDetailMode(productWrapper)) {
           setTimeout(() => {
             filterGalleryByColor(productWrapper, picker, getSelectedColorValue(picker));
             fixColorSwatches(picker);
@@ -233,6 +246,8 @@
             filterGalleryByColor(productWrapper, picker, getSelectedColorValue(picker));
             fixColorSwatches(picker);
           }, 800);
+        } else if (colorChanged) {
+          setTimeout(() => fixColorSwatches(picker), 300);
         }
       };
     } else {
@@ -242,7 +257,7 @@
         const colorChanged = isColorFieldset(input.closest('fieldset'));
         setTimeout(() => {
           fixColorSwatches(picker);
-          if (colorChanged) {
+          if (colorChanged && !isSharedDetailMode(productWrapper)) {
             filterGalleryByColor(productWrapper, picker, getSelectedColorValue(picker));
           }
         }, 50);

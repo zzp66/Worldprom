@@ -45,6 +45,9 @@
   {% if hv_color != blank %}
     data-hv-color="{{ hv_color | escape }}"
   {% endif %}
+  {% if hv_role != blank %}
+    data-hv-role="{{ hv_role | escape }}"
+  {% endif %}
   {% if image_set %}
     data-set-name="{{ image_set_group }}"
     data-group="{{ image_set_full }}"

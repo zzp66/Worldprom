@@ -15,7 +15,18 @@ class VariantSelectsHV extends HTMLElement {
     this.addEventListener('change', this.onVariantChange.bind(this));
     this.currentVariant = this.getSelectedVariant();
     this._lastColorValue = this.getSelectedColorValue();
-    this.filterGalleryByColor(this._lastColorValue);
+    if (!this.isSharedDetailMode()) {
+      this.filterGalleryByColor(this._lastColorValue);
+    }
+  }
+
+  getGalleryRoot() {
+    return this.productWrapper?.querySelector('[id^="hv-media-gallery-"]');
+  }
+
+  isSharedDetailMode() {
+    const gallery = this.getGalleryRoot();
+    return (gallery?.dataset.hvGalleryMode || 'per_color') === 'shared_detail';
   }
 
   getSelectedVariant() {
@@ -95,6 +106,7 @@ class VariantSelectsHV extends HTMLElement {
   }
 
   filterGalleryByColor(colorValue) {
+    if (this.isSharedDetailMode()) return;
     if (!this.productWrapper || !colorValue) return;
     const colorNeedle = this.normalizeColorToken(colorValue);
     if (!colorNeedle) return;
@@ -111,6 +123,11 @@ class VariantSelectsHV extends HTMLElement {
       );
       let firstVisible = null;
       slides.forEach((slide) => {
+        if (slide.dataset.hvRole === 'shared') {
+          slide.hidden = false;
+          slide.style.display = '';
+          return;
+        }
         const match = this.mediaMatchesColor(slide, colorNeedle, allNeedles);
         slide.hidden = !match;
         slide.style.display = match ? '' : 'none';
@@ -123,6 +140,53 @@ class VariantSelectsHV extends HTMLElement {
     });
 
     this.reinitSlider();
+  }
+
+  swapHeroFromResponse(doc) {
+    if (!this.productWrapper || !doc) return false;
+
+    const newHeroSlide = doc.querySelector('.product-images__slide[data-hv-role="hero"]');
+    const oldHeroSlide = this.productWrapper.querySelector('.product-images__slide[data-hv-role="hero"]');
+    if (newHeroSlide && oldHeroSlide) {
+      const wasActive = oldHeroSlide.classList.contains('is-active');
+      const replacement = newHeroSlide.cloneNode(true);
+      if (wasActive) replacement.classList.add('is-active');
+      oldHeroSlide.replaceWith(replacement);
+    } else if (newHeroSlide && !oldHeroSlide) {
+      const slider = this.productWrapper.querySelector('.product-images');
+      if (slider) {
+        const sharedSlide = slider.querySelector('.product-images__slide[data-hv-role="shared"]');
+        const clone = newHeroSlide.cloneNode(true);
+        clone.classList.add('is-active');
+        if (sharedSlide) slider.insertBefore(clone, sharedSlide);
+        else slider.prepend(clone);
+      }
+    }
+
+    const newHeroThumb = doc.querySelector('.product-thumbnail[data-hv-role="hero"]');
+    const oldHeroThumb = this.productWrapper.querySelector('.product-thumbnail[data-hv-role="hero"]');
+    if (newHeroThumb && oldHeroThumb) {
+      const wasSelected = oldHeroThumb.classList.contains('is-active') || oldHeroThumb.classList.contains('is-initial-selected');
+      const replacement = newHeroThumb.cloneNode(true);
+      if (wasSelected) {
+        replacement.classList.add('is-active');
+        replacement.classList.add('is-initial-selected');
+      }
+      oldHeroThumb.replaceWith(replacement);
+    } else if (newHeroThumb && !oldHeroThumb) {
+      const thumbs = this.productWrapper.querySelector('.product-thumbnail-container');
+      if (thumbs) {
+        const sharedThumb = thumbs.querySelector('.product-thumbnail[data-hv-role="shared"]');
+        const clone = newHeroThumb.cloneNode(true);
+        clone.classList.add('is-active');
+        clone.classList.add('is-initial-selected');
+        if (sharedThumb) thumbs.insertBefore(clone, sharedThumb);
+        else thumbs.prepend(clone);
+      }
+    }
+
+    this.reinitSlider();
+    return true;
   }
 
   onVariantChange(event) {
@@ -154,7 +218,7 @@ class VariantSelectsHV extends HTMLElement {
         const doc = new DOMParser().parseFromString(html, 'text/html');
         this.updateFromResponse(doc, input.id, colorChanged);
         this._lastColorValue = this.getSelectedColorValue();
-        if (colorChanged) {
+        if (colorChanged && !this.isSharedDetailMode()) {
           this.filterGalleryByColor(this._lastColorValue);
         }
       })
@@ -256,18 +320,25 @@ class VariantSelectsHV extends HTMLElement {
     const colorOrder = this.getColorOrder();
     const oldVariations = this.querySelector('.variations');
     const sizeTable = this.preserveSizeTable(oldVariations);
+    const sharedDetail = this.isSharedDetailMode();
 
     if (replaceGallery) {
-      const newGallery = doc.querySelector('[id^="hv-media-gallery-"]');
-      const oldGallery = this.productWrapper?.querySelector('[id^="hv-media-gallery-"]');
-      if (newGallery && oldGallery) {
-        oldGallery.innerHTML = newGallery.innerHTML;
-        oldGallery.setAttribute('data-hv-filter', newGallery.getAttribute('data-hv-filter') || '1');
-      }
-      const newThumbs = doc.querySelector('.product-thumbnail-container');
-      const oldThumbs = this.productWrapper?.querySelector('.product-thumbnail-container');
-      if (newThumbs && oldThumbs) {
-        oldThumbs.innerHTML = newThumbs.innerHTML;
+      if (sharedDetail) {
+        this.swapHeroFromResponse(doc);
+      } else {
+        const newGallery = doc.querySelector('[id^="hv-media-gallery-"]');
+        const oldGallery = this.productWrapper?.querySelector('[id^="hv-media-gallery-"]');
+        if (newGallery && oldGallery) {
+          oldGallery.innerHTML = newGallery.innerHTML;
+          oldGallery.setAttribute('data-hv-filter', newGallery.getAttribute('data-hv-filter') || '1');
+          const mode = newGallery.getAttribute('data-hv-gallery-mode');
+          if (mode) oldGallery.setAttribute('data-hv-gallery-mode', mode);
+        }
+        const newThumbs = doc.querySelector('.product-thumbnail-container');
+        const oldThumbs = this.productWrapper?.querySelector('.product-thumbnail-container');
+        if (newThumbs && oldThumbs) {
+          oldThumbs.innerHTML = newThumbs.innerHTML;
+        }
       }
     }
 
