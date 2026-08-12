@@ -268,19 +268,27 @@ class VariantSelectsHV extends HTMLElement {
     const wrapper = colorFieldset?.querySelector('.product-form__input-wrapper');
     if (!wrapper) return;
 
-    const pairs = new Map();
+    const nodes = new Map();
     wrapper.querySelectorAll('input[type="radio"]').forEach((input) => {
+      const box = input.closest('.option-value-box');
+      if (box) {
+        nodes.set(input.value, [box]);
+        return;
+      }
       const label = input.id
         ? wrapper.querySelector(`label[for="${CSS.escape(input.id)}"]`)
         : null;
-      pairs.set(input.value, { input, label });
+      nodes.set(input.value, label ? [input, label] : [input]);
     });
 
     colorOrder.forEach((value) => {
-      const pair = pairs.get(value);
-      if (!pair) return;
-      wrapper.appendChild(pair.input);
-      if (pair.label) wrapper.appendChild(pair.label);
+      const group = nodes.get(value);
+      if (!group) return;
+      group.forEach((node) => wrapper.appendChild(node));
+    });
+
+    wrapper.querySelectorAll('.option-value-box--color').forEach((box) => {
+      if (!box.querySelector('input, label')) box.remove();
     });
   }
 

@@ -13,6 +13,7 @@
       'fieldset[data-handle="color"], .product-form__input--color'
     ).forEach((el) => {
       el.style.setProperty('display', 'flex', 'important');
+      el.style.setProperty('flex-direction', 'column', 'important');
       el.style.setProperty('flex-wrap', 'wrap', 'important');
       el.style.setProperty('visibility', 'visible', 'important');
       el.style.setProperty('height', 'auto', 'important');

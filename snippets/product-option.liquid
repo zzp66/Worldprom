@@ -46,8 +46,7 @@
         data-handle="{{ handle }}"
       >
         <div class="form__label">
-          {{ option.name }}
-          <span class="form__label__value">{{ option.selected_value }}</span>
+          {{ option.name }}{% if option.selected_value != blank %}: <span class="form__label__value">{{ option.selected_value }}</span>{% endif %}
         </div>
         <div class="product-form__input-wrapper {% if option.name =='Size' %}product-form__input-wrapper-size{% endif %}">
           {%- for value in option.values -%}
@@ -139,8 +138,7 @@
       data-handle="{{ handle }}"
     >
       <div class="form__label">
-        {{ option.name }}
-        <span class="form__label__value">{{ option.selected_value }}</span>{{ sizing_link }}
+        {{ option.name }}{% if option.selected_value != blank %}: <span class="form__label__value">{{ option.selected_value }}</span>{% endif %}{{ sizing_link }}
       </div>
       <div class="product-form__input-wrapper">
         {%- for value in option.values -%}

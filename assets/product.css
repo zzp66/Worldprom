@@ -85,22 +85,14 @@
   border-top: 1px solid var(--color-border);
 }
 
-@media only screen and (min-width: 768px) {
-  .product-form__input {
-    gap: 20px;
-    flex-direction: row;
-  }
-}
-
 .product-form__input .form__label {
-  display: flex;
-  flex-direction: column;
+  display: block;
   width: 100%;
-  max-width: 90px;
+  max-width: none;
   line-height: 1.1;
-  gap: 5px;
   font-size: 0.8125rem;
   font-weight: var(--font-body-medium-weight, 500);
+  white-space: nowrap;
 }
 
 .product-form__input .form__label__value {
@@ -117,11 +109,52 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  width: 100%;
+  min-width: 0;
 }
 
 .product-form__input-wrapper.product-form__input-wrapper-size {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
+  width: 100%;
+}
+
+@media only screen and (min-width: 768px) {
+  .product-form__input-wrapper.product-form__input-wrapper-size {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.product-form__input-wrapper-size .option-value-box,
+.product-form__input-wrapper-size .option-value-item {
+  width: 100%;
+  min-width: 0;
+}
+
+.product-form__input-wrapper-size modal-opener.product-popup-modal__opener {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  flex-basis: auto;
+  grid-column: auto;
+}
+
+.product-form__input-wrapper-size .product-popup-modal__button,
+.product-form__input-wrapper-size .text-button {
+  margin-top: 0;
+  width: 100%;
+  min-width: 0;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2px 4px;
+  white-space: normal;
+  line-height: 1.15;
+  box-sizing: border-box;
 }
 
 .sib-color-item-box {
@@ -237,6 +270,7 @@
 
 .variations .product-form__input--block {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
 }
 
@@ -273,6 +307,7 @@
 
 .variations .product-form__input--color {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   padding-left: 1px;
 }
@@ -290,6 +325,7 @@ body.template-product-high-variant-shared fieldset[data-handle="color"],
 body.template-product-high-variant-shared .product-form__input--color,
 body.template-product-high-variant-shared .product-form__input.product-form__input--color.product-form__input--color--regular {
   display: flex !important;
+  flex-direction: column !important;
   flex-wrap: wrap !important;
   visibility: visible !important;
   height: auto !important;
@@ -2640,6 +2676,10 @@ shopify-payment-terms {
 
   modal-opener.product-popup-modal__opener {
     grid-column-start: span 2;
+  }
+
+  .product-form__input-wrapper-size modal-opener.product-popup-modal__opener {
+    grid-column: auto;
   }
 
   .estimate-time .desc p {
