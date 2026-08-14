@@ -190,7 +190,8 @@ product_brand: 'Parker'
 	{%- liquid
 		assign is_hv_product_template = false
 		if template.name == 'product'
-			if template.suffix == 'high-variant' or template.suffix == 'high-variant-shared'
+			assign hv_template_suffix = template.suffix | default: '' | downcase
+			if hv_template_suffix contains 'high-variant'
 				assign is_hv_product_template = true
 			endif
 		endif

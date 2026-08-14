@@ -32,8 +32,17 @@
       break
     endif
   endfor
-
-  if color_option
+-%}
+{%- if color_option and collection != blank -%}
+  {%- unless request.query_string contains 'option_values' -%}
+    {%- include 'hv-collection-color-match', hv_match_product: product, hv_match_collection: collection -%}
+  {%- endunless -%}
+{%- endif -%}
+{%- liquid
+  if hv_matched_option_value
+    assign active_color = hv_matched_option_value
+    assign active_color_variant = hv_matched_variant
+  elsif color_option
     for ov in color_option.values
       if ov.selected
         assign active_color = ov
@@ -751,12 +760,13 @@
                             product_form_id: product_form_id,
                             sizing_link: sizing_link,
                             block: block,
-                            color_option: color_option
+                            color_option: color_option,
+                            hv_selected_color: active_color_label
                           %}
                         {%- endfor -%}
                       </div>
                       <script type="application/json" data-selected-variant>
-                        {{ product.selected_or_first_available_variant | json }}
+                        {{ active_color_variant | default: product.selected_or_first_available_variant | json }}
                       </script>
                     </variant-selects-hv>
                   {%- endunless -%}
@@ -1131,7 +1141,7 @@
                     id="sku-{{ section.id }}"
                     {{ block.shopify_attributes }}
                   >
-                    {{ product.selected_or_first_available_variant.sku }}
+                    {{ active_color_variant.sku | default: product.selected_or_first_available_variant.sku }}
                   </div>
                 {%- when 'product_link' -%}
                   <a

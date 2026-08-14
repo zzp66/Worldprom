@@ -312,18 +312,15 @@
   padding-left: 1px;
 }
 
-/* 普通产品用 Siblings 选色，隐藏原生 Color；HV / HV-shared 模板显示 */
-body:not(.template-product-high-variant):not(.template-product-high-variant-shared) fieldset[data-handle="color"],
-body:not(.template-product-high-variant):not(.template-product-high-variant-shared) .product-form__input.product-form__input--color.product-form__input--color--regular {
+/* 普通产品用 Siblings 选色，隐藏原生 Color；所有 high-variant* 模板显示 */
+body:not([class*="template-product-high-variant"]) fieldset[data-handle="color"],
+body:not([class*="template-product-high-variant"]) .product-form__input.product-form__input--color.product-form__input--color--regular {
   display: none !important;
 }
 
-body.template-product-high-variant fieldset[data-handle="color"],
-body.template-product-high-variant .product-form__input--color,
-body.template-product-high-variant .product-form__input.product-form__input--color.product-form__input--color--regular,
-body.template-product-high-variant-shared fieldset[data-handle="color"],
-body.template-product-high-variant-shared .product-form__input--color,
-body.template-product-high-variant-shared .product-form__input.product-form__input--color.product-form__input--color--regular {
+body[class*="template-product-high-variant"] fieldset[data-handle="color"],
+body[class*="template-product-high-variant"] .product-form__input--color,
+body[class*="template-product-high-variant"] .product-form__input.product-form__input--color.product-form__input--color--regular {
   display: flex !important;
   flex-direction: column !important;
   flex-wrap: wrap !important;

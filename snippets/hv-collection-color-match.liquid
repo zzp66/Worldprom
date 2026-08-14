@@ -1,0 +1,81 @@
+{%- comment -%}
+  Matches a product color option to the current collection handle/title.
+  Sets in parent scope when used with include:
+  - hv_color_match
+  - hv_matched_color_name
+  - hv_matched_option_value
+  - hv_matched_variant
+  Inputs: hv_match_product, hv_match_collection
+{%- endcomment -%}
+{%- liquid
+  assign hv_color_match = false
+  assign hv_matched_color_name = ''
+  assign hv_matched_option_value = nil
+  assign hv_matched_variant = nil
+  assign hv_best_len = 0
+
+  if hv_match_product != blank and hv_match_collection != blank
+    assign col_handle = hv_match_collection.handle | default: '' | downcase | strip
+    assign col_title_down = hv_match_collection.title | default: '' | downcase | strip
+    assign col_title_handle = hv_match_collection.title | default: '' | downcase | handleize
+    assign col_hay = '-' | append: col_handle | append: '-' | append: col_title_handle | append: '-'
+    assign col_title_hay = ' ' | append: col_title_down | append: ' '
+
+    for option in hv_match_product.options_with_values
+      assign opt_name_down = option.name | downcase
+      assign is_color_option = false
+      if opt_name_down contains 'color' or opt_name_down contains 'colour' or opt_name_down contains 'couleur' or opt_name_down contains 'farbe'
+        assign is_color_option = true
+      endif
+      assign color_swatches_variant_option = settings.color_swatches_variant_option | downcase | split: ', '
+      if color_swatches_variant_option contains opt_name_down
+        assign is_color_option = true
+      endif
+
+      unless is_color_option
+        continue
+      endunless
+
+      for option_value in option.values
+        assign ov_name = option_value.name | default: option_value | append: ''
+        assign ov_down = ov_name | downcase | strip
+        assign ov_handle = ov_down | handleize
+        assign ov_len = ov_handle | size
+        if ov_handle == blank or ov_len < 2 or ov_len <= hv_best_len
+          continue
+        endif
+
+        assign matched = false
+        if ov_handle == col_handle or ov_handle == col_title_handle or ov_down == col_title_down
+          assign matched = true
+        endif
+
+        unless matched
+          assign ov_token = '-' | append: ov_handle | append: '-'
+          if col_hay contains ov_token
+            assign matched = true
+          endif
+        endunless
+
+        unless matched
+          assign ov_spaced = ' ' | append: ov_down | append: ' '
+          if col_title_hay contains ov_spaced
+            assign matched = true
+          endif
+        endunless
+
+        if matched
+          assign hv_best_len = ov_len
+          assign hv_color_match = true
+          assign hv_matched_option_value = option_value
+          assign hv_matched_color_name = ov_down
+          assign hv_matched_variant = option_value.variant
+        endif
+      endfor
+
+      if hv_color_match
+        break
+      endif
+    endfor
+  endif
+-%}

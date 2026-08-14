@@ -19,17 +19,22 @@
       assign hv_card_url = product_card_product.url | within: hv_collection
     endif
     assign hv_matched_color_name = ''
+    assign hv_matched_option_value = nil
+    assign hv_matched_variant = nil
 
     assign is_hv_card_product = false
-    if product_card_product.template_suffix == 'high-variant' or product_card_product.template_suffix == 'high-variant-shared'
+    assign hv_card_suffix = product_card_product.template_suffix | default: '' | downcase
+    if hv_card_suffix contains 'high-variant'
       assign is_hv_card_product = true
     endif
 
     if hv_collection != blank and is_hv_card_product
-      assign col_handle = hv_collection.handle | downcase | strip
-      assign col_title_down = hv_collection.title | downcase | strip
-      assign col_title_handle = hv_collection.title | downcase | handleize
-      assign col_parts = col_handle | split: '-'
+      assign col_handle = hv_collection.handle | default: '' | downcase | strip
+      assign col_title_down = hv_collection.title | default: '' | downcase | strip
+      assign col_title_handle = hv_collection.title | default: '' | downcase | handleize
+      assign col_hay = '-' | append: col_handle | append: '-' | append: col_title_handle | append: '-'
+      assign col_title_hay = ' ' | append: col_title_down | append: ' '
+      assign hv_best_len = 0
 
       for option in product_card_product.options_with_values
         assign opt_name_down = option.name | downcase
@@ -50,66 +55,36 @@
           assign ov_name = option_value.name | default: option_value | append: ''
           assign ov_down = ov_name | downcase | strip
           assign ov_handle = ov_down | handleize
-          assign matched = false
+          assign ov_len = ov_handle | size
+          if ov_handle == blank or ov_len < 2 or ov_len <= hv_best_len
+            continue
+          endif
 
+          assign matched = false
           if ov_handle == col_handle or ov_handle == col_title_handle or ov_down == col_title_down
             assign matched = true
           endif
 
           unless matched
-            for part in col_parts
-              if part == ov_handle and ov_handle != blank
-                assign matched = true
-                break
-              endif
-            endfor
+            assign ov_token = '-' | append: ov_handle | append: '-'
+            if col_hay contains ov_token
+              assign matched = true
+            endif
           endunless
 
           unless matched
-            for tag in product_card_product.tags
-              assign tag_down = tag | downcase | strip
-              assign tag_handle = tag_down | handleize
-              if tag_handle == col_handle or tag_down == col_title_down or tag_handle == col_title_handle
-                if tag_down == ov_down or tag_handle == ov_handle
-                  assign matched = true
-                  break
-                endif
-              endif
-            endfor
+            assign ov_spaced = ' ' | append: ov_down | append: ' '
+            if col_title_hay contains ov_spaced
+              assign matched = true
+            endif
           endunless
 
           if matched
+            assign hv_best_len = ov_len
             assign hv_color_match = true
+            assign hv_matched_option_value = option_value
             assign hv_matched_color_name = ov_down
             assign hv_matched_variant = option_value.variant
-
-            if hv_matched_variant and hv_matched_variant.featured_media
-              assign featured_media = hv_matched_variant.featured_media
-            else
-              assign ov_needle = ov_name | handleize | remove: '-'
-              for media in product_card_product.media
-                assign media_src = media.preview_image.src | default: media.src
-                assign media_alt = media.alt | default: ''
-                assign media_alt_down = media_alt | downcase
-                assign media_hay = media_src | append: '|' | append: media_alt | handleize | remove: '-'
-                if media_alt_down contains '#shared' or media_hay contains 'shared'
-                  continue
-                endif
-                if ov_needle != blank and media_hay contains ov_needle
-                  assign featured_media = media
-                  break
-                endif
-              endfor
-            endif
-
-            if option_value.id
-              if hv_card_url contains '?'
-                assign hv_card_url = hv_card_url | append: '&option_values=' | append: option_value.id
-              else
-                assign hv_card_url = hv_card_url | append: '?option_values=' | append: option_value.id
-              endif
-            endif
-            break
           endif
         endfor
 
@@ -117,6 +92,96 @@
           break
         endif
       endfor
+    endif
+
+    if hv_matched_option_value
+      assign ov_handle = hv_matched_color_name | handleize
+      assign ov_compact = ov_handle | remove: '-'
+      assign ov_underscore = ov_handle | replace: '-', '_'
+      assign featured_ok = false
+
+      if hv_matched_variant and hv_matched_variant.featured_media
+        assign fm_src = hv_matched_variant.featured_media.preview_image.src | default: hv_matched_variant.featured_media.src | default: '' | downcase
+        if fm_src contains ov_compact or fm_src contains ov_handle or fm_src contains ov_underscore
+          assign featured_media = hv_matched_variant.featured_media
+          assign featured_ok = true
+        endif
+      endif
+
+      unless featured_ok
+        for media in product_card_product.media
+          assign media_src = media.preview_image.src | default: media.src | default: ''
+          assign media_alt = media.alt | default: '' | downcase
+          assign media_src_down = media_src | downcase
+          if media_alt contains '#shared' or media_src_down contains 'shared'
+            continue
+          endif
+          assign media_hit = false
+          if ov_compact != blank
+            if media_src_down contains ov_compact
+              assign media_hit = true
+            endif
+            if media_src_down contains ov_handle
+              assign media_hit = true
+            endif
+            if media_src_down contains ov_underscore
+              assign media_hit = true
+            endif
+            if media_alt contains hv_matched_color_name
+              assign media_hit = true
+            endif
+          endif
+          if media_hit
+            assign featured_media = media
+            assign featured_ok = true
+            break
+          endif
+        endfor
+      endunless
+
+      unless featured_ok
+        for image in product_card_product.images
+          assign image_src = image.src | default: '' | downcase
+          assign image_alt = image.alt | default: '' | downcase
+          if image_alt contains '#shared' or image_src contains 'shared'
+            continue
+          endif
+          assign image_hit = false
+          if ov_compact != blank
+            if image_src contains ov_compact
+              assign image_hit = true
+            endif
+            if image_src contains ov_handle
+              assign image_hit = true
+            endif
+            if image_src contains ov_underscore
+              assign image_hit = true
+            endif
+            if image_alt contains hv_matched_color_name
+              assign image_hit = true
+            endif
+          endif
+          if image_hit
+            assign featured_media = image
+            assign featured_ok = true
+            break
+          endif
+        endfor
+      endunless
+
+      unless featured_ok
+        if hv_matched_variant and hv_matched_variant.featured_media
+          assign featured_media = hv_matched_variant.featured_media
+        endif
+      endunless
+
+      if hv_matched_option_value.id
+        if hv_card_url contains '?'
+          assign hv_card_url = hv_card_url | append: '&option_values=' | append: hv_matched_option_value.id
+        else
+          assign hv_card_url = hv_card_url | append: '?option_values=' | append: hv_matched_option_value.id
+        endif
+      endif
     endif
 
     if featured_media.media_type != 'image'

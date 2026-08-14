@@ -167,21 +167,42 @@
       style="display: flex !important; flex-direction: column !important; flex-wrap: wrap !important;"
     >
       <div class="form__label">
-        {{ option.name }}{% if option.selected_value != blank %}: <span class="form__label__value">{{ option.selected_value }}</span>{% endif %}{{ sizing_link }}
+        {%- liquid
+          assign color_label_value = option.selected_value
+          if hv_selected_color != blank
+            assign color_label_value = hv_selected_color
+          endif
+        -%}
+        {{ option.name }}{% if color_label_value != blank %}: <span class="form__label__value">{{ color_label_value }}</span>{% endif %}{{ sizing_link }}
       </div>
       <div class="product-form__input-wrapper">
         {%- liquid
           assign hv_color_order = ''
-          for option_value in option.values
-            if option_value.selected
-              assign hv_color_order = hv_color_order | append: forloop.index0 | append: ','
-            endif
-          endfor
-          for option_value in option.values
-            unless option_value.selected
-              assign hv_color_order = hv_color_order | append: forloop.index0 | append: ','
-            endunless
-          endfor
+          if hv_selected_color != blank
+            for option_value in option.values
+              assign ov_label_tmp = option_value.name | default: option_value | append: ''
+              if ov_label_tmp == hv_selected_color
+                assign hv_color_order = hv_color_order | append: forloop.index0 | append: ','
+              endif
+            endfor
+            for option_value in option.values
+              assign ov_label_tmp = option_value.name | default: option_value | append: ''
+              unless ov_label_tmp == hv_selected_color
+                assign hv_color_order = hv_color_order | append: forloop.index0 | append: ','
+              endunless
+            endfor
+          else
+            for option_value in option.values
+              if option_value.selected
+                assign hv_color_order = hv_color_order | append: forloop.index0 | append: ','
+              endif
+            endfor
+            for option_value in option.values
+              unless option_value.selected
+                assign hv_color_order = hv_color_order | append: forloop.index0 | append: ','
+              endunless
+            endfor
+          endif
           assign hv_color_order_indexes = hv_color_order | split: ','
         -%}
           {%- for idx_str in hv_color_order_indexes -%}
@@ -195,6 +216,14 @@
               continue
             endif
             assign option_value_label = option_value.name | default: option_value | append: ''
+            assign ov_is_selected = false
+            if hv_selected_color != blank
+              if option_value_label == hv_selected_color
+                assign ov_is_selected = true
+              endif
+            elsif option_value.selected
+              assign ov_is_selected = true
+            endif
             assign color_value = option_value | downcase | strip
             assign bg_value = ''
             assign swatch_focal_point = ''
@@ -266,7 +295,7 @@
               {% if option_value.product_url %}
                 data-product-url="{{ option_value.product_url }}"
               {% endif %}
-              {% if option_value.selected %}
+              {% if ov_is_selected %}
                 checked
               {% endif %}
               {% unless option_value.available %}
