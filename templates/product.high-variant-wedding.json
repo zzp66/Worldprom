@@ -147,7 +147,7 @@
         "media_aspect_ratio": "portrait",
         "display_captions": true,
         "hide_variants": false,
-        "hv_gallery_mode": "shared_detail",
+        "hv_gallery_mode": "per_color",
         "lightbox": false,
         "enable_video_looping": true,
         "custom_size_bust_min": "31",
@@ -177,7 +177,7 @@
     "product-recommendations": {
       "type": "product-recommendations",
       "settings": {
-        "collection": "new-arrival-long",
+        "collection": "homecoming-new-arrival",
         "subheading": "",
         "heading": "Perfect For You",
         "heading_left": false,
