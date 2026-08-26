@@ -9,55 +9,6 @@
  */
 {
   "sections": {
-    "slideshow_qi3NF6": {
-      "type": "slideshow",
-      "blocks": {
-        "slide_p8mGJz": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/mini-PC.jpg",
-            "mobile_image": "shopify://shop_images/mini-MB.jpg",
-            "slide_link": "shopify://collections/mini-dresses",
-            "video_background": false,
-            "video": "",
-            "subheading": "",
-            "badge_text": "",
-            "heading": "",
-            "heading_size": "h1-xlarge",
-            "content": "",
-            "description_size": "small",
-            "content_position": "bottom-center",
-            "text_alignment": "center",
-            "content_size": "large",
-            "color_text": "#ffffff",
-            "color_button_text": "#151515",
-            "color_badge_text": "#151515",
-            "overlay_color": "#1d1d1d",
-            "overlay_opacity": 0,
-            "overlay_gradient": "",
-            "button_1_text": "",
-            "button_1_link": "",
-            "button_1_outline": false,
-            "button_2_text": "",
-            "button_2_link": "",
-            "button_2_outline": true
-          }
-        }
-      },
-      "block_order": [
-        "slide_p8mGJz"
-      ],
-      "settings": {
-        "desktop_height": "desktop-height-image",
-        "mobile_height": "mobile-height-image",
-        "full_width": true,
-        "autoplay": false,
-        "autoplay_length": 10,
-        "transition": "swipe",
-        "disable_top_spacing": true,
-        "disable_bottom_spacing": true
-      }
-    },
     "16479477632637c9a7": {
       "type": "slideshow",
       "blocks": {
@@ -117,8 +68,145 @@
         "section_width": "full-width-row"
       }
     },
+    "featured_collection_4mWWqn": {
+      "type": "featured-collection",
+      "name": "Featured collection",
+      "settings": {
+        "subheading": "",
+        "heading": "",
+        "heading_left": false,
+        "description": "",
+        "full_width": true,
+        "collection": "homecoming-new-arrival",
+        "display_type": "carousel",
+        "product_limit": 10,
+        "columns_desktop": 5,
+        "show_view_all": true,
+        "mobile_swipe": false,
+        "disable_top_spacing": false,
+        "disable_bottom_spacing": false
+      }
+    },
+    "slideshow_zwXLKG": {
+      "type": "slideshow",
+      "blocks": {
+        "slide_NNX84T": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/bridesmaid_dresses-PC_20260813.webp",
+            "mobile_image": "shopify://shop_images/bridesmaid_dresses-_20260813.webp",
+            "slide_link": "shopify://collections/wedding-dresses",
+            "video_background": false,
+            "video": "",
+            "subheading": "",
+            "badge_text": "",
+            "heading": "",
+            "heading_size": "h1-xlarge",
+            "content": "",
+            "description_size": "medium",
+            "content_position": "middle-center",
+            "text_alignment": "center",
+            "content_size": "medium",
+            "color_text": "#ffffff",
+            "color_button_text": "#151515",
+            "color_badge_text": "#151515",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0,
+            "overlay_gradient": "",
+            "button_1_text": "",
+            "button_1_link": "",
+            "button_1_outline": true,
+            "button_2_text": "",
+            "button_2_link": "",
+            "button_2_outline": false
+          }
+        }
+      },
+      "block_order": [
+        "slide_NNX84T"
+      ],
+      "settings": {
+        "desktop_height": "desktop-height-image",
+        "mobile_height": "mobile-height-image",
+        "full_width": true,
+        "autoplay": true,
+        "autoplay_length": 5,
+        "transition": "slide",
+        "disable_top_spacing": true,
+        "disable_bottom_spacing": true
+      }
+    },
+    "featured_collection_YPRmkP": {
+      "type": "featured-collection",
+      "name": "Featured collection",
+      "settings": {
+        "subheading": "",
+        "heading": "",
+        "heading_left": false,
+        "description": "",
+        "full_width": true,
+        "collection": "bridesmaide-new-arrival",
+        "display_type": "carousel",
+        "product_limit": 10,
+        "columns_desktop": 5,
+        "show_view_all": true,
+        "mobile_swipe": false,
+        "disable_top_spacing": false,
+        "disable_bottom_spacing": false
+      }
+    },
+    "slideshow_qi3NF6": {
+      "type": "slideshow",
+      "blocks": {
+        "slide_p8mGJz": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/PC-Banner-20260814.webp",
+            "mobile_image": "shopify://shop_images/Banner-20260814.webp",
+            "slide_link": "shopify://collections/maxi-dresses",
+            "video_background": false,
+            "video": "",
+            "subheading": "",
+            "badge_text": "",
+            "heading": "",
+            "heading_size": "h1-xlarge",
+            "content": "",
+            "description_size": "small",
+            "content_position": "bottom-center",
+            "text_alignment": "center",
+            "content_size": "large",
+            "color_text": "#ffffff",
+            "color_button_text": "#151515",
+            "color_badge_text": "#151515",
+            "overlay_color": "#1d1d1d",
+            "overlay_opacity": 0,
+            "overlay_gradient": "",
+            "button_1_text": "",
+            "button_1_link": "",
+            "button_1_outline": false,
+            "button_2_text": "",
+            "button_2_link": "",
+            "button_2_outline": true
+          }
+        }
+      },
+      "block_order": [
+        "slide_p8mGJz"
+      ],
+      "settings": {
+        "desktop_height": "desktop-height-image",
+        "mobile_height": "mobile-height-image",
+        "full_width": true,
+        "autoplay": false,
+        "autoplay_length": 10,
+        "transition": "swipe",
+        "disable_top_spacing": true,
+        "disable_bottom_spacing": true
+      }
+    },
     "collection_list_VHV4Tw": {
       "type": "collection-list",
+      "disabled": true,
       "name": "Collection list",
       "settings": {
         "section_width": "full-width-row",
@@ -175,25 +263,6 @@
         "section_width": "full-width-row"
       }
     },
-    "featured_collection_4mWWqn": {
-      "type": "featured-collection",
-      "name": "Featured collection",
-      "settings": {
-        "subheading": "",
-        "heading": "",
-        "heading_left": false,
-        "description": "",
-        "full_width": true,
-        "collection": "mini-dresses-new-arrival",
-        "display_type": "carousel",
-        "product_limit": 10,
-        "columns_desktop": 5,
-        "show_view_all": true,
-        "mobile_swipe": false,
-        "disable_top_spacing": false,
-        "disable_bottom_spacing": false
-      }
-    },
     "spacer_kfpHVh": {
       "type": "spacer",
       "name": "Spacer",
@@ -202,74 +271,6 @@
         "spacer_desktop": 35,
         "border_separator": false,
         "section_width": "full-width-row"
-      }
-    },
-    "slideshow_zwXLKG": {
-      "type": "slideshow",
-      "blocks": {
-        "slide_NNX84T": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/Wedding.jpg",
-            "mobile_image": "shopify://shop_images/Wedding-MB.jpg",
-            "slide_link": "shopify://collections/wedding-dresses",
-            "video_background": false,
-            "video": "",
-            "subheading": "",
-            "badge_text": "",
-            "heading": "",
-            "heading_size": "h1-xlarge",
-            "content": "",
-            "description_size": "medium",
-            "content_position": "middle-center",
-            "text_alignment": "center",
-            "content_size": "medium",
-            "color_text": "#ffffff",
-            "color_button_text": "#151515",
-            "color_badge_text": "#151515",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "overlay_gradient": "",
-            "button_1_text": "",
-            "button_1_link": "",
-            "button_1_outline": true,
-            "button_2_text": "",
-            "button_2_link": "",
-            "button_2_outline": false
-          }
-        }
-      },
-      "block_order": [
-        "slide_NNX84T"
-      ],
-      "settings": {
-        "desktop_height": "desktop-height-image",
-        "mobile_height": "mobile-height-image",
-        "full_width": true,
-        "autoplay": true,
-        "autoplay_length": 5,
-        "transition": "slide",
-        "disable_top_spacing": true,
-        "disable_bottom_spacing": true
-      }
-    },
-    "featured_collection_YPRmkP": {
-      "type": "featured-collection",
-      "name": "Featured collection",
-      "settings": {
-        "subheading": "",
-        "heading": "",
-        "heading_left": false,
-        "description": "",
-        "full_width": true,
-        "collection": "wedding-dresses",
-        "display_type": "carousel",
-        "product_limit": 10,
-        "columns_desktop": 5,
-        "show_view_all": true,
-        "mobile_swipe": false,
-        "disable_top_spacing": false,
-        "disable_bottom_spacing": false
       }
     },
     "interviews_rdAnEw": {
@@ -490,14 +491,14 @@
   "order": [
     "16479477632637c9a7",
     "spacer_DmQtcM",
-    "collection_list_VHV4Tw",
-    "featured_collection_fGHJxg",
-    "slideshow_qi3NF6",
     "featured_collection_4mWWqn",
-    "spacer_AnPdfg",
-    "spacer_kfpHVh",
     "slideshow_zwXLKG",
     "featured_collection_YPRmkP",
+    "slideshow_qi3NF6",
+    "collection_list_VHV4Tw",
+    "featured_collection_fGHJxg",
+    "spacer_AnPdfg",
+    "spacer_kfpHVh",
     "interviews_rdAnEw",
     "rich_text_pYxmT6",
     "scrolling_images_QMpAfB",
