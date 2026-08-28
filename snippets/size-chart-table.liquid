@@ -446,7 +446,6 @@
 
     const normalizedSizeTable = buildNormalizedLookup(activeSizeTable);
 
-    const productVariants = {{ product.variants | json }};
     const productOptions = {{ product.options | json }};
     const sizeIndex = (productOptions || []).findIndex(function (opt) {
       return String(opt).toLowerCase() === 'size';
@@ -602,16 +601,9 @@
     document.addEventListener('variant:change', function (e) {
       handleVariantObject(e.detail && e.detail.variant ? e.detail.variant : null);
     });
-
-    const variantInput = document.querySelector('[name="id"]');
-    if (variantInput) {
-      variantInput.addEventListener('change', function () {
-        const v = productVariants.find(function (x) {
-          return String(x.id) === String(this.value);
-        }, this);
-        if (v) handleVariantObject(v);
-      });
-    }
+    document.addEventListener('product:variant-change', function (e) {
+      handleVariantObject(e.detail && e.detail.variant ? e.detail.variant : null);
+    });
 
     const initialVariant = {{ product.selected_or_first_available_variant | json }};
     handleVariantObject(initialVariant);

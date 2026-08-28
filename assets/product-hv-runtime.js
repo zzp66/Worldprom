@@ -237,17 +237,10 @@
         }
 
         originalChange(event);
-        // After color change completes asynchronously, filter once more on next ticks
-        if (colorChanged && !isSharedDetailMode(productWrapper)) {
-          setTimeout(() => {
-            filterGalleryByColor(productWrapper, picker, getSelectedColorValue(picker));
-            fixColorSwatches(picker);
-          }, 300);
-          setTimeout(() => {
-            filterGalleryByColor(productWrapper, picker, getSelectedColorValue(picker));
-            fixColorSwatches(picker);
-          }, 800);
-        } else if (colorChanged) {
+        // Color change: do NOT filter the old gallery while section fetch is in flight.
+        // Filtering early hides all slides (data-hv-color still matches previous color)
+        // and makes color switching look broken on large HV products.
+        if (colorChanged) {
           setTimeout(() => fixColorSwatches(picker), 300);
         }
       };
@@ -258,7 +251,8 @@
         const colorChanged = isColorFieldset(input.closest('fieldset'));
         setTimeout(() => {
           fixColorSwatches(picker);
-          if (colorChanged && !isSharedDetailMode(productWrapper)) {
+          // Size-only fallback path may not rebuild gallery; color changes wait for fetch.
+          if (!colorChanged && !isSharedDetailMode(productWrapper)) {
             filterGalleryByColor(productWrapper, picker, getSelectedColorValue(picker));
           }
         }, 50);
