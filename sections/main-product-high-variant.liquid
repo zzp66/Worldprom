@@ -91,6 +91,14 @@
   endif
 
   assign active_color_needle = active_color_label | handleize | remove: '-'
+  assign active_color_first_token = ''
+  if active_color_label contains ' '
+    assign _first_token = active_color_label | split: ' ' | first | handleize | remove: '-'
+    assign _first_token_len = _first_token | size
+    if _first_token != active_color_needle and _first_token_len >= 3
+      assign active_color_first_token = _first_token
+    endif
+  endif
   assign other_color_needles = '|'
   if color_option
     for ov in color_option.values
@@ -100,23 +108,43 @@
       endif
     endfor
   endif
-
-  if hv_gallery_mode == 'shared_detail' and active_featured_media == blank and active_color_needle != blank
-    for media in product.media
-      assign media_src = media.preview_image.src | default: media.src
-      assign media_alt = media.alt | default: ''
-      assign media_alt_down = media_alt | downcase
-      assign media_haystack = media_src | append: '|' | append: media_alt | handleize | remove: '-'
-      if media_alt_down contains '#shared' or media_haystack contains 'shared'
+-%}
+{%- if active_featured_media != blank and active_color_needle != blank and hv_gallery_mode != 'shared_detail' -%}
+  {%- include 'hv-media-color-haystack', hv_hm_media: active_featured_media, hv_hm_product: product -%}
+  {%- liquid
+    assign featured_matches_color = false
+    if hv_media_haystack contains active_color_needle
+      assign featured_matches_color = true
+    elsif active_color_first_token != blank and hv_media_haystack contains active_color_first_token
+      assign featured_matches_color = true
+    elsif attachment_filter_ready
+      assign featured_src_key = '|' | append: hv_media_src | append: '|'
+      if color_media_srcs contains featured_src_key
+        assign featured_matches_color = true
+      endif
+    endif
+    unless featured_matches_color
+      assign active_featured_media = nil
+    endunless
+  -%}
+{%- endif -%}
+{%- if hv_gallery_mode == 'shared_detail' and active_featured_media == blank and active_color_needle != blank -%}
+  {%- for media in product.media -%}
+    {%- include 'hv-media-color-haystack', hv_hm_media: media, hv_hm_product: product -%}
+    {%- liquid
+      if hv_media_alt_down contains '#shared' or hv_media_haystack contains 'shared'
         continue
       endif
-      if media_haystack contains active_color_needle
+      if hv_media_haystack contains active_color_needle
+        assign active_featured_media = media
+        break
+      elsif active_color_first_token != blank and hv_media_haystack contains active_color_first_token
         assign active_featured_media = media
         break
       endif
-    endfor
-  endif
--%}
+    -%}
+  {%- endfor -%}
+{%- endif -%}
 {%- if media_layout == 'thumbnails' -%}
   {%- assign slider_prefix = '-thumbnails' -%}
   {{- 'product-thumbnails.css' | asset_url | stylesheet_tag -}}
@@ -195,13 +223,11 @@
                     if shown_media_ids contains media_id_str
                       continue
                     endif
-
-                    assign media_src = media.preview_image.src | default: media.src
-                    assign media_alt = media.alt | default: ''
-                    assign media_alt_down = media_alt | downcase
-                    assign media_haystack = media_src | append: '|' | append: media_alt | handleize | remove: '-'
+                  -%}
+                  {%- include 'hv-media-color-haystack', hv_hm_media: media, hv_hm_product: product -%}
+                  {%- liquid
                     assign is_shared_media = false
-                    if media_alt_down contains '#shared' or media_haystack contains 'shared'
+                    if hv_media_alt_down contains '#shared' or hv_media_haystack contains 'shared'
                       assign is_shared_media = true
                     endif
                   -%}
@@ -261,48 +287,9 @@
                     if shown_media_ids contains media_id_str
                       continue
                     endif
-
-                    assign show_media = false
-                    assign media_src = media.preview_image.src | default: media.src
-                    assign media_haystack = media_src | append: '|' | append: media.alt | append: '|' | append: media | handleize | remove: '-'
-
-                    if active_color_needle != blank
-                      if media_haystack contains active_color_needle
-                        assign show_media = true
-                        assign longer_other_match = false
-                        assign active_len = active_color_needle | size
-                        assign other_parts = other_color_needles | split: '|'
-                        for other_needle in other_parts
-                          if other_needle != blank
-                            assign other_len = other_needle | size
-                            if other_len > active_len and media_haystack contains other_needle
-                              assign longer_other_match = true
-                              break
-                            endif
-                          endif
-                        endfor
-                        if longer_other_match
-                          assign show_media = false
-                        endif
-                      elsif attachment_filter_ready
-                        assign src_key = '|' | append: media_src | append: '|'
-                        if color_media_srcs contains src_key
-                          assign show_media = true
-                        endif
-                      endif
-                    elsif attachment_filter_ready
-                      assign src_key = '|' | append: media_src | append: '|'
-                      if color_media_srcs contains src_key
-                        assign show_media = true
-                      elsif variant_images contains media_src
-                        assign show_media = false
-                      else
-                        assign show_media = true
-                      endif
-                    else
-                      assign show_media = true
-                    endif
                   -%}
+                  {%- include 'hv-media-color-haystack', hv_hm_media: media, hv_hm_product: product -%}
+                  {%- include 'hv-media-show-for-color' -%}
                   {%- if show_media -%}
                     {%- liquid
                       if media.media_type == 'image'
@@ -368,13 +355,11 @@
                         if thumb_shown_ids contains media_id_str
                           continue
                         endif
-
-                        assign media_src = media.preview_image.src | default: media.src
-                        assign media_alt = media.alt | default: ''
-                        assign media_alt_down = media_alt | downcase
-                        assign media_haystack = media_src | append: '|' | append: media_alt | handleize | remove: '-'
+                      -%}
+                      {%- include 'hv-media-color-haystack', hv_hm_media: media, hv_hm_product: product -%}
+                      {%- liquid
                         assign is_shared_media = false
-                        if media_alt_down contains '#shared' or media_haystack contains 'shared'
+                        if hv_media_alt_down contains '#shared' or hv_media_haystack contains 'shared'
                           assign is_shared_media = true
                         endif
                       -%}
@@ -414,49 +399,13 @@
                         if thumb_shown_ids contains media_id_str
                           continue
                         endif
-
-                        assign show_media = false
-                        assign media_src = media.preview_image.src | default: media.src
-                        assign media_haystack = media_src | append: '|' | append: media.alt | append: '|' | append: media | handleize | remove: '-'
-
-                        if active_color_needle != blank
-                          if media_haystack contains active_color_needle
-                            assign show_media = true
-                            assign longer_other_match = false
-                            assign active_len = active_color_needle | size
-                            assign other_parts = other_color_needles | split: '|'
-                            for other_needle in other_parts
-                              if other_needle != blank
-                                assign other_len = other_needle | size
-                                if other_len > active_len and media_haystack contains other_needle
-                                  assign longer_other_match = true
-                                  break
-                                endif
-                              endif
-                            endfor
-                            if longer_other_match
-                              assign show_media = false
-                            endif
-                          elsif attachment_filter_ready
-                            assign src_key = '|' | append: media_src | append: '|'
-                            if color_media_srcs contains src_key
-                              assign show_media = true
-                            endif
-                          endif
-                        elsif attachment_filter_ready
-                          assign src_key = '|' | append: media_src | append: '|'
-                          if color_media_srcs contains src_key
-                            assign show_media = true
-                          elsif variant_images contains media_src
-                            assign show_media = false
-                          else
-                            assign show_media = true
-                          endif
-                        else
-                          assign show_media = true
-                        endif
                       -%}
+                      {%- include 'hv-media-color-haystack', hv_hm_media: media, hv_hm_product: product -%}
+                      {%- include 'hv-media-show-for-color' -%}
                       {%- if show_media -%}
+                        {%- liquid
+                          assign thumb_shown_ids = thumb_shown_ids | append: media.id | append: ','
+                        -%}
                         {%- render 'product-thumbnail',
                           product: product,
                           media: media,

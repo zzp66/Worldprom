@@ -81,22 +81,29 @@ class VariantSelectsHV extends HTMLElement {
     return needles;
   }
 
-  mediaMatchesColor(el, colorNeedle, allNeedles) {
+  mediaMatchesColor(el, colorNeedle, allNeedles, colorValue) {
     if (!el || !colorNeedle) return true;
     const assignedColor = this.normalizeColorToken(el.dataset.hvColor);
     if (assignedColor) return assignedColor === colorNeedle;
 
     const img = el.querySelector('img');
-    const haystack = this.normalizeColorToken([
-      img?.currentSrc || '',
-      img?.src || '',
-      img?.getAttribute('srcset') || '',
-      img?.alt || '',
-      el.getAttribute('data-media-id') || '',
-      el.innerHTML || ''
-    ].join('|'));
+    const src = img?.currentSrc || img?.src || '';
+    const filename = src.split('?')[0].split('/').pop() || '';
+    const srcset = img?.getAttribute('srcset') || '';
+    const alt = (img?.alt || '').trim();
+    const title = (document.title || '').split(/[|\u2013\u2014-]/)[0].trim();
+    const altUsable =
+      alt && this.normalizeColorToken(alt) !== this.normalizeColorToken(title) ? alt : '';
+    const haystack = this.normalizeColorToken([filename, src, srcset, altUsable].join('|'));
 
-    if (!haystack.includes(colorNeedle)) return false;
+    let matched = haystack.includes(colorNeedle);
+    if (!matched && colorValue) {
+      const token = this.normalizeColorToken(String(colorValue).split(/\s+/)[0] || '');
+      if (token && token.length >= 3 && token !== colorNeedle && haystack.includes(token)) {
+        matched = true;
+      }
+    }
+    if (!matched) return false;
 
     const activeLen = colorNeedle.length;
     for (const other of allNeedles) {
@@ -129,7 +136,7 @@ class VariantSelectsHV extends HTMLElement {
           slide.style.display = '';
           return;
         }
-        const match = this.mediaMatchesColor(slide, colorNeedle, allNeedles);
+        const match = this.mediaMatchesColor(slide, colorNeedle, allNeedles, colorValue);
         slide.hidden = !match;
         slide.style.display = match ? '' : 'none';
         if (match && !firstVisible) firstVisible = slide;

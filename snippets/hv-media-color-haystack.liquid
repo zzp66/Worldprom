@@ -1,0 +1,36 @@
+{%- comment -%}
+  Builds a color-matching haystack from media filename/src only.
+  Ignores media.alt when it falls back to the product title (Shopify default),
+  which would otherwise make every image match a color word in the title.
+
+  Inputs (include):
+  - hv_hm_media
+  - hv_hm_product
+
+  Outputs (parent scope):
+  - hv_media_src
+  - hv_media_filename
+  - hv_media_alt_raw
+  - hv_media_alt_down
+  - hv_media_alt_usable
+  - hv_media_haystack
+{%- endcomment -%}
+{%- liquid
+  assign hv_media_src = hv_hm_media.preview_image.src | default: hv_hm_media.src | default: ''
+  assign hv_media_filename = hv_media_src | split: '?' | first | split: '/' | last
+
+  assign hv_media_alt_raw = hv_hm_media.alt | default: ''
+  assign hv_media_alt_down = hv_media_alt_raw | downcase | strip
+  assign hv_product_title_down = hv_hm_product.title | default: '' | downcase | strip
+
+  assign hv_media_alt_usable = ''
+  if hv_media_alt_raw != blank and hv_media_alt_down != hv_product_title_down
+    assign hv_title_needle = hv_product_title_down | handleize | remove: '-'
+    assign hv_alt_needle = hv_media_alt_down | handleize | remove: '-'
+    unless hv_title_needle != blank and hv_alt_needle == hv_title_needle
+      assign hv_media_alt_usable = hv_media_alt_raw
+    endunless
+  endif
+
+  assign hv_media_haystack = hv_media_filename | append: '|' | append: hv_media_src | append: '|' | append: hv_media_alt_usable | handleize | remove: '-'
+-%}

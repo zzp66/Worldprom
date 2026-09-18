@@ -1,0 +1,57 @@
+{%- comment -%}
+  Decides whether a media item should show for the active color (per_color gallery).
+
+  Prerequisites (parent scope):
+  - hv_media_haystack, hv_media_src
+  - active_color_needle, active_color_first_token, other_color_needles
+  - attachment_filter_ready, color_media_srcs, variant_images
+
+  Output: show_media
+{%- endcomment -%}
+{%- liquid
+  assign show_media = false
+  assign hv_color_matched = false
+
+  if active_color_needle != blank
+    if hv_media_haystack contains active_color_needle
+      assign hv_color_matched = true
+    elsif active_color_first_token != blank and hv_media_haystack contains active_color_first_token
+      assign hv_color_matched = true
+    endif
+
+    if hv_color_matched
+      assign show_media = true
+      assign longer_other_match = false
+      assign active_len = active_color_needle | size
+      assign other_parts = other_color_needles | split: '|'
+      for other_needle in other_parts
+        if other_needle != blank
+          assign other_len = other_needle | size
+          if other_len > active_len and hv_media_haystack contains other_needle
+            assign longer_other_match = true
+            break
+          endif
+        endif
+      endfor
+      if longer_other_match
+        assign show_media = false
+      endif
+    elsif attachment_filter_ready
+      assign src_key = '|' | append: hv_media_src | append: '|'
+      if color_media_srcs contains src_key
+        assign show_media = true
+      endif
+    endif
+  elsif attachment_filter_ready
+    assign src_key = '|' | append: hv_media_src | append: '|'
+    if color_media_srcs contains src_key
+      assign show_media = true
+    elsif variant_images contains hv_media_src
+      assign show_media = false
+    else
+      assign show_media = true
+    endif
+  else
+    assign show_media = true
+  endif
+-%}
