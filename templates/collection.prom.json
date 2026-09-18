@@ -28,7 +28,6 @@
     },
     "collection_color_swatch_fQqQph": {
       "type": "collection-color-swatch",
-      "disabled": true,
       "name": "Color Swatch Selector",
       "settings": {}
     },

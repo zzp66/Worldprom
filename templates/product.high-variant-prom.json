@@ -25,8 +25,15 @@
             "show_custom_badges": true
           }
         },
+        "sku_8zGUPY": {
+          "type": "sku",
+          "settings": {
+            "sku_style": "subheading"
+          }
+        },
         "siblings_XRYrCV": {
           "type": "siblings",
+          "disabled": true,
           "settings": {
             "siblings_collection": "{{ product.metafields.theme.siblings.value }}",
             "sibling_color": "{{ product.metafields.theme.sibling_color.value }}",
@@ -126,6 +133,7 @@
       },
       "block_order": [
         "title",
+        "sku_8zGUPY",
         "siblings_XRYrCV",
         "variant_picker_cjwBPV",
         "custom_option_T6Kyh8",

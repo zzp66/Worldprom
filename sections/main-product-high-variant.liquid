@@ -34,7 +34,7 @@
   endfor
 -%}
 {%- if color_option and collection != blank -%}
-  {%- unless request.query_string contains 'option_values' -%}
+  {%- unless request.query_string contains 'option_values' or request.query_string contains 'variant=' -%}
     {%- include 'hv-collection-color-match', hv_match_product: product, hv_match_collection: collection -%}
   {%- endunless -%}
 {%- endif -%}

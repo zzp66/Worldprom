@@ -25,6 +25,12 @@
             "show_custom_badges": true
           }
         },
+        "sku_Bq4Jjy": {
+          "type": "sku",
+          "settings": {
+            "sku_style": "subheading"
+          }
+        },
         "siblings_XRYrCV": {
           "type": "siblings",
           "settings": {
@@ -126,6 +132,7 @@
       },
       "block_order": [
         "title",
+        "sku_Bq4Jjy",
         "siblings_XRYrCV",
         "variant_picker_cjwBPV",
         "custom_option_T6Kyh8",

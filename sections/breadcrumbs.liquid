@@ -1,14 +1,60 @@
 {{- 'breadcrumbs.css' | asset_url | stylesheet_tag -}}
+{%- liquid
+	assign bc_collection = collection
+
+	if bc_collection == blank and template contains 'product'
+		assign bc_best = 999999
+
+		assign bc_style = 'a-line-prom-dresses,ball-gown-prom-dresses,beading-prom-dresses,floral-prom-dresses,lace-prom-dresses,ruffle-prom-dresses,sequin-prom-dresses,sparkly-prom-dresses' | split: ','
+		for c in product.collections
+			if bc_style contains c.handle
+				if c.products_count < bc_best
+					assign bc_collection = c
+					assign bc_best = c.products_count
+				endif
+			endif
+		endfor
+
+		if bc_collection == blank
+			assign bc_exclude = 'prom-dresses,all-prom-dresses,2026-spring-prom-dresses,trending-prom-dresses-2026,luxury-prom-dresses-1,prom-dresses-under-150,custom-size-prom-dresses,modest-prom-dresses,long-prom-dresses,short-prom-dresses' | split: ','
+			for c in product.collections
+				if c.handle contains 'prom-dress'
+					unless bc_exclude contains c.handle
+						unless c.handle contains '-fb'
+							if c.products_count < bc_best
+								assign bc_collection = c
+								assign bc_best = c.products_count
+							endif
+						endunless
+					endunless
+				endif
+			endfor
+		endif
+
+		if bc_collection == blank
+			assign bc_priority = 'quinceanera,wedding-dresses,bridesmaids,wedding-guest-dresses,graduation-dresses,prom-dresses,homecoming-dresses,cocktail-dresses,evening-dresses,formal-dresses' | split: ','
+			for bc_handle in bc_priority
+				for c in product.collections
+					if c.handle == bc_handle
+						assign bc_collection = c
+						break
+					endif
+				endfor
+				if bc_collection != blank
+					break
+				endif
+			endfor
+		endif
+	endif
+-%}
 <div class="row full-width-row">
 	<div class="small-12 columns">
 		<scroll-shadow>
 			<nav class="breadcrumbs" aria-label="breadcrumbs">
 				<a href="{{ routes.root_url }}" title="{{ 'sections.breadcrumbs.home' | t | escape }}">{{ 'sections.breadcrumbs.home' | t }}</a>
-				{% if collection.url %}
+				{% if bc_collection.url %}
 					<i>/</i>
-					<a href="{{ routes.all_products_collection_url }}" title="{{ 'sections.breadcrumbs.shop' | t | escape }}">{{ 'sections.breadcrumbs.shop' | t }}</a>
-					<i>/</i>
-					<a href="{{ collection.url }}" title="{{ collection.title | escape }}">{{ collection.title }}</a>
+					<a href="{{ bc_collection.url }}" title="{{ bc_collection.title | escape }}">{{ bc_collection.title }}</a>
 				{% endif %}
 				{% if template contains 'cart' %}
 					<i>/</i>

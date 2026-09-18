@@ -14,6 +14,7 @@ class VariantSelectsHV extends HTMLElement {
   connectedCallback() {
     this.addEventListener('change', this.onVariantChange.bind(this));
     this.currentVariant = this.getSelectedVariant();
+    this.normalizeURL();
     this._lastColorValue = this.getSelectedColorValue();
     if (!this.isSharedDetailMode()) {
       this.filterGalleryByColor(this._lastColorValue);
@@ -450,10 +451,22 @@ class VariantSelectsHV extends HTMLElement {
 
   updateURL() {
     if (!this.currentVariant) return;
-    const selectedIds = this.getSelectedOptionValueIds();
-    if (selectedIds.length > 0) {
-      window.history.replaceState({}, '', `${this.productUrl}?option_values=${selectedIds.join(',')}`);
-    }
+    window.history.replaceState({}, '', this.buildVariantURL(this.productUrl));
+  }
+
+  // 集合页卡片和旧分享链接带的是 option_values，进页面后统一换成 ?variant=
+  normalizeURL() {
+    if (!this.currentVariant) return;
+    if (!new URLSearchParams(window.location.search).has('option_values')) return;
+    window.history.replaceState({}, '', this.buildVariantURL(window.location.pathname));
+  }
+
+  // 保留 utm、gclid 等其他参数，避免影响广告统计
+  buildVariantURL(path) {
+    const params = new URLSearchParams(window.location.search);
+    params.delete('option_values');
+    params.set('variant', this.currentVariant.id);
+    return `${path}?${params.toString()}`;
   }
 
   reinitSlider() {

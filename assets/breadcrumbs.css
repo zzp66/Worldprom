@@ -25,7 +25,7 @@
   white-space: nowrap;
   padding: 7px 0;
   color: rgba(var(--color-body-rgb), 0.6);
-  text-transform: uppercase; }
+  text-transform: capitalize; }
   @media only screen and (min-width: 768px) {
     .breadcrumbs {
       padding: 10px 0;

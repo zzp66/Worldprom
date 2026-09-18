@@ -15,9 +15,6 @@
       assign hv_collection = collection_context
     endif
     assign hv_card_url = product_card_product.url
-    if hv_collection != blank
-      assign hv_card_url = product_card_product.url | within: hv_collection
-    endif
     assign hv_matched_color_name = ''
     assign hv_matched_option_value = nil
     assign hv_matched_variant = nil
@@ -399,7 +396,7 @@
   <product-card class="product-card">
     <div class="product-card--image-wrapper">
       <a
-        href="{{ product_card_product.url | within: collection }}"
+        href="{{ product_card_product.url }}"
         title="{{ product_card_product.title | escape }}"
         class="product-card--image-link"
       ></a>

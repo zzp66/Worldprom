@@ -29,7 +29,7 @@
 -%}
 <product-card class="product-card product-card--drawer cart-drawer--recommendations--product text-{{ product_content_alignment }}">
 	<div class="product-card--image-wrapper">
-		<a href="{{ product_card_product.url | within: collection }}" title="{{ product_card_product.title | escape }}" class="product-card--image-link"></a>
+		<a href="{{ product_card_product.url }}" title="{{ product_card_product.title | escape }}" class="product-card--image-link"></a>
 		<div class="product-card--image">
 			<div class="product-card--image-inner" style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;">
 				{%- if featured_media -%}
@@ -58,7 +58,7 @@
 	</div>
 	<div class="product-card-info">
 		<div class="product-card-info--inner">
-			<a href="{{ product_card_product.url | within: collection }}" title="{{ product_card_product.title | escape }}" class="product-card-title">{{ product_card_product.title }}</a>
+			<a href="{{ product_card_product.url }}" title="{{ product_card_product.title | escape }}" class="product-card-title">{{ product_card_product.title }}</a>
 			{% render 'product-price', product: product_card_product %}
 		</div>
   </div>

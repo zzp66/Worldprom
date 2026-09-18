@@ -13,19 +13,93 @@
   "sections": {
     "announcement-bar": {
       "type": "announcement-bar",
+      "blocks": {
+        "text_ddUwVe": {
+          "type": "text",
+          "settings": {
+            "icon": "none",
+            "text": "15% OFF for First Order | CODE:N6OV1",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "text_ddUwVe"
+      ],
       "settings": {
         "full_width": true,
-        "content": "menu",
+        "content": "text",
         "secondary_menu": "customer-account-main-menu",
-        "direction": "left",
-        "speed": "20s",
-        "show_social_media": true,
-        "show_language_switcher": true,
-        "show_currency_switcher": true
+        "direction": "right",
+        "speed": "50s",
+        "show_social_media": false,
+        "show_language_switcher": false,
+        "show_currency_switcher": false
       }
     },
     "header": {
       "type": "header",
+      "blocks": {
+        "megamenu_yyEkCx": {
+          "type": "megamenu",
+          "settings": {
+            "position": "4",
+            "limit_columns": true,
+            "max_columns": "6",
+            "promo_1_image": "shopify://shop_images/menu-9.jpg",
+            "promo_1_heading": "",
+            "promo_1_link": "shopify://collections/bridesmaids",
+            "promo_2_image": "shopify://shop_images/menu-10.jpg",
+            "promo_2_heading": "",
+            "promo_2_link": "shopify://collections/bridesmaide-new-arrival",
+            "promo_3_heading": "Promotion heading",
+            "promo_3_link": "",
+            "promo_4_heading": "Promotion heading",
+            "promo_4_link": ""
+          }
+        },
+        "megamenu_KtqHyV": {
+          "type": "megamenu",
+          "settings": {
+            "position": "3",
+            "limit_columns": true,
+            "max_columns": "6",
+            "promo_1_image": "shopify://shop_images/menu-8.jpg",
+            "promo_1_heading": "",
+            "promo_1_link": "shopify://collections/sparkly-homecoming-dresses",
+            "promo_2_image": "shopify://shop_images/menu-7.jpg",
+            "promo_2_heading": "",
+            "promo_2_link": "shopify://collections/floral-homecoming-dresses",
+            "promo_3_heading": "Promotion heading",
+            "promo_3_link": "",
+            "promo_4_heading": "Promotion heading",
+            "promo_4_link": ""
+          }
+        },
+        "megamenu_heqX8m": {
+          "type": "megamenu",
+          "settings": {
+            "position": "2",
+            "limit_columns": true,
+            "max_columns": "6",
+            "promo_1_image": "shopify://shop_images/menu-4.jpg",
+            "promo_1_heading": "",
+            "promo_1_link": "shopify://collections/all-prom-dresses",
+            "promo_2_image": "shopify://shop_images/menu-3.jpg",
+            "promo_2_heading": "",
+            "promo_2_link": "shopify://collections/prom-new-arrivals",
+            "promo_3_heading": "Promotion heading",
+            "promo_3_link": "",
+            "promo_4_heading": "Promotion heading",
+            "promo_4_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "megamenu_yyEkCx",
+        "megamenu_KtqHyV",
+        "megamenu_heqX8m"
+      ],
       "settings": {
         "sticky_header": true,
         "logo": "shopify://shop_images/logo.png",
@@ -33,7 +107,7 @@
         "logo_height_range_mobile": 20,
         "style": "style4",
         "header_shadow": "header--shadow-small",
-        "menu": "menu-03-20",
+        "menu": "menu-new",
         "transparent_header": false,
         "show_language_switcher": false,
         "show_currency_switcher": false

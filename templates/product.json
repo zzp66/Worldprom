@@ -149,7 +149,7 @@
         "media_layout": "grid",
         "display_slider_pagination": true,
         "product_media_width": "medium",
-        "media_aspect_ratio": "portrait",
+        "media_aspect_ratio": "adapt",
         "display_captions": true,
         "hide_variants": false,
         "lightbox": false,
