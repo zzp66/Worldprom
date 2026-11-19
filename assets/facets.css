@@ -149,17 +149,20 @@
     display: grid;
     gap: 10px;
     grid-template-columns: 1fr 1fr;
-    padding: 9px 0;
+    padding: 6px 0;
     align-items: center;
     border-top: 1px solid var(--color-border); }
     @media only screen and (min-width: 768px) {
       .facets--bar-inner {
         gap: 20px;
-        padding: 13px 0; } }
+        padding: 8px 0; } }
   .facets--bar .thb-filter-count .facets__label {
     margin-top: 0; }
   .facets--bar .active-facets {
-    margin-bottom: 20px; }
+    margin-bottom: 4px; }
+  /* No filters selected: the row is empty, so drop its bottom margin */
+  .facets--bar .active-facets:not(:has(.active-facets__button)) {
+    margin-bottom: 0; }
   .facets--bar .active-facets__button-remove {
     margin-top: 6px; }
 
@@ -481,7 +484,7 @@
         background-image: var(--option-color-image); }
   .active-facets__button-remove {
     margin-left: 13px;
-    margin-bottom: 14px; }
+    margin-bottom: 0; }
     .active-facets__button-remove:only-child {
       display: none; }
 

@@ -9,6 +9,103 @@
  */
 {
   "sections": {
+    "slideshow_qi3NF6": {
+      "type": "slideshow",
+      "blocks": {
+        "slide_p8mGJz": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/PC-Banner-20261113.jpg",
+            "mobile_image": "shopify://shop_images/Banner-20261113.jpg",
+            "slide_link": "shopify://collections/all-prom-dresses",
+            "video_background": false,
+            "video": "",
+            "subheading": "",
+            "badge_text": "",
+            "heading": "",
+            "heading_size": "h1-xlarge",
+            "content": "",
+            "description_size": "small",
+            "content_position": "bottom-center",
+            "text_alignment": "center",
+            "content_size": "large",
+            "color_text": "#ffffff",
+            "color_button_text": "#151515",
+            "color_badge_text": "#151515",
+            "overlay_color": "#1d1d1d",
+            "overlay_opacity": 0,
+            "overlay_gradient": "",
+            "button_1_text": "",
+            "button_1_link": "",
+            "button_1_outline": false,
+            "button_2_text": "",
+            "button_2_link": "",
+            "button_2_outline": true
+          }
+        }
+      },
+      "block_order": [
+        "slide_p8mGJz"
+      ],
+      "settings": {
+        "desktop_height": "desktop-height-image",
+        "mobile_height": "mobile-height-image",
+        "full_width": true,
+        "autoplay": false,
+        "autoplay_length": 10,
+        "transition": "swipe",
+        "disable_top_spacing": true,
+        "disable_bottom_spacing": true
+      }
+    },
+    "collection_list_VHV4Tw": {
+      "type": "collection-list",
+      "name": "Collection list",
+      "settings": {
+        "section_width": "full-width-row",
+        "subheading": "",
+        "heading": "",
+        "heading_left": false,
+        "description": "",
+        "full_width": true,
+        "collection_list": [
+          "all-prom-dresses",
+          "bridesmaid-dresses",
+          "homecoming-dresses",
+          "mother-of-the-bride-dresses"
+        ],
+        "image_ratio": "adapt",
+        "columns_desktop": 4,
+        "columns_mobile": "1",
+        "style": "style2",
+        "text_alignment": "text-left",
+        "font_family": "body",
+        "text_uppercase": false,
+        "first_product_image": false,
+        "collection_product_count": false,
+        "disable_top_spacing": false,
+        "disable_bottom_spacing": false
+      }
+    },
+    "featured_collection_fGHJxg": {
+      "type": "featured-collection",
+      "name": "Featured collection",
+      "settings": {
+        "subheading": "",
+        "heading": "",
+        "heading_left": false,
+        "description": "",
+        "full_width": true,
+        "collection": "prom-new-arrivals",
+        "display_type": "carousel",
+        "product_limit": 10,
+        "columns_desktop": 5,
+        "show_view_all": true,
+        "mobile_swipe": false,
+        "disable_top_spacing": false,
+        "disable_bottom_spacing": false
+      }
+    },
     "16479477632637c9a7": {
       "type": "slideshow",
       "blocks": {
@@ -58,16 +155,6 @@
         "disable_bottom_spacing": true
       }
     },
-    "spacer_DmQtcM": {
-      "type": "spacer",
-      "name": "Spacer",
-      "settings": {
-        "spacer_mobile": 25,
-        "spacer_desktop": 50,
-        "border_separator": false,
-        "section_width": "full-width-row"
-      }
-    },
     "featured_collection_4mWWqn": {
       "type": "featured-collection",
       "name": "Featured collection",
@@ -77,7 +164,7 @@
         "heading_left": false,
         "description": "",
         "full_width": true,
-        "collection": "homecoming-new-arrival",
+        "collection": "homecoming-dresses",
         "display_type": "carousel",
         "product_limit": 10,
         "columns_desktop": 5,
@@ -95,7 +182,7 @@
           "settings": {
             "image": "shopify://shop_images/bridesmaid_dresses-PC_20260813.webp",
             "mobile_image": "shopify://shop_images/bridesmaid_dresses-_20260813.webp",
-            "slide_link": "shopify://collections/wedding-dresses",
+            "slide_link": "shopify://collections/bridesmaid-dresses",
             "video_background": false,
             "video": "",
             "subheading": "",
@@ -142,7 +229,7 @@
       "settings": {
         "subheading": "",
         "heading": "",
-        "heading_left": false,
+        "heading_left": true,
         "description": "",
         "full_width": true,
         "collection": "bridesmaide-new-arrival",
@@ -155,116 +242,9 @@
         "disable_bottom_spacing": false
       }
     },
-    "slideshow_qi3NF6": {
-      "type": "slideshow",
-      "blocks": {
-        "slide_p8mGJz": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/PC-Banner-20260814.webp",
-            "mobile_image": "shopify://shop_images/Banner-20260814.webp",
-            "slide_link": "shopify://collections/maxi-dresses",
-            "video_background": false,
-            "video": "",
-            "subheading": "",
-            "badge_text": "",
-            "heading": "",
-            "heading_size": "h1-xlarge",
-            "content": "",
-            "description_size": "small",
-            "content_position": "bottom-center",
-            "text_alignment": "center",
-            "content_size": "large",
-            "color_text": "#ffffff",
-            "color_button_text": "#151515",
-            "color_badge_text": "#151515",
-            "overlay_color": "#1d1d1d",
-            "overlay_opacity": 0,
-            "overlay_gradient": "",
-            "button_1_text": "",
-            "button_1_link": "",
-            "button_1_outline": false,
-            "button_2_text": "",
-            "button_2_link": "",
-            "button_2_outline": true
-          }
-        }
-      },
-      "block_order": [
-        "slide_p8mGJz"
-      ],
-      "settings": {
-        "desktop_height": "desktop-height-image",
-        "mobile_height": "mobile-height-image",
-        "full_width": true,
-        "autoplay": false,
-        "autoplay_length": 10,
-        "transition": "swipe",
-        "disable_top_spacing": true,
-        "disable_bottom_spacing": true
-      }
-    },
-    "collection_list_VHV4Tw": {
-      "type": "collection-list",
-      "disabled": true,
-      "name": "Collection list",
-      "settings": {
-        "section_width": "full-width-row",
-        "subheading": "",
-        "heading": "New 2026 Maxi Dresses",
-        "heading_left": false,
-        "description": "<p>Exquisite Beaded Details, Luxe Sheath Silhouettes & Stunning Embroidered Floral Long Evening Gowns</p>",
-        "full_width": true,
-        "collection_list": [
-          "maxi-dresses",
-          "floral-prom-dresses",
-          "evening-dresses",
-          "sparkly-dresses"
-        ],
-        "image_ratio": "adapt",
-        "columns_desktop": 4,
-        "columns_mobile": "1",
-        "style": "style2",
-        "text_alignment": "text-left",
-        "font_family": "body",
-        "text_uppercase": false,
-        "first_product_image": false,
-        "collection_product_count": false,
-        "disable_top_spacing": false,
-        "disable_bottom_spacing": false
-      }
-    },
-    "featured_collection_fGHJxg": {
-      "type": "featured-collection",
-      "name": "Featured collection",
-      "settings": {
-        "subheading": "",
-        "heading": "",
-        "heading_left": false,
-        "description": "",
-        "full_width": true,
-        "collection": "new-arrival-long",
-        "display_type": "carousel",
-        "product_limit": 10,
-        "columns_desktop": 5,
-        "show_view_all": true,
-        "mobile_swipe": false,
-        "disable_top_spacing": false,
-        "disable_bottom_spacing": false
-      }
-    },
-    "spacer_AnPdfg": {
-      "type": "spacer",
-      "name": "Spacer",
-      "settings": {
-        "spacer_mobile": 15,
-        "spacer_desktop": 35,
-        "border_separator": false,
-        "section_width": "full-width-row"
-      }
-    },
     "spacer_kfpHVh": {
       "type": "spacer",
+      "disabled": true,
       "name": "Spacer",
       "settings": {
         "spacer_mobile": 15,
@@ -452,6 +432,7 @@
     },
     "spacer_wDXPPC": {
       "type": "spacer",
+      "disabled": true,
       "name": "Spacer",
       "settings": {
         "spacer_mobile": 10,
@@ -460,13 +441,128 @@
         "section_width": "full-width-row"
       }
     },
+    "instagram_carousel_GEWWBe": {
+      "type": "instagram-carousel",
+      "blocks": {
+        "video_MqqrCB": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/SnapInsta.to_AQPgp0W7PS21qXBDQSCLsAuu93cSt_WSiQn8Qm2wdddv1hPi9dGNGWMIa2rk74mzAdkJCTRpQs-zqvPi0ZHnVy2BJxVlE21aVsbwM0A.mp4",
+            "alt_text": "Floral Jacquard Sweetheart Ball Gown",
+            "link": "https://www.instagram.com/dikraelkalai/reel/DcUG1ELo37h/",
+            "product": "strapless-sweetheart-floral-bodice-long-ball-gown-formal-prom-dress-in-red-floral"
+          }
+        },
+        "video_KRxpzr": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/BPMU11051-Desert Rose和BLME11069-SkyBlue.mp4",
+            "alt_text": "Satin Mermiad Long Formal Dress",
+            "link": "https://www.instagram.com/slavaclaire/reel/DdhCqwLst3U/",
+            "product": "stretch-satin-ruched-strapless-mermaid-bridemaid-dress-with-scarf-in-dusty-rose"
+          }
+        },
+        "video_BiDmjb": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/BCMT11019-sky blue.mp4",
+            "alt_text": "Blue Chiffon Ruched Bridesmaid Dress",
+            "link": "https://www.instagram.com/magdamaciejowska/reel/DdQwf-NCMvz/",
+            "product": "chiffon-ruched-mermaid-slit-bridesmaid-dress-with-strapless-in-burnt-orange"
+          }
+        },
+        "video_bcUtem": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/PEMW10771-Black Floral-shipin-2.mp4",
+            "alt_text": "Black Sequin Mermaid Prom Dress",
+            "link": "https://www.instagram.com/fashionbreezeebyakriti/reel/DdDNyyAxgD4/",
+            "product": "sparkly-sweetheart-neck-floral-long-mermaid-prom-dress-with-split-in-black-floral"
+          }
+        },
+        "image_gRedqm": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/BCAE11070-lvory-3.jpg",
+            "alt_text": "White Lace Chiffon Maxi Dress",
+            "link": "https://www.instagram.com/endzel_/p/DdEoy7njJNy/",
+            "product": "corset-halter-lace-chiffon-maxi-pleated-bridesmaid-dress"
+          }
+        },
+        "video_fzJ7jE": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/PSDW10523-Pink Floral.mp4",
+            "alt_text": "Floral A-Line Prom Dress",
+            "link": "https://www.instagram.com/olga_ghahrem/reel/DdcUo96xoU2/",
+            "product": "sweetheart-neck-bodice-lace-up-midi-a-line-prom-dress-in-pink-floral"
+          }
+        },
+        "video_UXnGGi": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/PTMS0971-Navy Blue.mp4",
+            "alt_text": "Navy Beaded Mermaid Prom Dress",
+            "link": "https://www.instagram.com/dressesandcityscapes/reel/DdUGHmkBzG8/",
+            "product": "sparkly-illusion-bow-front-bodice-long-mermaid-prom-dress-pink"
+          }
+        },
+        "video_xWhEqd": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/PSAE10606-White.mp4",
+            "alt_text": "White Polkdots A-Line Mini Dress",
+            "link": "https://www.instagram.com/laurac.gutierrezc/reel/DdcIfYdPqiN/",
+            "product": "halter-black-polka-dot-bodice-mini-a-line-prom-dress-in-white"
+          }
+        },
+        "video_DkELYE": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/BCAQ11030-Brown和PCBT10843-Pink.mp4",
+            "alt_text": "Chiffon Ruched Sheath Bridesmaid Dress",
+            "link": "https://www.instagram.com/abrunacarolinne/reel/Ddeo6JZR8md/",
+            "product": "a-line-chiffon-pleated-square-neck-bridesmaid-dress-with-straps-in-yellow"
+          }
+        }
+      },
+      "block_order": [
+        "video_MqqrCB",
+        "video_KRxpzr",
+        "video_BiDmjb",
+        "video_bcUtem",
+        "image_gRedqm",
+        "video_fzJ7jE",
+        "video_UXnGGi",
+        "video_xWhEqd",
+        "video_DkELYE"
+      ],
+      "name": "Instagram Carousel",
+      "settings": {
+        "heading": "REAL GIRLS, REAL MOMENTS",
+        "subheading": "See how our dresses look in real life.",
+        "instagram_handle": "Follow us @worldpromdress",
+        "instagram_url": "https://www.instagram.com/worldpromdress/",
+        "heading_size": 26,
+        "gap": 14,
+        "border_radius": 4,
+        "background_color": "#ffffff",
+        "heading_color": "#222222",
+        "text_color": "#666666",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "mobile_heading_size": 21,
+        "mobile_padding_top": 40,
+        "mobile_padding_bottom": 40
+      }
+    },
     "email_signup_wh6BTw": {
       "type": "email-signup",
       "name": "Newsletter",
       "settings": {
         "subheading": "",
-        "heading": "15% Off New Styles Awaits!",
-        "description": "<p>Unlock 15% off! First access to prom & homecoming dresses. Enter email.</p>",
+        "heading": "10% Off New Styles Awaits!",
+        "description": "<p>Unlock 10% off! First access to prom & homecoming dresses. Enter email.</p>",
         "color_bg": "#faf7ff",
         "color_text": "#151515",
         "disable_top_spacing": false,
@@ -489,20 +585,19 @@
     }
   },
   "order": [
-    "16479477632637c9a7",
-    "spacer_DmQtcM",
-    "featured_collection_4mWWqn",
-    "slideshow_zwXLKG",
-    "featured_collection_YPRmkP",
     "slideshow_qi3NF6",
     "collection_list_VHV4Tw",
     "featured_collection_fGHJxg",
-    "spacer_AnPdfg",
+    "16479477632637c9a7",
+    "featured_collection_4mWWqn",
+    "slideshow_zwXLKG",
+    "featured_collection_YPRmkP",
     "spacer_kfpHVh",
     "interviews_rdAnEw",
     "rich_text_pYxmT6",
     "scrolling_images_QMpAfB",
     "spacer_wDXPPC",
+    "instagram_carousel_GEWWBe",
     "email_signup_wh6BTw",
     "spacer_p7XFHT",
     "1774275453ef3d0890"

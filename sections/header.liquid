@@ -52,26 +52,36 @@
 </sticky-header>
 {{- 'header.js' | asset_url | script_tag -}}
 
+{%- liquid
+  comment
+    后台没填的设置会渲染成 ""，而空字符串不是合法 URL。
+    做法是先把非空值拼成一个字符串，再 split 成数组交给 json 过滤器。
+    分隔符用 |~| 是为了避开 URL 里可能出现的单字符。
+  endcomment
+  assign social_raw = ''
+  assign social_settings = settings.social_twitter_link | append: '|~|' | append: settings.social_facebook_link | append: '|~|' | append: settings.social_pinterest_link | append: '|~|' | append: settings.social_instagram_link | append: '|~|' | append: settings.social_tiktok_link | append: '|~|' | append: settings.social_youtube_link | append: '|~|' | append: settings.social_vimeo_link | append: '|~|' | append: settings.social_linkedin_link | append: '|~|' | append: settings.social_snapchat_link | append: '|~|' | append: settings.social_wechat_link | split: '|~|'
+
+  for social_url in social_settings
+    assign trimmed_url = social_url | strip
+    if trimmed_url != blank
+      assign social_raw = social_raw | append: trimmed_url | append: '|~|'
+    endif
+  endfor
+
+  assign social_links = social_raw | split: '|~|'
+-%}
 <script type="application/ld+json">
   {
     "@context": "http://schema.org",
     "@type": "Organization",
     "name": {{ shop.name | json }},
     {% if section.settings.logo %}
-      "logo": {{ section.settings.logo | image_url: width: section.settings.logo.width | prepend: "https:" | json }},
+      "logo": "{{ section.settings.logo | image_url: width: section.settings.logo.width | prepend: 'https:' }}",
     {% endif %}
-    "sameAs": [
-      {{ settings.social_twitter_link | json }},
-      {{ settings.social_facebook_link | json }},
-      {{ settings.social_pinterest_link | json }},
-      {{ settings.social_instagram_link | json }},
-      {{ settings.social_tiktok_link | json }},
-      {{ settings.social_youtube_link | json }},
-      {{ settings.social_vimeo_link | json }},
-      {{ settings.social_linkedin_link | json }},
-      {{ settings.social_wechat_link | json }}
-    ],
-    "url": {{ shop.url | append: page.url | json }}
+    {% if social_links.size > 0 %}
+      "sameAs": [{% for social_link in social_links %}"{{ social_link }}"{% unless forloop.last %}, {% endunless %}{% endfor %}],
+    {% endif %}
+    "url": "{{ shop.url | append: page.url }}"
   }
 </script>
 {%- if request.page_type == 'index' -%}

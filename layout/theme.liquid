@@ -9,9 +9,6 @@
 {%- endcapture -%}
 <html class="no-js" lang="{{ request.locale.iso_code }}" dir="{{ dir }}">
 <head>
-  <!-- Added by AVADA SEO Suite -->
-	{% include 'avada-seo' %}
-	<!-- /Added by AVADA SEO Suite -->
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
@@ -34,16 +31,10 @@
 	<meta name="description" content="{{ page_description | escape }}">
 	{% endif %}
 {% render 'social-meta-tags' %}
-<link rel="preload" as="style" media="screen" href="https://www.worldprom.com/cdn/shopifycloud/portable-wallets/latest/accelerated-checkout-backwards-compat.css" crossorigin="anonymous">
-<link rel="preload" as="style" media="screen" href="https://6xh5s9k4pomlxp41-74266280191.shopifypreview.com/cdn/shopifycloud/portable-wallets/latest/accelerated-checkout-backwards-compat.css" crossorigin="anonymous">
-<link rel="preload" href="https://cdn.shopify.com/extensions/dafca263-7fb1-4058-b48b-0cc7dd6b7c7c/optis-product-options-463/assets/bss-po-style.css" as="style">
-
 
 	{%- unless settings.heading_font.system? and settings.body_font.system? -%}
 		<link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
 	{%- endunless -%}
-
-
 
 	{{ 'app.css' | asset_url | stylesheet_tag }}
 
@@ -79,6 +70,7 @@
 				showMore: `{{ 'products.facets.show_more' | t }}`,
 				showLess: `{{ 'products.facets.show_less' | t }}`,
 				showFilters: `{{ 'products.facets.show_filters' | t }}`,
+				hideFilters: `{{ 'products.facets.hide_filters' | t }}`,
 				shippingEstimatorNoResults: `{{ 'sections.cart.shipping_estimator.no_results' | t }}`,
 				shippingEstimatorOneResult: `{{ 'sections.cart.shipping_estimator.one_result' | t }}`,
 				shippingEstimatorMultipleResults: `{{ 'sections.cart.shipping_estimator.multiple_results' | t }}`,
@@ -90,49 +82,6 @@
 
 	<script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script>
 	{{ settings.custom_html_head }}
- <!-- Pinterest Tag -->
-    <script>
-    !function(e){if(!window.pintrk){window.pintrk = function () {
-    window.pintrk.queue.push(Array.prototype.slice.call(arguments))};var
-        n=window.pintrk;n.queue=[],n.version="3.0";var
-        t=document.createElement("script");t.async=!0,t.src=e;var
-        r=document.getElementsByTagName("script")[0];
-    r.parentNode.insertBefore(t,r)}}("https://s.pinimg.com/ct/core.js");
-    pintrk('load', '2614381444741', {em: '<user_email_address>'});
-    pintrk('page');
-</script>
-<noscript>
-<img height="1" width="1" style="display:none;" alt=""
-  src="https://ct.pinterest.com/v3/?event=init&tid=2614381444741&pd[em]=<hashed_email_address>&noscript=1" />
-</noscript>
-<!-- end Pinterest Tag -->
-  <script>
-pintrk('track', 'pagevisit', {
-event_id: 'eventId0001',
-value: 100,
-order_quantity: 1,
-currency: 'USD',
-order_id: 'X-15148',
-promo_code: 'WINTER10',
-property: 'Athleta',
-search_query: 'boots',
-video_title: 'How to style your Parker Boots',
-lead_type: 'Newsletter',
-line_items: [
-{
-product_name: 'Parker Boots',
-product_id: '1414',
-product_category: 'Shoes',
-product_variant_id: '1414-Red',
-product_variant: 'Red',
-product_price: 99.99,
-product_quantity: 1,
-product_brand: 'Parker'
-}
-]
-});
-</script>
-{% render 'scripts' %}
 </head>
 <body class="animations-{{ settings.animations }} button-uppercase-{{ settings.button_uppercase }} product-card-spacing-{{ settings.product_card_spacing }} navigation-uppercase-{{ settings.navigation_uppercase }} product-title-uppercase-{{ settings.product_title_uppercase }}{% if customer %} customer-logged-in{% endif %} template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }} template-{{ template | replace: '.', '-' | handle }}">
 	<a class="screen-reader-shortcut" href="#main-content">{{ 'accessibility.skip_to_text' | t }}</a>
@@ -215,13 +164,8 @@ product_brand: 'Parker'
 		{%- endunless -%}
 	{%- endif -%}
 
-	<!--Stamped Main Script: Begin-->
-<script>function myInit(){ StampedFn.init({ apiKey: 'a5a03e8e-bd8e-49f4-8f4a-f57a282be39b', sId: '356260' }); }</script>
-<script async onload="myInit()" type="text/javascript" src="https://cdn1.stamped.io/files/widget.min.js"></script>
-<!--Stamped Main Script: End -->
-
-<link rel="preload" href="{{ 'splide.min.js' | asset_url }}" as="script">
-<script src="{{ 'splide.min.js' | asset_url }}"></script>
-<script src="{{ 'jquery-3.7.1.min.js' | asset_url }}"></script>
+	{%- if request.page_type == 'collection' and current_page == 1 and collection.products_count > 0 -%}
+		{%- render 'collection-schema' -%}
+	{%- endif -%}
   </body>
 </html>

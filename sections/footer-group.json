@@ -11,6 +11,20 @@
   "type": "header",
   "name": "Footer group",
   "sections": {
+    "email_signup_TLdNDY": {
+      "type": "email-signup",
+      "disabled": true,
+      "name": "Newsletter",
+      "settings": {
+        "subheading": "Add a tagline",
+        "heading": "Newsletter",
+        "description": "<p>Add a short description for this section</p>",
+        "color_bg": "#ffffff",
+        "color_text": "#151515",
+        "disable_top_spacing": false,
+        "disable_bottom_spacing": false
+      }
+    },
     "footer": {
       "type": "footer",
       "blocks": {
@@ -44,25 +58,36 @@
             "column_size": "small",
             "title": ""
           }
+        },
+        "signup_wtmgz9": {
+          "type": "signup",
+          "settings": {
+            "column_size": "medium",
+            "title": "Get 10% Off Your First Dress",
+            "logo_height_range": 30,
+            "text": "<h6>Join our VIP list for exclusive access to new arrivals, styling tips, and a special welcome discount.<br/><br/></h6>"
+          }
         }
       },
       "block_order": [
         "401e3886-6cb7-4742-8fda-45a0d97a26a3",
         "00a364e5-af4e-4073-871b-4d533bd4da06",
         "a09a8a35-bedc-4119-aa04-3ce886faba9d",
-        "social_qJ39nd"
+        "social_qJ39nd",
+        "signup_wtmgz9"
       ],
       "settings": {
         "full_width": true,
         "copyright_text": "All rights reserved.",
-        "show_language_switcher": true,
-        "show_currency_switcher": true,
+        "show_language_switcher": false,
+        "show_currency_switcher": false,
         "show_payment_icons": true,
         "enable_follow_on_shop": true
       }
     }
   },
   "order": [
+    "email_signup_TLdNDY",
     "footer"
   ]
 }

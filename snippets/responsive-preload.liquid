@@ -40,7 +40,7 @@
 		endif
 	endcapture
 -%}
-<link rel="preload" as="image" href="{{- src -}}" imagesrcset="{{ srcset | slice: 0, l | strip_newlines }}" imagesizes="auto">
+<link rel="preload" as="image" href="{{- src -}}" imagesrcset="{{ srcset | slice: 0, l | strip_newlines }}" imagesizes="auto" fetchpriority="high">
 {% comment %}
 
 This file has been rewritten to preserve the original behavior.

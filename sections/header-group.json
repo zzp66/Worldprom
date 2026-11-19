@@ -18,7 +18,7 @@
           "type": "text",
           "settings": {
             "icon": "none",
-            "text": "15% OFF for First Order | CODE:N6OV1",
+            "text": "10% OFF for First Order | CODE:WP10",
             "link": ""
           }
         }
@@ -48,7 +48,7 @@
             "max_columns": "6",
             "promo_1_image": "shopify://shop_images/menu-9.jpg",
             "promo_1_heading": "",
-            "promo_1_link": "shopify://collections/bridesmaids",
+            "promo_1_link": "shopify://collections/bridesmaid-dresses",
             "promo_2_image": "shopify://shop_images/menu-10.jpg",
             "promo_2_heading": "",
             "promo_2_link": "shopify://collections/bridesmaide-new-arrival",

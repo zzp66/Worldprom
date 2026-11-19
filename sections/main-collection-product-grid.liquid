@@ -12,8 +12,16 @@
   assign products_per_page = section.settings.products_per_page
   assign columns_desktop = section.settings.columns_desktop
   assign facets_desktop = section.settings.facets_desktop
+  assign sidebar_closed = false
+  if section.settings.sidebar_open_default == false
+    assign sidebar_closed = true
+  endif
 
-  assign seo_text = section.settings.seo_text
+  # Bottom text comes from the collection's own "Bottom description" metafield; empty means nothing is shown
+  assign seo_text = ''
+  if collection.metafields.custom.bottom_description != blank
+    assign seo_text = collection.metafields.custom.bottom_description | metafield_tag
+  endif
   assign seo_text_custom_liquid = section.settings.seo_text_custom_liquid
   assign seo_text_max_height = section.settings.seo_text_max_height
   assign seo_text_read_more = section.settings.seo_text_read_more
@@ -24,6 +32,20 @@
   endunless
 
   assign columns_tablet = columns_desktop | minus: 2 | at_most: 5 | at_least: 3
+
+  # Parse the custom color table (theme settings > Color swatches) once for the whole grid.
+  # Same parsing as product-card-swatch, which would otherwise redo it for every card.
+  assign swatch_lines = settings.color_swatches | newline_to_br | split: '<br />'
+  assign swatch_keys = ''
+  assign swatch_vals = ''
+  for swatch_line in swatch_lines
+    assign swatch_key = swatch_line | split: ':' | first | rstrip
+    assign swatch_val = swatch_line | split: ':' | last | lstrip
+    assign swatch_keys = swatch_keys | append: ',' | append: swatch_key
+    assign swatch_vals = swatch_vals | append: ',' | append: swatch_val
+  endfor
+  assign swatch_keys = swatch_keys | remove_first: ',' | strip_newlines | downcase | split: ','
+  assign swatch_vals = swatch_vals | remove_first: ',' | split: ','
 -%}
 {%- for filter in collection.filters limit: 1 -%}
 {%- endfor -%}
@@ -41,6 +63,7 @@
     enable_filtering: enable_filtering,
     enable_sorting: enable_sorting,
     facets_desktop: facets_desktop,
+    sidebar_closed: sidebar_closed,
     filter_color_swatches: filter_color_swatches,
     products_per_page: products_per_page,
     paginate: paginate
@@ -59,9 +82,24 @@
       <div class="collection-container section-spacing-bottom">
         <div id="ProductGridContainer">
           <div
-            class="sidebar-container{% if enable_filtering and facets_desktop == 'sidebar' %} facets--sidebar{% else %} facets--sidebar-false{% endif %} facets--sidebar-open results--{{ collection.products.size }} sticky-scroller--parent"
+            class="sidebar-container{% if enable_filtering and facets_desktop == 'sidebar' %} facets--sidebar{% else %} facets--sidebar-false{% endif %}{% unless sidebar_closed %} facets--sidebar-open{% endunless %} results--{{ collection.products.size }} sticky-scroller--parent"
             id="Sidebar-Container"
+            {% if enable_filtering and facets_desktop == 'sidebar' %}data-remember-sidebar{% endif %}
           >
+            {%- if enable_filtering and facets_desktop == 'sidebar' -%}
+              <script>
+                // Restore the visitor's filter sidebar choice (saved by SidebarToggle) before the page paints
+                (function () {
+                  var state = null;
+                  try { state = window.sessionStorage.getItem('collection-sidebar-open'); } catch (e) {}
+                  if (state !== '1' && state !== '0') return;
+                  var open = state === '1';
+                  document.currentScript.parentElement.classList.toggle('facets--sidebar-open', open);
+                  var label = document.querySelector('#Sidebar-Toggle span');
+                  if (label) label.textContent = open ? {{ 'products.facets.hide_filters' | t | json }} : {{ 'products.facets.show_filters' | t | json }};
+                })();
+              </script>
+            {%- endif -%}
             {%- if facets_desktop == 'sidebar' -%}
               {%- render 'facets-desktop',
                 results: collection,
@@ -90,6 +128,10 @@
                   class="11123 products grid pagination--{{ pagination_type }}"
                   style="--desktop-columns: {{ columns_desktop }}; --tablet-columns: {{ columns_tablet }};"
                 >
+                  {%- comment -%}
+                    card_position 统计实际输出的卡片（含置顶商品）。前 4 张在首屏，图片不走 lazysizes 直接加载（集合页的 LCP 元素就在这里）
+                  {%- endcomment -%}
+                  {%- assign card_position = 0 -%}
                   <!-- 置顶商品的展示开始 -->
                   {% assign handles = '' %}
                   {% assign handleSize = 0 %}
@@ -105,8 +147,15 @@
                       {% if product != empty %}
                         {% assign handleSize = handleSize | plus: 1 %}
                         {% assign featured = product %}
+                        {%- assign card_position = card_position | plus: 1 -%}
                         <div class="products--column">
-                          {%- render 'product-card', product_card_product: product, collection_context: collection -%}
+                          {%- render 'product-card',
+                            product_card_product: product,
+                            collection_context: collection,
+                            card_position: card_position,
+                            swatch_keys: swatch_keys,
+                            swatch_vals: swatch_vals
+                          -%}
                         </div>
                       {% endif %}
                     {% endfor %}
@@ -141,9 +190,16 @@
                         {% continue %}
                       {% else %}
                         {% assign featured = product %}
+                        {%- assign card_position = card_position | plus: 1 -%}
 
                         <div class="products--column">
-                          {%- render 'product-card', product_card_product: product, collection_context: collection -%}
+                          {%- render 'product-card',
+                            product_card_product: product,
+                            collection_context: collection,
+                            card_position: card_position,
+                            swatch_keys: swatch_keys,
+                            swatch_vals: swatch_vals
+                          -%}
                         </div>
                       {% endif %}
                     {% endif %}
@@ -160,6 +216,7 @@
               {%- if seo_text_custom_liquid != blank or seo_text != blank -%}
                 {%- render 'text-max-height',
                   no_bg: true,
+                  extra_class: 'collection-bottom-text',
                   content: seo_text,
                   custom_liquid: seo_text_custom_liquid,
                   read_more: seo_text_read_more,
@@ -176,7 +233,7 @@
 {%- endpaginate -%}
 {%- if enable_filtering or enable_sorting -%}
   {%- if enable_filtering and has_price_filter.size > 0 -%}
-    {{ 'nouislider.js' | asset_url | script_tag }}
+    <script src="{{ 'nouislider.js' | asset_url }}" defer="defer"></script>
   {%- endif -%}
   <script src="{{ 'facets.js' | asset_url }}" defer="defer"></script>
 {%- endif -%}
@@ -277,6 +334,13 @@
       "info": "Position of filters on desktop"
     },
     {
+      "type": "checkbox",
+      "id": "sidebar_open_default",
+      "default": true,
+      "label": "Open filter sidebar by default",
+      "info": "Only applies when desktop position is Sidebar"
+    },
+    {
       "type": "header",
       "content": "SEO"
     },
@@ -284,7 +348,8 @@
       "type": "richtext",
       "id": "seo_text",
       "default": "<p>Collection <strong>seo text</strong></p>",
-      "label": "Description"
+      "label": "Description",
+      "info": "Not used. The text below the products now comes from each collection's Bottom description metafield (custom.bottom_description)."
     },
     {
       "type": "liquid",

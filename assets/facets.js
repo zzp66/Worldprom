@@ -22,19 +22,23 @@ customElements.define('facet-toggle', FacetsToggle);
  *  @function SidebarToggle
  */
 class SidebarToggle extends HTMLElement {
-  constructor() {
-    super();
-    this.drawer = document.getElementById('Sidebar-Container');
-  }
   connectedCallback() {
     const span = this.querySelector('span');
-    const hideFilters = span.textContent;
 
     this.addEventListener('click', (e) => {
       e.preventDefault();
-      this.drawer.classList.toggle('facets--sidebar-open');
+      // Look the container up on every click: filtering re-renders it, so a cached reference goes stale
+      const drawer = document.getElementById('Sidebar-Container');
+      const open = drawer.classList.toggle('facets--sidebar-open');
 
-      span.textContent = this.drawer.classList.contains('facets--sidebar-open') ? hideFilters : theme.strings.showFilters;
+      // Remember the choice for this tab so paging and other sidebar collections keep it
+      if (drawer.hasAttribute('data-remember-sidebar')) {
+        try {
+          window.sessionStorage.setItem('collection-sidebar-open', open ? '1' : '0');
+        } catch (err) {}
+      }
+
+      span.textContent = drawer.classList.contains('facets--sidebar-open') ? theme.strings.hideFilters : theme.strings.showFilters;
     });
   }
 }
@@ -73,85 +77,112 @@ class FacetFiltersForm extends HTMLElement {
     });
   }
 
-  static renderPage(searchParams, event, updateURLHash = true) {
+  static async renderPage(searchParams, event, updateURLHash = true) {
+    const requestId = ++FacetFiltersForm.requestId;
+    const keepScroll = FacetFiltersForm.keepScrollCount > 0;
+    if (keepScroll) FacetFiltersForm.keepScrollCount -= 1;
     FacetFiltersForm.searchParamsPrev = searchParams;
     const sections = FacetFiltersForm.getSections();
-    const container = document.querySelectorAll('.thb-filter-count, .mobile-filter-count');
-    document.getElementById('ProductGridContainer').querySelector('.products').classList.add('loading');
+    FacetFiltersForm.setLoading(true);
 
-    for (var item of container) {
-      item.classList.add('loading');
-    }
+    try {
+      const requests = sections.map((section) => {
+        const url = `${window.location.pathname}?section_id=${section.section}&${searchParams}`;
+        const filterDataUrl = element => element.url === url;
 
-    sections.forEach((section) => {
-      const url = `${window.location.pathname}?section_id=${section.section}&${searchParams}`;
-      const filterDataUrl = element => element.url === url;
-
-      if (FacetFiltersForm.filterData.some(filterDataUrl)) {
-        FacetFiltersForm.renderSectionFromCache(filterDataUrl, event);
-      } else {
-        FacetFiltersForm.renderSectionFromFetch(url, event);
+        if (FacetFiltersForm.filterData.some(filterDataUrl)) {
+          return FacetFiltersForm.renderSectionFromCache(filterDataUrl, event, requestId, keepScroll);
+        }
+        return FacetFiltersForm.renderSectionFromFetch(url, event, requestId, keepScroll);
+      });
+      if (updateURLHash) FacetFiltersForm.updateURLHash(searchParams);
+      await Promise.all(requests);
+    } catch (error) {
+      console.error('Unable to update product filters:', error);
+    } finally {
+      // An older response must not clear the loading state of a newer filter request.
+      if (requestId === FacetFiltersForm.requestId) {
+        FacetFiltersForm.setLoading(false);
+        FacetFiltersForm.toggleActiveFacets(false);
       }
-    });
-    if (updateURLHash) FacetFiltersForm.updateURLHash(searchParams);
-
+    }
   }
 
-  static renderSectionFromFetch(url, event) {
-    fetch(url)
-      .then(response => response.text())
+  static setLoading(loading) {
+    document.querySelectorAll('.thb-filter-count, .mobile-filter-count, #ProductGridContainer .products').forEach((element) => {
+      element.classList.toggle('loading', loading);
+    });
+  }
+
+  static renderSectionFromFetch(url, event, requestId, keepScroll) {
+    return fetch(url)
+      .then((response) => {
+        if (!response.ok) throw new Error(`Filter request failed: ${response.status}`);
+        return response.text();
+      })
       .then((responseText) => {
         const html = responseText;
         FacetFiltersForm.filterData = [...FacetFiltersForm.filterData, {
           html,
           url
         }];
-        FacetFiltersForm.renderFilters(html, event);
-        FacetFiltersForm.renderProductGridContainer(html);
-        FacetFiltersForm.renderProductCount(html);
-
+        if (requestId === FacetFiltersForm.requestId) {
+          FacetFiltersForm.renderSection(html, event, keepScroll);
+        }
       });
   }
 
-  static renderSectionFromCache(filterDataUrl, event) {
+  static renderSectionFromCache(filterDataUrl, event, requestId, keepScroll) {
     const html = FacetFiltersForm.filterData.find(filterDataUrl).html;
-    FacetFiltersForm.renderFilters(html, event);
-    FacetFiltersForm.renderProductGridContainer(html);
-    FacetFiltersForm.renderProductCount(html);
-
+    if (requestId === FacetFiltersForm.requestId) {
+      FacetFiltersForm.renderSection(html, event, keepScroll);
+    }
   }
 
-  static renderProductGridContainer(html) {
+  static renderSection(html, event, keepScroll) {
+    FacetFiltersForm.renderFilters(html, event);
+    FacetFiltersForm.renderProductCount(html);
+    FacetFiltersForm.renderProductGridContainer(html, keepScroll);
+  }
+
+  static renderProductGridContainer(html, keepScroll = false) {
+    // Keep the sidebar open/closed as the visitor left it, instead of resetting to the template default
+    const sidebarOpen = document.getElementById('Sidebar-Container')?.classList.contains('facets--sidebar-open');
     document.getElementById('ProductGridContainer').innerHTML = new DOMParser().parseFromString(html, 'text/html').getElementById('ProductGridContainer').innerHTML;
+    document.getElementById('Sidebar-Container')?.classList.toggle('facets--sidebar-open', !!sidebarOpen);
 
     let top = document.getElementById('ProductGridContainer').getBoundingClientRect().top + document.documentElement.scrollTop - parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height'), 10) - 30;
 
-    ScrollTrigger.batch('.animations-true .products .product-card--image-primary', {
-      start: "top 90%",
-      onEnter: (elements) => {
-        gsap.to(elements, { scale: 1, opacity: 1, stagger: 0.15, ease: window.theme.settings.animation_easing });
-      }
-    });
+    // The animation bundle is only loaded when theme animations are enabled.
+    if (document.body.classList.contains('animations-true') && typeof ScrollTrigger !== 'undefined' && typeof gsap !== 'undefined') {
+      ScrollTrigger.batch('.animations-true .products .product-card--image-primary', {
+        start: "top 90%",
+        onEnter: (elements) => {
+          gsap.to(elements, { scale: 1, opacity: 1, stagger: 0.15, ease: window.theme.settings.animation_easing });
+        }
+      });
+    }
     document.getElementById('ProductGridContainer').querySelectorAll('.lazyload').forEach((image) => {
       lazySizes.loader.unveil(image);
     });
 
-    window.scrollTo({
-      top: top,
-      left: 0,
-      behavior: "smooth"
-    });
+    // 顶部颜色色块筛选时保持当前位置（见 collection-color-swatch），其他筛选照常滚到商品区
+    if (!keepScroll) {
+      window.scrollTo({
+        top: top,
+        left: 0,
+        behavior: "smooth"
+      });
+    }
   }
 
   static renderProductCount(html) {
     const countHtml = new DOMParser().parseFromString(html, 'text/html').getElementById('ProductCount');
-    const container = document.getElementsByClassName('thb-filter-count');
+    const container = document.getElementById('ProductCount');
 
-    if (countHtml) {
-      for (var item of container) {
-        item.innerHTML = countHtml.innerHTML;
-        item.classList.remove('loading');
-      }
+    if (countHtml && container) {
+      // The drawer has its own count markup, refreshed by renderAdditionalElements.
+      container.innerHTML = countHtml.innerHTML;
     }
 
   }
@@ -356,6 +387,7 @@ class FacetFiltersForm extends HTMLElement {
 })();
 
 FacetFiltersForm.filterData = [];
+FacetFiltersForm.requestId = 0;
 FacetFiltersForm.searchParamsInitial = window.location.search.slice(1);
 FacetFiltersForm.searchParamsPrev = window.location.search.slice(1);
 customElements.define('facet-filters-form', FacetFiltersForm);

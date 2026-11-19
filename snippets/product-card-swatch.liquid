@@ -19,19 +19,27 @@
 			{%- if color_swatch -%}
 				{%- liquid
 				assign color_index = forloop.index0
-				assign custom_colors = settings.color_swatches | newline_to_br | split: '<br />'
-				assign key_array = ''
-				assign val_array = ''
 
-				for color in custom_colors
-					assign key = color | split: ':' | first | rstrip
-					assign value = color | split: ':' | last | lstrip
-					assign key_array = key_array | append: ',' | append: key
-					assign val_array = val_array | append: ',' | append: value
-				endfor
+				# The collection grid parses the custom color table once and passes it in (swatch_keys / swatch_vals).
+				# Other callers don't, so parse it here as before.
+				if swatch_keys
+					assign key_array = swatch_keys
+					assign val_array = swatch_vals
+				else
+					assign custom_colors = settings.color_swatches | newline_to_br | split: '<br />'
+					assign key_array = ''
+					assign val_array = ''
 
-				assign key_array = key_array | remove_first: ',' | strip_newlines | downcase | split: ','
-				assign val_array = val_array | remove_first: ',' | split: ','
+					for color in custom_colors
+						assign key = color | split: ':' | first | rstrip
+						assign value = color | split: ':' | last | lstrip
+						assign key_array = key_array | append: ',' | append: key
+						assign val_array = val_array | append: ',' | append: value
+					endfor
+
+					assign key_array = key_array | remove_first: ',' | strip_newlines | downcase | split: ','
+					assign val_array = val_array | remove_first: ',' | split: ','
+				endif
 
 				# Number of swatches to show
 				assign show_products_swatches_limit_count = settings.show_products_swatches_limit_count
@@ -40,29 +48,78 @@
 				endif
 
 				assign size = option.values.size | at_most: show_products_swatches_limit_count
+
+				# The color the card image currently shows (passed in by product-card on color collections)
+				assign selected_index = -1
+				if selected_color != blank
+					for option_value in option.values
+						assign option_value_down = option_value.name | default: option_value | append: '' | downcase | strip
+						if option_value_down == selected_color
+							assign selected_index = forloop.index0
+							break
+						endif
+					endfor
+				endif
+
+				# Swatch order: move the selected color to the front when it falls outside the visible swatches
+				assign last_index = option.values.size | minus: 1
+				assign swatch_order = ''
+				if selected_index >= show_products_swatches_limit_count
+					assign swatch_order = selected_index | append: ''
+					for i in (0..last_index)
+						if i != selected_index
+							assign swatch_order = swatch_order | append: ',' | append: i
+						endif
+					endfor
+				else
+					for i in (0..last_index)
+						assign swatch_order = swatch_order | append: ',' | append: i
+					endfor
+					assign swatch_order = swatch_order | remove_first: ','
+				endif
+				assign swatch_order = swatch_order | split: ','
 				-%}
 				{% if option.values.size > 1 %}
 				<div class="product-card-swatches--container no-js-hidden">
 					<div class="product-card-swatches product-card-swatches-expand--{{ settings.show_products_swatches_expand }}" data-index="{{ color_index }}" style="--size: {{ size }}">
 						{%- capture option_id %}{{ section.id }}-{{ product.id }}-{{ option.name | handle }}{% endcapture -%}
-						{%- for value in option.values limit: show_products_swatches_limit_count -%}
+						{%- for swatch_index in swatch_order limit: show_products_swatches_limit_count -%}
 							{%- liquid
+								assign value_index = swatch_index | plus: 0
+								assign value = option.values[value_index]
+								assign value_name = value.name | default: value | append: ''
 								assign active = false
 								assign variant_image = blank
 								assign variant_url = ''
 								assign srcset = ''
 
-								for variant in product.variants
-									if variant.title contains value
-										if variant.image.id and variant.image.id == product.featured_image.id
-											assign active = true
+								# Exact match: the variant Shopify links to this option value.
+								# Fallback compares the color option exactly (never a partial title match,
+								# which confused e.g. Blue with Sky Blue).
+								assign swatch_variant = value.variant
+								if swatch_variant == blank
+									for variant in product.variants
+										if variant.options[color_index] == value_name
+											assign swatch_variant = variant
+											break
 										endif
-										if variant.image
-											assign variant_image = variant.image
-										endif
-										assign variant_url = variant.url
+									endfor
+								endif
+
+								if selected_index >= 0
+									if value_index == selected_index
+										assign active = true
 									endif
-								endfor
+								elsif swatch_variant.image.id and swatch_variant.image.id == product.featured_image.id
+									assign active = true
+								endif
+
+								if swatch_variant
+									if swatch_variant.image
+										assign variant_image = swatch_variant.image
+									endif
+									assign variant_url = swatch_variant.url
+								endif
 								assign image_sizes = sizes | split: ","
 							-%}
 							{%- capture srcset -%}
@@ -99,14 +156,9 @@
 								if settings.color_swatches_use_variants
 									assign variant_image = blank
 
-									for variant in product.variants
-										if variant.title contains value
-											if variant.image
-												assign bg_value = variant.image | image_url: width: 52
-												break
-											endif
-										endif
-									endfor
+									if swatch_variant.image
+										assign bg_value = swatch_variant.image | image_url: width: 52
+									endif
 								endif
 
 								if value.swatch.image

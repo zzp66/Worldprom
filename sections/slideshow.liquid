@@ -80,6 +80,10 @@
           {{ block.shopify_attributes }}
         >
           {%- if desktop_height == 'desktop-height-image' or mobile_height == 'mobile-height-image' -%}
+            {%- comment -%}
+              这一层是 opacity: 0 的占位，只用来按图片比例撑开高度。
+              用同尺寸的内联 SVG 代替真图，省掉一次原图下载（桌面 banner 原图 300 KB 以上）。
+            {%- endcomment -%}
             <div class="slideshow__slide-adapt-to-image">
               {%- if block.settings.image -%}
                 {%- liquid
@@ -91,11 +95,12 @@
                   endif
                 -%}
                 <img
-                  data-src="{{ image | image_url }}"
-                  class="lazyload {{ class }}{% unless settings.lazy_loading %} no-blur{% endunless %}"
-                  width="{{ image.src.width }}"
-                  height="{{ image.src.height }}"
-                  alt="{{ image.alt }}"
+                  src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='{{ image.width }}' height='{{ image.height }}'%3E%3C/svg%3E"
+                  class="{{ class }}"
+                  width="{{ image.width }}"
+                  height="{{ image.height }}"
+                  alt=""
+                  aria-hidden="true"
                 >
               {%- else -%}
                 {%- assign index = forloop.index | modulo: 2 | plus: 1 -%}
@@ -106,17 +111,96 @@
                   assign mobile_image = block.settings.mobile_image
                 -%}
                 <img
-                  data-src="{{ mobile_image | image_url }}"
-                  class="lazyload slideshow-image--mobile{% unless settings.lazy_loading %} no-blur{% endunless %}"
-                  width="{{ mobile_image.src.width }}"
-                  height="{{ mobile_image.src.height }}"
-                  alt="{{ mobile_image.alt }}"
+                  src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='{{ mobile_image.width }}' height='{{ mobile_image.height }}'%3E%3C/svg%3E"
+                  class="slideshow-image--mobile"
+                  width="{{ mobile_image.width }}"
+                  height="{{ mobile_image.height }}"
+                  alt=""
+                  aria-hidden="true"
                 >
               {%- endif -%}
             </div>
           {%- endif -%}
           <div class="slideshow__slide-bg">
-            {%- if block.settings.image -%}
+            {%- liquid
+              assign native_hero = false
+              if priority == 'high' and block.settings.image != blank
+                assign native_hero = true
+              endif
+            -%}
+            {%- if native_hero -%}
+              {%- comment -%}
+                首屏第一张图不走 lazysizes，改用原生 srcset：浏览器解析到这里就按设备直接下载合适尺寸，
+                不用等页面底部的 vendor.min.js 执行完再换清晰图（移动端 LCP 主要卡在这一步）。
+                <picture> 按断点只下载一张：手机不再顺带下载桌面图，电脑也不再下载手机图。
+              {%- endcomment -%}
+              {%- liquid
+                assign image = block.settings.image
+                assign mobile_image = block.settings.mobile_image
+                assign hero_alt = image.alt | default: mobile_image.alt | escape
+                assign hero_position = image.presentation.focal_point | default: '50% 50%'
+
+                assign desktop_widths = '900,1000,1100,1200,1400,1600' | split: ','
+                if mobile_image == blank
+                  assign desktop_widths = '430,640,900,1000,1100,1200,1400,1600' | split: ','
+                endif
+                assign mobile_widths = '430,640,750' | split: ','
+              -%}
+              {%- capture desktop_srcset -%}
+                {%- for hero_width in desktop_widths -%}
+                  {%- assign w = hero_width | plus: 0 -%}
+                  {%- if w < image.width -%}
+                    {{ image | image_url: width: w }} {{ w }}w,
+                  {%- endif -%}
+                {%- endfor -%}
+                {{ image | image_url: width: image.width }} {{ image.width }}w
+              {%- endcapture -%}
+              {%- if mobile_image != blank -%}
+                {%- capture mobile_srcset -%}
+                  {%- for hero_width in mobile_widths -%}
+                    {%- assign w = hero_width | plus: 0 -%}
+                    {%- if w < mobile_image.width -%}
+                      {{ mobile_image | image_url: width: w }} {{ w }}w,
+                    {%- endif -%}
+                  {%- endfor -%}
+                  {{ mobile_image | image_url: width: mobile_image.width }} {{ mobile_image.width }}w
+                {%- endcapture -%}
+                {%- assign mobile_position = mobile_image.presentation.focal_point | default: '50% 50%' -%}
+                <picture
+                  class="slideshow__slide-picture"
+                  style="--slide-image-position: {{ hero_position }}; --slide-image-position-mobile: {{ mobile_position }};"
+                >
+                  <source
+                    media="(min-width: 768px)"
+                    srcset="{{ desktop_srcset }}"
+                    sizes="100vw"
+                    width="{{ image.width }}"
+                    height="{{ image.height }}"
+                  >
+                  <img
+                    src="{{ mobile_image | image_url: width: 750 }}"
+                    srcset="{{ mobile_srcset }}"
+                    sizes="100vw"
+                    width="{{ mobile_image.width }}"
+                    height="{{ mobile_image.height }}"
+                    alt="{{ hero_alt }}"
+                    fetchpriority="high"
+                  >
+                </picture>
+              {%- else -%}
+                <picture class="slideshow__slide-picture" style="--slide-image-position: {{ hero_position }};">
+                  <img
+                    src="{{ image | image_url: width: 1400 }}"
+                    srcset="{{ desktop_srcset }}"
+                    sizes="100vw"
+                    width="{{ image.width }}"
+                    height="{{ image.height }}"
+                    alt="{{ hero_alt }}"
+                    fetchpriority="high"
+                  >
+                </picture>
+              {%- endif -%}
+            {%- elsif block.settings.image -%}
               {%- liquid
                 assign image = block.settings.image
                 assign master_width = image.src.width | append: 'x' | append: image.src.height
@@ -136,7 +220,7 @@
               {%- assign index = forloop.index | modulo: 2 | plus: 1 -%}
               {{ 'hero-apparel-' | append: index | placeholder_svg_tag: 'placeholder_svg_tag' }}
             {%- endif -%}
-            {%- if block.settings.mobile_image != blank -%}
+            {%- if block.settings.mobile_image != blank and native_hero == false -%}
               {%- liquid
                 assign image = block.settings.mobile_image
                 assign master_width = image.src.width | append: 'x' | append: image.src.height
@@ -264,7 +348,7 @@
     </slide-show>
   </div>
 </div>
-{{ 'slideshow-vendor.js' | asset_url | script_tag }}
+<script src="{{ 'slideshow-vendor.js' | asset_url }}" defer></script>
 <script src="{{ 'slideshow.js' | asset_url }}" defer></script>
 {% schema %}
 {

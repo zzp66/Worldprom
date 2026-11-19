@@ -4,7 +4,7 @@
 			<div class="facets--bar-left">
 				{%- if enable_filtering -%}
 					{%- if facets_desktop == 'sidebar' -%}
-						<sidebar-toggle class="sidebar-toggle" id="Sidebar-Toggle">{% render 'svg-icons' with 'thb-filter' %} <span>{{ 'products.facets.hide_filters' | t }}</span></sidebar-toggle>
+						<sidebar-toggle class="sidebar-toggle" id="Sidebar-Toggle">{% render 'svg-icons' with 'thb-filter' %} <span>{% if sidebar_closed %}{{ 'products.facets.show_filters' | t }}{% else %}{{ 'products.facets.hide_filters' | t }}{% endif %}</span></sidebar-toggle>
 					{%- else -%}
 						<facet-toggle class="facets-toggle facets-toggle--inline" id="Facets-Toggle-Inline">{% render 'svg-icons' with 'thb-filter' %} <span>{{ 'products.facets.filter_and_sort' | t }}</span></facet-toggle>
 					{%- endif -%}

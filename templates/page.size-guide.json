@@ -1,0 +1,500 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "show_page_title": true,
+        "disable_top_spacing": false,
+        "disable_bottom_spacing": false
+      }
+    },
+    "rich_text_HEg7Lf": {
+      "type": "rich-text",
+      "blocks": {
+        "space_MbCeb7": {
+          "type": "space",
+          "settings": {
+            "height": 40
+          }
+        },
+        "subheading_aEJjDt": {
+          "type": "subheading",
+          "settings": {
+            "text": "Subheading for this section"
+          }
+        },
+        "heading_deW6qg": {
+          "type": "heading",
+          "settings": {
+            "text": "Talk about your brand",
+            "size": "h1"
+          }
+        },
+        "text_Rt3XEK": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.</p>",
+            "custom_liquid": "",
+            "size": "text-size-regular"
+          }
+        }
+      },
+      "block_order": [
+        "space_MbCeb7",
+        "subheading_aEJjDt",
+        "heading_deW6qg",
+        "text_Rt3XEK"
+      ],
+      "disabled": true,
+      "settings": {
+        "section_width": "grid",
+        "text_width": "medium",
+        "text_position": "center",
+        "text_alignment": "center",
+        "color_bg": "rgba(0,0,0,0)",
+        "color_text": "#151515",
+        "color_links": "#151515",
+        "disable_top_spacing": false,
+        "disable_bottom_spacing": false
+      }
+    },
+    "single_image_cGKej9": {
+      "type": "single-image",
+      "disabled": true,
+      "name": "Single image",
+      "settings": {
+        "full_width": false,
+        "disable_top_spacing": true,
+        "disable_bottom_spacing": true
+      }
+    },
+    "image_with_text_bCipWk": {
+      "type": "image-with-text",
+      "blocks": {
+        "subheading_4L9437": {
+          "type": "subheading",
+          "disabled": true,
+          "settings": {
+            "text": "Add a tagline"
+          }
+        },
+        "heading_7QDd3r": {
+          "type": "heading",
+          "settings": {
+            "text": "Size Guide: How to Measurment & Find Your Perfect Fit",
+            "heading_size": "h2"
+          }
+        },
+        "text_YVKYFw": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Explores how to dress to enhances and flatters your natural figure. Wearing flattering styles helps you feel comfortable, radiant, and naturally confident.</p>",
+            "description_size": "large"
+          }
+        }
+      },
+      "block_order": [
+        "subheading_4L9437",
+        "heading_7QDd3r",
+        "text_YVKYFw"
+      ],
+      "name": "Image with text",
+      "settings": {
+        "image": "shopify://shop_images/Size-guide-1.jpg",
+        "image_link": "shopify://collections/prom-new-arrivals",
+        "use_video": false,
+        "video": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+        "video_autoplay": true,
+        "video_controls": true,
+        "height": "adapt",
+        "desktop_image_width": "medium",
+        "section_width": "grid",
+        "layout": "image_first",
+        "content_position": "text-left",
+        "color_bg": "#ffffff",
+        "color_text": "#151515",
+        "color_border": "#e2e2e2",
+        "disable_top_spacing": true,
+        "disable_bottom_spacing": false
+      }
+    },
+    "text_with_icons_KxMyDR": {
+      "type": "text-with-icons",
+      "blocks": {
+        "icon_Pep8eG": {
+          "type": "icon",
+          "settings": {
+            "icon": "ruler",
+            "heading": "1. Take Your Measurement",
+            "text": "<p>Follow our shape guide to measure yourself at home.<br/><br/></p>"
+          }
+        },
+        "icon_TThG3B": {
+          "type": "icon",
+          "settings": {
+            "icon": "clipboard",
+            "heading": "2. Find Your Size",
+            "text": "<p>Use your measurement to find your corresponding size.<br/><br/></p>"
+          }
+        },
+        "icon_dU9wAm": {
+          "type": "icon",
+          "settings": {
+            "icon": "check_mark",
+            "heading": "3. Find Your Bodyshape",
+            "text": "<p>Discover your body shape and get your styling tips that flatter.<br/><br/></p>"
+          }
+        }
+      },
+      "block_order": [
+        "icon_Pep8eG",
+        "icon_TThG3B",
+        "icon_dU9wAm"
+      ],
+      "name": "Text with icons",
+      "settings": {
+        "text_alignment": "left",
+        "icon_position": "left",
+        "icon_size": "large",
+        "heading_size": "large",
+        "mobile_swipe": true,
+        "color_bg": "rgba(0,0,0,0)",
+        "color_heading": "#151515",
+        "color_text": "#151515",
+        "disable_top_spacing": false,
+        "disable_bottom_spacing": false
+      }
+    },
+    "media_grid_Mxd4Mq": {
+      "type": "media-grid",
+      "blocks": {
+        "media_MFGyGU": {
+          "type": "media",
+          "disabled": true,
+          "settings": {
+            "slide_link": "",
+            "use_video": false,
+            "video_autoplay": true,
+            "column": 1,
+            "row": 1,
+            "heading": "Heading",
+            "heading_size": "h4",
+            "text": "Block text",
+            "button_text": "",
+            "button_link": "",
+            "content_position": "middle-center",
+            "text_alignment": "center",
+            "color_text": "#252525",
+            "color_bg": "#f1f1f1",
+            "color_bg_gradient": "",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          }
+        },
+        "media_A9ctEb": {
+          "type": "media",
+          "disabled": true,
+          "settings": {
+            "slide_link": "",
+            "use_video": false,
+            "video_autoplay": true,
+            "column": 2,
+            "row": 2,
+            "heading": "Heading",
+            "heading_size": "h4",
+            "text": "Block text",
+            "button_text": "",
+            "button_link": "",
+            "content_position": "middle-center",
+            "text_alignment": "center",
+            "color_text": "#252525",
+            "color_bg": "#f1f1f1",
+            "color_bg_gradient": "",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          }
+        },
+        "media_AdYc8b": {
+          "type": "media",
+          "disabled": true,
+          "settings": {
+            "slide_link": "",
+            "use_video": false,
+            "video_autoplay": true,
+            "column": 1,
+            "row": 1,
+            "heading": "Heading",
+            "heading_size": "h4",
+            "text": "Block text",
+            "button_text": "",
+            "button_link": "",
+            "content_position": "middle-center",
+            "text_alignment": "center",
+            "color_text": "#252525",
+            "color_bg": "#f1f1f1",
+            "color_bg_gradient": "",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          }
+        },
+        "media_kYJtb6": {
+          "type": "media",
+          "settings": {
+            "image": "shopify://shop_images/size-new-2.webp",
+            "slide_link": "",
+            "use_video": false,
+            "video_autoplay": true,
+            "column": 2,
+            "row": 2,
+            "heading": "",
+            "heading_size": "h4",
+            "text": "",
+            "button_text": "",
+            "button_link": "",
+            "content_position": "middle-center",
+            "text_alignment": "center",
+            "color_text": "#252525",
+            "color_bg": "#f1f1f1",
+            "color_bg_gradient": "",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          }
+        },
+        "media_ARnffg": {
+          "type": "media",
+          "settings": {
+            "image": "shopify://shop_images/900x1200_4.webp",
+            "slide_link": "",
+            "use_video": false,
+            "video_autoplay": true,
+            "column": 2,
+            "row": 2,
+            "heading": "",
+            "heading_size": "h4",
+            "text": "",
+            "button_text": "",
+            "button_link": "",
+            "content_position": "top-center",
+            "text_alignment": "center",
+            "color_text": "#252525",
+            "color_bg": "#f1f1f1",
+            "color_bg_gradient": "",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          }
+        }
+      },
+      "block_order": [
+        "media_MFGyGU",
+        "media_A9ctEb",
+        "media_AdYc8b",
+        "media_kYJtb6",
+        "media_ARnffg"
+      ],
+      "name": "Media grid",
+      "settings": {
+        "section_width": "grid",
+        "desktop_height": 300,
+        "mobile_height": 250,
+        "column_spacing": "small",
+        "mobile_swipe": true,
+        "disable_top_spacing": false,
+        "disable_bottom_spacing": false
+      }
+    },
+    "body_shape_guide_WipaNn": {
+      "type": "body-shape-guide",
+      "blocks": {
+        "shape_NFVTHG": {
+          "type": "shape",
+          "settings": {
+            "shape_name": "Apple",
+            "tab_icon": "shopify://shop_images/icon-apple.jpg",
+            "illustration": "shopify://shop_images/apple_shape_a35186b8-290e-4c57-b420-bc2bcb0e22a5.webp",
+            "subtitle": "Rounder tummy,  slim hips and legs",
+            "features_list": "<li>Focus on elongating your frame with vertical lines and high waistlines</li><li>Draw attention upward toward your neckline and décolletage</li><li>Let the fabric flow past the midsection rather than clinging to it</li><li>Highlight your gorgeous legs with shorter hemlines or high slits</li>",
+            "do_list": "<li>Empire & high-waist dresses</li><li>V-necklines & wrap styles</li><li>A-line & flowing soft fabrics</li><li>High slits or cocktail length</li>",
+            "dont_list": "<li>Bodycon or tightly fitted dresses</li><li>High, closed necklines</li><li>Wide, heavy belts</li><li>Stiff, bulky fabrics</li>",
+            "tag_1_text": "A-Line Dresses",
+            "tag_1_link": "shopify://collections/a-line-prom-dresses",
+            "tag_2_text": "V-Neck",
+            "tag_2_link": "",
+            "tag_3_text": "High Waist",
+            "tag_3_link": "",
+            "tag_4_text": "Chiffon",
+            "tag_4_link": "",
+            "tag_5_text": "",
+            "tag_5_link": "",
+            "collection": "a-line-prom-dresses"
+          }
+        },
+        "shape_UCJWje": {
+          "type": "shape",
+          "settings": {
+            "shape_name": "Pear",
+            "tab_icon": "shopify://shop_images/icon-pear.jpg",
+            "illustration": "shopify://shop_images/pear-shape.jpg",
+            "subtitle": "Smaller waist, wider hips & thigh",
+            "features_list": "<li>Shift visual weight upward—your neckline and shoulders are your strongest tools</li><li>Your defined waist is one of your best features; make it the focal point</li><li>Let the skirt flow freely over the hips rather than fitting against them</li><li>Keep prints, embellishments, and bold details above the waist</li>",
+            "do_list": "<li>Off-the-shoulder & boat necklines</li><li>A-line & fit-and-flare silhouettes</li><li>Structured bodices</li><li>clean lines on the bottom</li>",
+            "dont_list": "<li>Tight-fitting skirts or mermaid styles</li><li>Flared skirts starting at the waist</li><li>Hip-level embellishments</li><li>Straight-cut gowns</li>",
+            "tag_1_text": "A-Line",
+            "tag_1_link": "",
+            "tag_2_text": "Off-the-Shoulder",
+            "tag_2_link": "",
+            "tag_3_text": "High Waist",
+            "tag_3_link": "",
+            "tag_4_text": "Fit and Flare",
+            "tag_4_link": "",
+            "tag_5_text": "",
+            "tag_5_link": "",
+            "collection": "a-line-prom-dresses"
+          }
+        },
+        "shape_bidtyc": {
+          "type": "shape",
+          "settings": {
+            "shape_name": "Hourglass",
+            "tab_icon": "shopify://shop_images/icon-hourglass.jpg",
+            "illustration": "shopify://shop_images/hourglass-shape.jpg",
+            "subtitle": "Defined waist, larger bust and hips",
+            "features_list": "<li>Embrace your natural curves by choosing fabrics that follow your silhouette</li><li>Always highlight your narrowest point—the waist</li><li>Maintain the balance between your top and bottom halves</li><li>Avoid hiding your figure under boxy or shapeless dresses</li>",
+            "do_list": "<li>Mermaid, trumpet & bodycon styles</li><li>Wrap dresses & V-necklines</li><li>Corset bodices & defined waistbands fabrics</li><li>Bias-cut fabrics that drape over curves</li>",
+            "dont_list": "<li>Oversized, boxy, or tent-like dresses</li><li>Empire waist styles </li><li>Straight, shapeless shift dresses</li><li>Heavy, stiff fabrics that hide the waist</li>",
+            "tag_1_text": "Mermaid Dresses",
+            "tag_1_link": "shopify://collections/prom-trumpet-mermaid",
+            "tag_2_text": "V-Neck",
+            "tag_2_link": "",
+            "tag_3_text": "Corset Dress",
+            "tag_3_link": "",
+            "tag_4_text": "Wrap Dresses",
+            "tag_4_link": "",
+            "tag_5_text": "",
+            "tag_5_link": "",
+            "collection": "prom-trumpet-mermaid"
+          }
+        },
+        "shape_kRDyD8": {
+          "type": "shape",
+          "settings": {
+            "shape_name": "Rectangle",
+            "tab_icon": "shopify://shop_images/icon-rectangle.jpg",
+            "illustration": "shopify://shop_images/rectangle-shape.jpg",
+            "subtitle": "Lack of defined waist, slim limbs",
+            "features_list": "<li>Create the illusion of curves by defining the waist</li><li>Add dimension to your bust and hips to break up the straight line</li><li>Use textures, ruffles, or belts to add volume where you want it</li><li>Highlight your shoulders or legs to draw the eye away from the lack of waist definition</li>",
+            "do_list": "<li>Fit-and-flare & A-line silhouettes</li><li>Ruched or peplum details</li><li>Deep V-necks or sweetheart necklines</li><li>Belts and sashes to cinch the waist</li>",
+            "dont_list": "<li>Straight shift dresses or column gowns</li><li>Dropped-waist styles</li><li>Boxy, shapeless tunics</li><li>Low-rise waistlines</li>",
+            "tag_1_text": "A-Line Dresses",
+            "tag_1_link": "",
+            "tag_2_text": "V-Neck",
+            "tag_2_link": "",
+            "tag_3_text": "Belt & Sash",
+            "tag_3_link": "",
+            "tag_4_text": "Sweetheart Neck",
+            "tag_4_link": "",
+            "tag_5_text": "",
+            "tag_5_link": "",
+            "collection": "a-line-prom-dresses"
+          }
+        },
+        "shape_kWXUVf": {
+          "type": "shape",
+          "settings": {
+            "shape_name": "Inverted Triangle",
+            "tab_icon": "shopify://shop_images/icon-Inverted-Triangle.jpg",
+            "illustration": "shopify://shop_images/Triangle-shape.jpg",
+            "subtitle": "Broad shoulders, long and lean limbs",
+            "features_list": "<li>Balance your frame by drawing attention downward to your hips and legs</li><li>Soften your shoulder line with flattering necklines</li><li>Add volume to the bottom half of your body to create harmony</li><li>Emphasize your slim legs and lower body</li>",
+            "do_list": "<li>A-line, ballgown & full-skirted dresses</li><li>V-necks, scoop necks & halter styles</li><li>Flared hemlines and tiered skirts</li><li>Embellishments or patterns on the skirt</li>",
+            "dont_list": "<li>Off-the-shoulder or wide boat necks</li><li>Puff sleeves or heavy shoulder pads</li><li>Strapless styles with a straight across cut</li><li>Skinny, pencil-cut skirts</li>",
+            "tag_1_text": "A-Line Dresses",
+            "tag_1_link": "",
+            "tag_2_text": "V-Neck",
+            "tag_2_link": "",
+            "tag_3_text": "Tiered Dresses",
+            "tag_3_link": "",
+            "tag_4_text": "Ball Gown",
+            "tag_4_link": "",
+            "tag_5_text": "",
+            "tag_5_link": "",
+            "collection": "a-line-prom-dresses"
+          }
+        }
+      },
+      "block_order": [
+        "shape_NFVTHG",
+        "shape_UCJWje",
+        "shape_bidtyc",
+        "shape_kRDyD8",
+        "shape_kWXUVf"
+      ],
+      "name": "Body Shape Guide",
+      "settings": {
+        "main_title": "Discover Your Body Shape"
+      }
+    },
+    "blog_showcase_DRfij9": {
+      "type": "blog-showcase",
+      "blocks": {
+        "article_GTdiXp": {
+          "type": "article",
+          "settings": {
+            "article": "our-blogs/how-to-measure-for-a-prom-dress-size",
+            "show_excerpt": true
+          }
+        },
+        "article_AhX9FC": {
+          "type": "article",
+          "settings": {
+            "article": "our-blogs/how-to-choose-the-perfect-homecoming-dress-for-your-body-type",
+            "show_excerpt": true
+          }
+        },
+        "article_gx9paX": {
+          "type": "article",
+          "settings": {
+            "article": "our-blogs/how-to-choose-the-perfect-bridesmaid-dress-for-every-body-type-a-worldprom-guide",
+            "show_excerpt": true
+          }
+        },
+        "article_VrMctR": {
+          "type": "article",
+          "settings": {
+            "article": "our-blogs/how-much-does-it-cost-to-alter-a-prom-dress",
+            "show_excerpt": true
+          }
+        }
+      },
+      "block_order": [
+        "article_GTdiXp",
+        "article_AhX9FC",
+        "article_gx9paX",
+        "article_VrMctR"
+      ],
+      "name": "Blog Showcase",
+      "settings": {
+        "section_title": "Inspiration & Tips"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "rich_text_HEg7Lf",
+    "single_image_cGKej9",
+    "image_with_text_bCipWk",
+    "text_with_icons_KxMyDR",
+    "media_grid_Mxd4Mq",
+    "body_shape_guide_WipaNn",
+    "blog_showcase_DRfij9"
+  ]
+}

@@ -13,6 +13,7 @@
   assign hv_matched_option_value = nil
   assign hv_matched_variant = nil
   assign hv_best_len = 0
+  assign hv_color_option = nil
 
   if hv_match_product != blank and hv_match_collection != blank
     assign col_handle = hv_match_collection.handle | default: '' | downcase | strip
@@ -34,6 +35,9 @@
 
       unless is_color_option
         continue
+      endunless
+      unless hv_color_option
+        assign hv_color_option = option
       endunless
 
       for option_value in option.values
@@ -77,5 +81,102 @@
         break
       endif
     endfor
+
+    # Fallback: no exact color, e.g. "pink" collection but the product only has "Hot Pink" / "Blush Pink".
+    # Match a multi-word color whose last word is in the collection; prefer one whose variant has an image.
+    if hv_color_match == false and hv_color_option
+      for option_value in hv_color_option.values
+        assign ov_name = option_value.name | default: option_value | append: ''
+        assign ov_down = ov_name | downcase | strip
+        assign ov_handle = ov_down | handleize
+        assign ov_words = ov_handle | split: '-'
+        assign ov_base = ov_words | last
+        assign ov_base_len = ov_base | size
+        if ov_base == ov_handle or ov_base_len < 3
+          continue
+        endif
+        assign ov_token = '-' | append: ov_base | append: '-'
+        # "Blue Floral" / "Baby Blue Floral": the color word sits right before "floral"
+        if ov_base == 'floral'
+          assign ov_color_index = ov_words.size | minus: 2
+          assign ov_color_word = ov_words[ov_color_index]
+          assign ov_color_token = '-' | append: ov_color_word | append: '-'
+          if col_hay contains ov_color_token
+            assign ov_token = ov_color_token
+          endif
+        endif
+        unless col_hay contains ov_token
+          continue
+        endunless
+
+        unless hv_color_match
+          assign hv_color_match = true
+          assign hv_matched_option_value = option_value
+          assign hv_matched_color_name = ov_down
+          assign hv_matched_variant = option_value.variant
+        endunless
+        if option_value.variant.featured_media
+          assign hv_matched_option_value = option_value
+          assign hv_matched_color_name = ov_down
+          assign hv_matched_variant = option_value.variant
+          break
+        endif
+      endfor
+    endif
+
+    # Family fallback: no color name contains the collection color, e.g. "red" collection but the product only has Burgundy.
+    # Theme setting "Collection color families" lists which colors belong to a family, one line each ("Red: Burgundy, Crimson").
+    # Colors listed first win; one whose variant has an image is preferred.
+    if hv_color_match == false and hv_color_option and settings.collection_color_families != blank
+      assign hv_family_done = false
+      assign hv_family_lines = settings.collection_color_families | newline_to_br | split: '<br />'
+      for hv_family_line in hv_family_lines
+        unless hv_family_line contains ':'
+          continue
+        endunless
+        assign hv_family_key = hv_family_line | split: ':' | first | strip | handleize
+        assign hv_family_token = '-' | append: hv_family_key | append: '-'
+        if hv_family_key == blank
+          continue
+        endif
+        unless col_hay contains hv_family_token
+          continue
+        endunless
+        assign hv_family_colors = hv_family_line | split: ':' | last | split: ','
+        for hv_family_color in hv_family_colors
+          assign hv_family_color_handle = hv_family_color | strip | handleize
+          if hv_family_color_handle == blank
+            continue
+          endif
+          for option_value in hv_color_option.values
+            assign ov_name = option_value.name | default: option_value | append: ''
+            assign ov_down = ov_name | downcase | strip
+            assign ov_handle = ov_down | handleize
+            if ov_handle != hv_family_color_handle
+              continue
+            endif
+            unless hv_color_match
+              assign hv_color_match = true
+              assign hv_matched_option_value = option_value
+              assign hv_matched_color_name = ov_down
+              assign hv_matched_variant = option_value.variant
+            endunless
+            if option_value.variant.featured_media
+              assign hv_matched_option_value = option_value
+              assign hv_matched_color_name = ov_down
+              assign hv_matched_variant = option_value.variant
+              assign hv_family_done = true
+            endif
+            break
+          endfor
+          if hv_family_done
+            break
+          endif
+        endfor
+        if hv_family_done
+          break
+        endif
+      endfor
+    endif
   endif
 -%}

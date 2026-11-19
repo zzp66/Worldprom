@@ -195,7 +195,7 @@
 
 <script src="{{ 'product.js' | asset_url }}" defer="defer"></script>
 {%- if media_layout == 'thumbnails' -%}
-  {{ 'slideshow-vendor.js' | asset_url | script_tag }}
+  <script src="{{ 'slideshow-vendor.js' | asset_url }}" defer></script>
   <script src="{{ 'product-thumbnails.js' | asset_url }}" defer="defer"></script>
 {%- endif -%}
 

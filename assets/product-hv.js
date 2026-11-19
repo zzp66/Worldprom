@@ -19,10 +19,17 @@ class VariantSelectsHV extends HTMLElement {
     if (!this.isSharedDetailMode()) {
       this.filterGalleryByColor(this._lastColorValue);
     }
+    // All-colors gallery: open on the selected color's images
+    this.jumpToColor(this._lastColorValue, true);
   }
 
   getGalleryRoot() {
     return this.productWrapper?.querySelector('[id^="hv-media-gallery-"]');
+  }
+
+  // Gallery lists every color's media in a fixed order; a color change only jumps within it
+  isAllColorsGallery() {
+    return this.getGalleryRoot()?.dataset.hvAllColors === 'true';
   }
 
   isSharedDetailMode() {
@@ -81,6 +88,33 @@ class VariantSelectsHV extends HTMLElement {
     return needles;
   }
 
+  // Splits text into words (separators, camelCase, digits) and joins them back in lowercase,
+  // keeping where each word starts: "Dusty_Pink-32" / "DustyPink32" -> text 'dustypink32', starts [0, 5, 9]
+  colorHaystack(value) {
+    const words = String(value || '')
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2')
+      .replace(/([a-zA-Z])(\d)/g, '$1 $2')
+      .replace(/(\d)([a-zA-Z])/g, '$1 $2')
+      .toLowerCase()
+      .split(/[^a-z0-9]+/)
+      .filter(Boolean);
+    const starts = [];
+    let text = '';
+    words.forEach((word) => {
+      starts.push(text.length);
+      text += word;
+    });
+    return { text, starts };
+  }
+
+  // A color must begin at the start of a word: "red" matches Red_1 or Reda, but not SHARED
+  haystackHasColor(haystack, needle) {
+    return haystack.starts.some((start) => haystack.text.startsWith(needle, start));
+  }
+
   mediaMatchesColor(el, colorNeedle, allNeedles, colorValue) {
     if (!el || !colorNeedle) return true;
     const assignedColor = this.normalizeColorToken(el.dataset.hvColor);
@@ -94,12 +128,12 @@ class VariantSelectsHV extends HTMLElement {
     const title = (document.title || '').split(/[|\u2013\u2014-]/)[0].trim();
     const altUsable =
       alt && this.normalizeColorToken(alt) !== this.normalizeColorToken(title) ? alt : '';
-    const haystack = this.normalizeColorToken([filename, src, srcset, altUsable].join('|'));
+    const haystack = this.colorHaystack([filename, src, srcset, altUsable].join('|'));
 
-    let matched = haystack.includes(colorNeedle);
+    let matched = this.haystackHasColor(haystack, colorNeedle);
     if (!matched && colorValue) {
       const token = this.normalizeColorToken(String(colorValue).split(/\s+/)[0] || '');
-      if (token && token.length >= 3 && token !== colorNeedle && haystack.includes(token)) {
+      if (token && token.length >= 3 && token !== colorNeedle && this.haystackHasColor(haystack, token)) {
         matched = true;
       }
     }
@@ -108,12 +142,13 @@ class VariantSelectsHV extends HTMLElement {
     const activeLen = colorNeedle.length;
     for (const other of allNeedles) {
       if (!other || other === colorNeedle) continue;
-      if (other.length > activeLen && haystack.includes(other)) return false;
+      if (other.length > activeLen && this.haystackHasColor(haystack, other)) return false;
     }
     return true;
   }
 
   filterGalleryByColor(colorValue) {
+    if (this.isAllColorsGallery()) return;
     if (this.isSharedDetailMode()) return;
     if (!this.productWrapper || !colorValue) return;
     const colorNeedle = this.normalizeColorToken(colorValue);
@@ -131,6 +166,8 @@ class VariantSelectsHV extends HTMLElement {
       );
       let firstVisible = null;
       slides.forEach((slide) => {
+        // Other colors' media (all-colors gallery) always stay visible
+        if (slide.dataset.hvRole === 'other') return;
         if (slide.dataset.hvRole === 'shared') {
           slide.hidden = false;
           slide.style.display = '';
@@ -214,6 +251,12 @@ class VariantSelectsHV extends HTMLElement {
     }
 
     this.toggleAddButton(true);
+
+    // Jump to the new color's images right away instead of waiting for the section fetch
+    if (colorChanged) {
+      this.jumpToColor(this.getSelectedColorValue());
+      this.scrollToGalleryOnMobile();
+    }
 
     if (this._fetchController) {
       this._fetchController.abort();
@@ -338,7 +381,8 @@ class VariantSelectsHV extends HTMLElement {
     const sizeTable = this.preserveSizeTable(oldVariations);
     const sharedDetail = this.isSharedDetailMode();
 
-    if (replaceGallery) {
+    // The all-colors gallery never changes with the color, so it is left in place
+    if (replaceGallery && !this.isAllColorsGallery()) {
       if (sharedDetail) {
         this.swapHeroFromResponse(doc);
       } else {
@@ -352,7 +396,9 @@ class VariantSelectsHV extends HTMLElement {
         }
         const newThumbs = doc.querySelector('.product-thumbnail-container');
         const oldThumbs = this.productWrapper?.querySelector('.product-thumbnail-container');
-        if (newThumbs && oldThumbs) {
+        // Thumbnails inside the gallery were already replaced above; replacing them again would
+        // leave the freshly initialized slider bound to detached thumbnails
+        if (newThumbs && oldThumbs && !oldGallery?.contains(oldThumbs)) {
           oldThumbs.innerHTML = newThumbs.innerHTML;
         }
       }
@@ -393,7 +439,8 @@ class VariantSelectsHV extends HTMLElement {
 
     if (focusId) {
       const el = document.getElementById(focusId);
-      if (el) el.focus();
+      // preventScroll: don't pull the page back down to the swatch after the mobile scroll-to-top
+      if (el) el.focus({ preventScroll: true });
     }
 
     this.dispatchEvent(new CustomEvent('variant:change', {
@@ -474,6 +521,79 @@ class VariantSelectsHV extends HTMLElement {
     params.delete('option_values');
     params.set('variant', this.currentVariant.id);
     return `${path}?${params.toString()}`;
+  }
+
+  // Mobile: after a color switch, scroll back to the top of the page
+  scrollToGalleryOnMobile() {
+    if (window.innerWidth > 1068) return;
+    if (window.scrollY > 0) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  getColorMediaMap() {
+    if (!this._colorMediaMap) {
+      const el = this.getGalleryRoot()?.querySelector('[data-hv-color-media]');
+      try {
+        this._colorMediaMap = el ? JSON.parse(el.textContent) : {};
+      } catch (e) {
+        this._colorMediaMap = {};
+      }
+    }
+    return this._colorMediaMap;
+  }
+
+  // First slide of a color. The full name is searched across every slide before any fallback,
+  // otherwise "Dusty" in an earlier Dusty_Sage image would win over a later Dusty_Pink image
+  getColorTargetSlide(slider, colorValue) {
+    const colorNeedle = this.normalizeColorToken(colorValue);
+    if (!colorNeedle) return null;
+    const allNeedles = this.getColorNeedles();
+    const slides = Array.from(slider.querySelectorAll('.product-images__slide'));
+
+    // 1. Full color name in filename/alt
+    const fullMatch = slides.find((slide) => this.mediaMatchesColor(slide, colorNeedle, allNeedles));
+    if (fullMatch) return fullMatch;
+
+    // 2. The color's variant image set in admin
+    const mediaId = this.getColorMediaMap()[colorValue];
+    const variantSlide = mediaId ? slider.querySelector(`#Slide-${this.sectionId}-${mediaId}`) : null;
+    if (variantSlide) return variantSlide;
+
+    // 3. First word only (e.g. "Peacock" for Peacock Blue), skipping images named after another color
+    return slides.find((slide) =>
+      this.mediaMatchesColor(slide, colorNeedle, allNeedles, colorValue) &&
+      !allNeedles.some((other) => other !== colorNeedle && this.mediaMatchesColor(slide, other, allNeedles))
+    ) || null;
+  }
+
+  // All-colors gallery: move the slider to the selected color's first image
+  jumpToColor(colorValue, instant = false) {
+    if (!this.isAllColorsGallery() || !colorValue) return;
+    const slider = this.productWrapper?.querySelector('.product-images');
+    if (!slider) return;
+    const target = this.getColorTargetSlide(slider, colorValue);
+    if (!target) return;
+
+    const selector = `#${CSS.escape(target.id)}`;
+    // Keep the highlighted thumbnail on the target (the Liquid highlight follows the variant image)
+    const thumbs = this.productWrapper.querySelector('.product-thumbnail-container');
+    const thumb = thumbs?.querySelector(`#${CSS.escape(target.id.replace(/^Slide-/, 'Thumb-'))}`);
+    if (thumb) {
+      thumbs.querySelectorAll('.is-initial-selected').forEach((el) => el.classList.remove('is-initial-selected'));
+      thumb.classList.add('is-initial-selected');
+    }
+
+    if (slider.flkty) {
+      slider.flkty.selectCell(selector, false, instant);
+    } else if (typeof slider.selectCell === 'function') {
+      slider.selectCell(selector);
+    } else {
+      slider.scrollTo({
+        left: slider.scrollLeft + target.getBoundingClientRect().left - slider.getBoundingClientRect().left - parseFloat(getComputedStyle(slider).paddingLeft),
+        behavior: 'instant'
+      });
+    }
   }
 
   reinitSlider() {

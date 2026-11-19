@@ -16,8 +16,90 @@ if (!customElements.get('product-slider-thumbnails')) {
       this.video_containers = this.querySelectorAll('.product-single__media-external-video--play');
 
       this.setOptions();
+      this.setupThumbnailNav();
+      this.setupVideoAutoplay();
+
+      // Product page on mobile: native swipe gallery (same as the grid layout) instead of Flickity
+      this.mobileQuery = this.mobileQuery || window.matchMedia('(max-width: 1067px)');
+      if (!this._mobileQueryBound && !this.quickView && !this.closest('.featured-product')) {
+        this._mobileQueryBound = true;
+        this.mobileQuery.addEventListener('change', () => {
+          if (this.isNativeMode()) {
+            if (this.flkty) {
+              this.flkty.destroy();
+              this.flkty = null;
+            }
+          } else if (!this.flkty) {
+            this.init();
+          }
+        });
+      }
+      if (this.isNativeMode()) {
+        this.setupProductGallery();
+        return;
+      }
+
       // Start Slider
       this.init();
+    }
+    // Desktop up/down buttons for the vertical thumbnail column (product pages only)
+    setupThumbnailNav() {
+      let container = this.thumbnail_container,
+        nav = this.product_container?.querySelector('.product-thumbnails-nav');
+      if (!container || !nav || nav.dataset.bound) return;
+      nav.dataset.bound = 'true';
+
+      let prev = nav.querySelector('[name="thumbs-prev"]'),
+        next = nav.querySelector('[name="thumbs-next"]'),
+        frame = null;
+
+      let update = () => {
+        frame = null;
+        let max = container.scrollHeight - container.clientHeight;
+        prev.disabled = container.scrollTop <= 1;
+        next.disabled = max <= 1 || container.scrollTop >= max - 1;
+      };
+      let requestUpdate = () => {
+        if (!frame) frame = requestAnimationFrame(update);
+      };
+      let step = (direction) => {
+        container.scrollBy({
+          top: direction * container.clientHeight * 0.8,
+          behavior: 'smooth'
+        });
+      };
+
+      prev.addEventListener('click', () => step(-1));
+      next.addEventListener('click', () => step(1));
+      container.addEventListener('scroll', requestUpdate, { passive: true });
+      new ResizeObserver(requestUpdate).observe(container);
+      update();
+    }
+    // Native videos play muted once at least half is on screen (page scroll or slide change) and pause when they leave
+    setupVideoAutoplay() {
+      if (this.quickView || !('IntersectionObserver' in window)) return;
+
+      this.videoObserver = this.videoObserver || new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          let video = entry.target;
+          if (entry.isIntersecting) {
+            video.play().catch(() => {});
+          } else if (!video.paused) {
+            video.pause();
+          }
+        });
+      }, { threshold: 0.5 });
+
+      // connectedCallback runs again after color filtering, so each video is only bound once
+      this.querySelectorAll('.product-single__media-native-video video').forEach((video) => {
+        if (video.dataset.autoplayBound) return;
+        video.dataset.autoplayBound = 'true';
+        video.muted = true;
+        this.videoObserver.observe(video);
+      });
+    }
+    isNativeMode() {
+      return this.mobileQuery.matches && !this.quickView && !this.closest('.featured-product');
     }
     setOptions() {
       this.hide_variants = this.dataset.hideVariants == 'true';
@@ -170,7 +252,16 @@ if (!customElements.get('product-slider-thumbnails')) {
       this.flkty.updateDraggable();
     }
     selectCell(mediaId) {
-      this.flkty.selectCell(mediaId);
+      if (this.flkty) {
+        this.flkty.selectCell(mediaId);
+        return;
+      }
+      let slide = this.querySelector(mediaId);
+      if (!slide) return;
+      this.scrollTo({
+        left: this.scrollLeft + slide.getBoundingClientRect().left - this.getBoundingClientRect().left - parseFloat(getComputedStyle(this).paddingLeft),
+        behavior: 'instant'
+      });
     }
     setupProductGallery() {
       if (!this.querySelectorAll('.product-single__media-zoom').length) {
@@ -179,11 +270,9 @@ if (!customElements.get('product-slider-thumbnails')) {
       this.setEventListeners();
     }
     buildItems() {
-      this.activeImages = Array.from(this.querySelectorAll('.product-images__slide.is-active .product-single__media-image'));
+      this.activeImages = Array.from(this.querySelectorAll('.product-images__slide.is-active .product-single__media-image')).filter(item => item.clientWidth > 0);
 
-      return this.activeImages.map((item) => {
-        let index = [].indexOf.call(item.parentNode.parentNode.children, item.parentNode);
-
+      return this.activeImages.map((item, index) => {
         let activelink = item.querySelector('.product-single__media-zoom');
 
         activelink.dataset.index = index;
@@ -214,7 +303,7 @@ if (!customElements.get('product-slider-thumbnails')) {
         arrowEl: true,
         preloaderEl: true,
         getThumbBoundsFn: () => {
-          const thumbnail = this.querySelector('.product-images__slide.is-selected'),
+          const thumbnail = this.querySelector('.product-images__slide.is-selected') || this.zoomSlide,
             pageYScroll = window.pageYOffset || document.documentElement.scrollTop,
             rect = thumbnail.getBoundingClientRect();
           return {
@@ -227,10 +316,13 @@ if (!customElements.get('product-slider-thumbnails')) {
 
 
       this.links.forEach((link => {
+        if (link.dataset.zoomBound) return;
+        link.dataset.zoomBound = 'true';
         link.addEventListener('click', (e) => this.zoomClick(e, link));
       }));
     }
     zoomClick(e, link) {
+      this.zoomSlide = link.closest('.product-images__slide');
       this.items = this.buildItems();
       this.pswpOptions.index = parseInt(link.dataset.index, 10);
       if (typeof PhotoSwipe !== 'undefined') {

@@ -175,7 +175,7 @@
 							<div class="cart-drawer--recommendations--heading">{{ settings.empty_cart_collection.title }}</div>
 							<theme-scroll class="theme-scroll" data-overlayscrollbars-initialize>
 								<div class="cart-drawer--recommendations--products theme-scroll--inner">
-									{%- for recommendation in settings.empty_cart_collection.products -%}
+									{%- for recommendation in settings.empty_cart_collection.products limit: 6 -%}
 										{%- render 'product-card-drawer', product_card_product: recommendation -%}
 									{%- endfor -%}
 								</div>

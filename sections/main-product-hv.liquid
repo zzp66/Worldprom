@@ -1237,7 +1237,7 @@
   <link rel="stylesheet" href="{{ 'photoswipe.css' | asset_url }}" media="print" onload="this.media='all'">
 {%- endif -%}
 {%- if media_layout == 'thumbnails' -%}
-  {{ 'slideshow-vendor.js' | asset_url | script_tag }}
+  <script src="{{ 'slideshow-vendor.js' | asset_url }}" defer></script>
   <script src="{{ 'product-thumbnails.js' | asset_url }}" defer="defer"></script>
 {%- endif -%}
 <script src="{{ 'product.js' | asset_url }}" defer="defer"></script>

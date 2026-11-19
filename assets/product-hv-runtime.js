@@ -97,6 +97,8 @@
   function filterGalleryByColor(productWrapper, picker, colorValue) {
     if (!productWrapper || !colorValue) return;
     if (isSharedDetailMode(productWrapper)) return;
+    // All-colors gallery keeps every image visible; product-hv.js jumps to the selected color instead
+    if (productWrapper.querySelector('[id^="hv-media-gallery-"]')?.dataset.hvAllColors === 'true') return;
     const colorNeedle = normalizeColorToken(colorValue);
     if (!colorNeedle) return;
 

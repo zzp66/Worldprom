@@ -151,6 +151,92 @@ if (!customElements.get('product-card')) {
       if (this.size_options) {
         this.enableSizeOptions();
       }
+      this.hover_media = this.querySelector('.product-card--hover-media');
+      if (this.hover_media) {
+        this.enableHoverMedia();
+      }
+    }
+    // Second media (video, or the second image): shown on hover with a mouse, swiped to on touch.
+    enableHoverMedia() {
+      this.hover_image = this.hover_media.querySelector('.product-card--hover-image');
+      this.hover_video = this.hover_media.querySelector('.product-card--hover-video');
+      const can_hover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+      // Inside a carousel a touch swipe should move the carousel, so touch cards there keep one image
+      if (!can_hover && this.closest('.carousel, slide-show')) {
+        return;
+      }
+
+      // Load the image only after the page has loaded and the card is close to the viewport
+      const loadImage = () => {
+        const observer = new IntersectionObserver((entries) => {
+          if (!entries[0].isIntersecting) {
+            return;
+          }
+          observer.disconnect();
+          if (this.hover_image) {
+            this.hover_image.srcset = this.hover_image.dataset.srcset;
+          }
+        }, { rootMargin: '200px' });
+        observer.observe(this);
+      };
+      if (document.readyState === 'complete') {
+        loadImage();
+      } else {
+        window.addEventListener('load', loadImage, { once: true });
+      }
+
+      if (this.hover_video) {
+        this.hover_video.addEventListener('playing', () => {
+          this.hover_video.classList.add('is-playing');
+        }, { once: true });
+      }
+
+      if (can_hover) {
+        if (this.hover_video) {
+          const wrapper = this.querySelector('.product-card--image-wrapper');
+          // Short delay so moving the mouse across the grid does not start every video
+          wrapper.addEventListener('mouseenter', () => {
+            this.hover_timer = setTimeout(() => this.playHoverVideo(), 200);
+          });
+          wrapper.addEventListener('mouseleave', () => {
+            clearTimeout(this.hover_timer);
+            this.hover_video.pause();
+            this.hover_video.currentTime = 0;
+          });
+        }
+        return;
+      }
+
+      this.classList.add('product-card--swipe');
+      this.slider.insertAdjacentHTML('afterend', '<div class="product-card--dots" aria-hidden="true"><span class="is-active"></span><span></span></div>');
+      this.dots = this.querySelectorAll('.product-card--dots span');
+      this.slide_index = 0;
+      this.slider.addEventListener('scroll', () => {
+        const index = Math.round(this.slider.scrollLeft / this.slider.clientWidth);
+        if (index === this.slide_index) {
+          return;
+        }
+        this.slide_index = index;
+        this.dots.forEach((dot, i) => dot.classList.toggle('is-active', i === index));
+        if (this.hover_video) {
+          if (index === 1) {
+            this.playHoverVideo();
+          } else {
+            this.hover_video.pause();
+          }
+        }
+      }, { passive: true });
+      // The image link overlay is click-through on swipe cards so the slider can scroll; a tap still opens the product
+      this.slider.addEventListener('click', () => {
+        window.location.href = this.querySelector('.product-card--image-link').href;
+      });
+    }
+    playHoverVideo() {
+      if (!this.hover_video.getAttribute('src')) {
+        this.hover_video.src = this.hover_video.dataset.src;
+      }
+      this.hover_video.play().catch(() => {});
     }
     enableAdditionalImages() {
       this.viewport = this.querySelector('.product-card--image-inner');
@@ -219,19 +305,36 @@ if (!customElements.get('product-card')) {
             lazySizes.loader.unveil(image);
           }
         });
-        swatch.addEventListener('click', this.onSwatchClick);
-        swatch.addEventListener('mouseover', this.onSwatchHover.bind(this, swatch));
+        // Click (and tap on mobile) only switches the card image; it no longer navigates
+        swatch.addEventListener('click', (evt) => {
+          evt.preventDefault();
+          this.selectSwatch(swatch);
+        });
+        // Hover also switches the image on devices with a real pointer (skipped on touch to avoid double firing)
+        if (window.matchMedia('(hover: hover)').matches) {
+          swatch.addEventListener('mouseenter', () => {
+            if (!swatch.previousElementSibling.checked) {
+              this.selectSwatch(swatch);
+            }
+          });
+        }
       });
     }
-    onSwatchClick() {
-      window.location.href = this.dataset.href;
-    }
-    onSwatchHover(swatch) {
+    selectSwatch(swatch) {
       let swatch_input = swatch.previousElementSibling;
       swatch_input.checked = true;
-      this.current_options[this.color_index] = swatch.querySelector('span').innerText;
-      this.updateMasterId();
+      // current_options only exists when size options are enabled
+      if (this.current_options) {
+        this.current_options[this.color_index] = swatch.querySelector('span').innerText;
+        this.updateMasterId();
+      }
       swatch_input.dispatchEvent(new Event('change', { bubbles: true }));
+      // Point the image and title links at the selected color variant
+      if (swatch.dataset.href) {
+        this.querySelectorAll('.product-card--image-link, .product-card-title').forEach((link) => {
+          link.href = swatch.dataset.href;
+        });
+      }
     }
     onSwatchChange(evt) {
       if (this.image) {
@@ -889,6 +992,14 @@ if (!customElements.get('quick-view')) {
 /**
  *  @class
  *  @function ThemeScroll
+ *
+ *  Horizontal carousel. The list (.theme-scroll--inner) scrolls natively, see app.css.
+ *  This element adds the thin scrollbar under it (track + draggable handle) and the prev/next arrows.
+ *
+ *  It used to wrap the list with OverlayScrollbars, which re-measured the whole page several times
+ *  while initialising (about 1.4 s of main thread on a throttled phone for the 4 homepage carousels).
+ *  The scrollbar is drawn here instead and sizes are only read inside ResizeObserver callbacks,
+ *  which run right after layout, so no extra layout is forced.
  */
 if (!customElements.get('theme-scroll')) {
   class ThemeScroll extends HTMLElement {
@@ -900,18 +1011,15 @@ if (!customElements.get('theme-scroll')) {
       this.slidesToScroll = 1;
     }
     connectedCallback() {
-      window.OverlayScrollbarsGlobal.OverlayScrollbars({
-        target: this,
-        elements: {
-          viewport: this.viewport,
-        },
-        overflow: {
-          y: 'hidden'
-        }
-      }, {});
-
+      // Elements created empty (document.createElement) get their list after the constructor ran
+      this.viewport = this.viewport || this.querySelector('.theme-scroll--inner');
+      if (!this.viewport || this.scrollbar) {
+        return;
+      }
+      this.createScrollbar();
       this.init();
     }
+    // Also called again by recently-viewed-products.js after it fills the list.
     init() {
       this.setSlides();
       this.reachedEnd = 0;
@@ -923,8 +1031,10 @@ if (!customElements.get('theme-scroll')) {
       this.navPrev = this.querySelector('.flickity-prev');
       this.navNext = this.querySelector('.flickity-next');
       this.resizeObserver = new ResizeObserver((entries) => {
-        this.slideWidth = this.slides[1].offsetLeft - this.slides[0].offsetLeft;
-        this.reachedEnd = this.viewport.scrollWidth - this.viewport.offsetWidth == this.viewport.scrollLeft;
+        if (this.slides.length > 1) {
+          this.slideWidth = this.slides[1].offsetLeft - this.slides[0].offsetLeft;
+        }
+        this.reachedEnd = (this.viewport.scrollWidth - this.viewport.offsetWidth) - Math.floor(this.viewport.scrollLeft) <= 1;
         this.onNavDisabled();
       }, {
         root: this
@@ -932,8 +1042,97 @@ if (!customElements.get('theme-scroll')) {
       this.debouncedOnScroll = debounce((event) => {
         this.onScroll(event);
       }, 100);
-      this.insertBefore(this.nav, this.querySelector('.os-scrollbar-vertical'));
-      this.setListeners();
+      if (this.nav) {
+        this.setListeners();
+      }
+    }
+    createScrollbar() {
+      this.scrollbar = document.createElement('div');
+      this.scrollbar.className = 'theme-scroll-bar';
+      this.scrollbar.setAttribute('aria-hidden', 'true');
+      this.scrollbar.innerHTML = '<div class="theme-scroll-bar__track"><div class="theme-scroll-bar__handle"></div></div>';
+      this.track = this.scrollbar.firstElementChild;
+      this.handle = this.track.firstElementChild;
+      this.viewport.after(this.scrollbar);
+
+      this.rtl = document.documentElement.dir === 'rtl';
+      this.metrics = { scrollWidth: 0, clientWidth: 0, trackWidth: 0, handleWidth: 0 };
+      this.scrollbarFrame = null;
+
+      // Re-measure when the list, its items or the track change size
+      // (window resize, images or products added later, e.g. recently viewed products).
+      this.scrollbarObserver = new ResizeObserver(() => this.measureScrollbar());
+      this.scrollbarObserver.observe(this.viewport);
+      this.scrollbarObserver.observe(this.track);
+      Array.from(this.viewport.children).forEach((child) => this.scrollbarObserver.observe(child));
+
+      this.viewport.addEventListener('scroll', () => this.scheduleScrollbar(), { passive: true });
+      this.handle.addEventListener('pointerdown', this.onHandleDown.bind(this));
+    }
+    measureScrollbar() {
+      const metrics = this.metrics;
+      metrics.scrollWidth = this.viewport.scrollWidth;
+      metrics.clientWidth = this.viewport.clientWidth;
+      metrics.trackWidth = this.track.clientWidth;
+      // Read everything before writing, so the class change below can't force a layout here
+      const scrollLeft = this.viewport.scrollLeft;
+
+      this.classList.toggle('theme-scroll--scrollable', metrics.scrollWidth - metrics.clientWidth > 1);
+      this.renderScrollbar(scrollLeft);
+    }
+    scheduleScrollbar() {
+      if (this.scrollbarFrame) {
+        return;
+      }
+      this.scrollbarFrame = requestAnimationFrame(() => {
+        this.scrollbarFrame = null;
+        this.renderScrollbar(this.viewport.scrollLeft);
+      });
+    }
+    // Handle width = visible share of the list (at least 32px), position = scroll progress.
+    renderScrollbar(scrollLeft) {
+      const metrics = this.metrics;
+      const maxScroll = metrics.scrollWidth - metrics.clientWidth;
+
+      if (maxScroll <= 1 || !metrics.trackWidth) {
+        return;
+      }
+      const handleWidth = Math.max(32, Math.round(metrics.trackWidth * metrics.clientWidth / metrics.scrollWidth));
+      const progress = Math.min(1, Math.max(0, Math.abs(scrollLeft) / maxScroll));
+      const offset = progress * (metrics.trackWidth - handleWidth) * (this.rtl ? -1 : 1);
+
+      metrics.handleWidth = handleWidth;
+      this.handle.style.width = `${handleWidth}px`;
+      this.handle.style.transform = `translateX(${offset}px)`;
+    }
+    // Dragging the handle scrolls the list by the same proportion.
+    onHandleDown(e) {
+      const metrics = this.metrics;
+      const handleRange = metrics.trackWidth - metrics.handleWidth;
+
+      if (e.button !== 0 || handleRange <= 0) {
+        return;
+      }
+      e.preventDefault();
+
+      const ratio = (metrics.scrollWidth - metrics.clientWidth) / handleRange;
+      const startX = e.clientX;
+      const startScroll = this.viewport.scrollLeft;
+      const onMove = (event) => {
+        this.viewport.scrollLeft = startScroll + (event.clientX - startX) * ratio;
+      };
+      const onUp = () => {
+        this.classList.remove('theme-scroll--dragging');
+        this.handle.removeEventListener('pointermove', onMove);
+        this.handle.removeEventListener('pointerup', onUp);
+        this.handle.removeEventListener('pointercancel', onUp);
+      };
+
+      this.handle.setPointerCapture(e.pointerId);
+      this.classList.add('theme-scroll--dragging');
+      this.handle.addEventListener('pointermove', onMove);
+      this.handle.addEventListener('pointerup', onUp);
+      this.handle.addEventListener('pointercancel', onUp);
     }
     setSlides() {
       this.slides = this.querySelectorAll('.carousel__slide');

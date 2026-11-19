@@ -1,0 +1,68 @@
+{%- comment -%}
+  商品卡的第二张媒体：有鼠标时 hover 显示，触屏设备左右滑到。有视频用视频，没有就用第 2 张图。
+
+  - product: 商品
+  - skip_video: 主图本身就是视频时为 true
+
+  img 和 video 都不带 src：app.js 等页面 load 完、卡片快进视口时才填图片 srcset，
+  视频等 hover 或滑到时才填 src，不和首屏抢带宽。
+{%- endcomment -%}
+{%- liquid
+  assign hover_image = nil
+  assign video_url = ''
+
+  unless skip_video
+    # 取 720p 的 mp4（Shopify 按高度命名，竖屏视频 720p 是 404x720），卡片只有 300 多像素宽，不需要 1080p。
+    # 没有 720p 就取高度不低于 720 的最小一档，都低于 720 就取最大的。
+    assign video = product.media | where: 'media_type', 'video' | first
+    assign hd_url = ''
+    assign hd_height = 0
+    assign max_url = ''
+    assign max_height = 0
+    for source in video.sources
+      if source.format != 'mp4'
+        continue
+      endif
+      if source.height >= 720
+        if hd_url == blank or source.height < hd_height
+          assign hd_url = source.url
+          assign hd_height = source.height
+        endif
+      elsif source.height > max_height
+        assign max_url = source.url
+        assign max_height = source.height
+      endif
+    endfor
+    assign video_url = hd_url | default: max_url
+  endunless
+
+  if video_url != blank
+    assign hover_image = video.preview_image
+  else
+    assign hover_image = product.images[1]
+  endif
+-%}
+{%- if hover_image or video_url != blank -%}
+  <figure class="aspect-ratio aspect-ratio--adapt product-card--hover-media">
+    {%- if hover_image -%}
+      <img
+        class="product-card--hover-image"
+        data-srcset="{{ hover_image | image_url: width: 375 }} 375w,{{ hover_image | image_url: width: 770 }} 770w"
+        sizes="(min-width: 1068px) 25vw, (min-width: 768px) 33vw, 50vw"
+        width="{{ hover_image.width }}"
+        height="{{ hover_image.height }}"
+        alt=""
+      >
+    {%- endif -%}
+    {%- if video_url != blank -%}
+      <video
+        class="product-card--hover-video"
+        data-src="{{ video_url }}"
+        muted
+        loop
+        playsinline
+        preload="none"
+      ></video>
+    {%- endif -%}
+  </figure>
+{%- endif -%}

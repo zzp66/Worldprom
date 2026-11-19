@@ -119,6 +119,9 @@
                 {%- render 'slideshow-arrows' -%}
               {%- endif -%}
             </product-slider{{ slider_prefix }}>
+            <product-media-counter class="product-media-counter" aria-hidden="true" hidden>
+              <span data-current>1</span> / <span data-total>1</span>
+            </product-media-counter>
             {%- if media_layout == 'thumbnails' -%}
               <scroll-shadow>
                 <div
@@ -150,6 +153,14 @@
                   {%- endfor -%}
                 </div>
               </scroll-shadow>
+              <div class="product-thumbnails-nav">
+                <button type="button" class="product-thumbnails-nav__button product-thumbnails-nav__button--prev" name="thumbs-prev" aria-label="Previous images" disabled>
+                  {%- render 'svg-icons' with 'carousel-prev' -%}
+                </button>
+                <button type="button" class="product-thumbnails-nav__button product-thumbnails-nav__button--next" name="thumbs-next" aria-label="More images">
+                  {%- render 'svg-icons' with 'carousel-next' -%}
+                </button>
+              </div>
             {%- else -%}
               {%- if display_slider_pagination -%}
                 {%- unless single_media_visible_mobile -%}
@@ -253,7 +264,7 @@
   <link rel="stylesheet" href="{{ 'photoswipe.css' | asset_url }}" media="print" onload="this.media='all'">
 {%- endif -%}
 {%- if media_layout == 'thumbnails' -%}
-  {{ 'slideshow-vendor.js' | asset_url | script_tag }}
+  <script src="{{ 'slideshow-vendor.js' | asset_url }}" defer></script>
   <script src="{{ 'product-thumbnails.js' | asset_url }}" defer="defer"></script>
 {%- endif -%}
 <script src="{{ 'product.js' | asset_url }}" defer="defer"></script>

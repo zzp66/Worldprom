@@ -291,6 +291,65 @@
   object-fit: contain;
 }
 
+/* 第二张媒体（视频或第 2 张图）：有鼠标时 hover 叠在主图上，触屏设备左右滑动 */
+.product-card--hover-video {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.product-card--hover-video.is-playing {
+  opacity: 1;
+}
+
+.product-card--swipe .product-card--image {
+  pointer-events: auto;
+}
+
+.product-card--swipe .product-card--image-link {
+  pointer-events: none;
+}
+
+.product-card--dots {
+  display: flex;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: 6px;
+  z-index: 11;
+  pointer-events: none;
+}
+
+.product-card--dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
+}
+
+.product-card--dots span.is-active {
+  background: #fff;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .product-card--image-inner {
+    position: relative;
+  }
+
+  .product-card--hover-media {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .product-card--image-wrapper:hover .product-card--hover-media {
+    opacity: 1;
+  }
+}
+
 .product-card-vendor {
   margin-bottom: 2px;
 }
@@ -886,4 +945,48 @@
 
 .product-card .afterpay-info-box {
   display: none;
+}
+/* Collection page bottom text (Bottom description metafield). Scoped so other text blocks keep their styles */
+.collection-bottom-text {
+  font-size: 0.875rem;
+  line-height: 1.2;
+}
+
+.collection-bottom-text p {
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+
+/* .rte adds specificity so this beats the theme's ".rte p + h2 { margin-top: 30px }" */
+.collection-bottom-text.rte h1,
+.collection-bottom-text.rte h2,
+.collection-bottom-text.rte h3,
+.collection-bottom-text.rte h4,
+.collection-bottom-text.rte h5,
+.collection-bottom-text.rte h6 {
+  line-height: 1.3;
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+
+/* metafield_tag wraps rich text in .metafield-rich_text_field */
+.collection-bottom-text.rte > :first-child,
+.collection-bottom-text.rte .metafield-rich_text_field > :first-child {
+  margin-top: 0;
+}
+
+.collection-bottom-text h1 { font-size: 24px; }
+.collection-bottom-text h2 { font-size: 22px; }
+.collection-bottom-text h3 { font-size: 17px; }
+.collection-bottom-text h4,
+.collection-bottom-text h5,
+.collection-bottom-text h6 { font-size: 15px; }
+
+@media only screen and (min-width: 768px) {
+  .collection-bottom-text h1 { font-size: 28px; }
+  .collection-bottom-text h2 { font-size: 26px; }
+  .collection-bottom-text h3 { font-size: 19px; }
+  .collection-bottom-text h4,
+  .collection-bottom-text h5,
+  .collection-bottom-text h6 { font-size: 16px; }
 }

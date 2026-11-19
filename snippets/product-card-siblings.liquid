@@ -1,27 +1,28 @@
 {%- liquid
-  assign sibling_color = block.settings.sibling_color | default: product.metafields.theme.sibling_color.value | default: product.metafields.theme.sibling_colour.value | default: product.metafields.theme.siblings_color.value | default: product.metafields.theme.siblings_colour.value | default: product.metafields.theme.siblings_colors.value | default: product.metafields.theme.siblings_colours.value
   assign sibs_collection = product.metafields.theme.sibling_products.value | default: collections[product.metafields.theme.siblings.value].products
   assign color_picker_size = block.settings.color_picker_size | default: 'regular'
 -%}
 
 <div class="variations variations--siblings product-card-siblings" {{ block.shopify_attributes }}>
-  {%- assign title_down = product.title | downcase -%}
   {%- liquid
-    assign custom_colors = settings.color_swatches | newline_to_br | split: '<br />'
-    assign key_array = ''
-    assign val_array = ''
+    # Most products have no siblings. The color table is only needed by the loop below, so skip parsing it otherwise
+    if sibs_collection.size > 0
+      assign custom_colors = settings.color_swatches | newline_to_br | split: '<br />'
+      assign key_array = ''
+      assign val_array = ''
 
-    for color in custom_colors
-      assign key = color | split: ':' | first | rstrip
-      assign value = color | split: ':' | last | lstrip
-      assign key_array = key_array | append: ',' | append: key
-      assign val_array = val_array | append: ',' | append: value
-    endfor
+      for color in custom_colors
+        assign key = color | split: ':' | first | rstrip
+        assign value = color | split: ':' | last | lstrip
+        assign key_array = key_array | append: ',' | append: key
+        assign val_array = val_array | append: ',' | append: value
+      endfor
 
-    assign key_array = key_array | remove_first: ',' | strip_newlines | downcase | split: ','
-    assign val_array = val_array | remove_first: ',' | split: ','
+      assign key_array = key_array | remove_first: ',' | strip_newlines | downcase | split: ','
+      assign val_array = val_array | remove_first: ',' | split: ','
 
-    assign variant_image_size = '40'
+      assign variant_image_size = '40'
+    endif
   -%}
   {%- if sibs_collection -%}
     {%- assign total_count = sibs_collection.size -%}

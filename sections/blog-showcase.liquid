@@ -1,0 +1,213 @@
+{%- style -%}
+  .blog-showcase-wrapper {
+    padding: 60px 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    font-family: var(--font-body-family, sans-serif);
+    color: #333;
+  }
+  .blog-showcase-header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  .blog-showcase-header h2 {
+    font-family: var(--font-heading-family, serif);
+    font-size: 36px;
+    font-weight: 400;
+    margin: 0;
+    color: #1a1a1a;
+  }
+  .blog-showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+  }
+  .blog-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    group: blog-card;
+  }
+  .blog-card-image-wrapper {
+    width: 100%;
+    aspect-ratio: 16 / 9; /* 宽幅比例，符合截图样式 */
+    overflow: hidden;
+    margin-bottom: 20px;
+    background: #f4f4f4;
+  }
+  .blog-card-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .blog-card:hover .blog-card-image-wrapper img {
+    transform: scale(1.03); /* 鼠标悬停时图片轻微放大 */
+  }
+  .blog-card-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  .blog-card-title {
+    font-family: var(--font-heading-family, serif);
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.3;
+    margin: 0 0 15px 0;
+    color: #1a1a1a;
+    transition: color 0.3s ease;
+  }
+  .blog-card:hover .blog-card-title {
+    color: #b48c7f; /* 悬停变色，这里用了一个优雅的粉色，你可以自己改 */
+  }
+  .blog-card-excerpt {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #666;
+    margin-bottom: 20px;
+    flex-grow: 1;
+    /* 限制显示3行，超出省略号 */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .blog-card-readmore {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #1a1a1a;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    margin-top: auto;
+  }
+
+  /* 响应式 */
+  @media (max-width: 1024px) {
+    .blog-showcase-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 768px) {
+    .blog-showcase-grid {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 20px;
+      padding-bottom: 20px;
+      /* 隐藏滚动条 (可选) */
+      scrollbar-width: none; 
+    }
+    .blog-showcase-grid::-webkit-scrollbar {
+      display: none;
+    }
+    .blog-card {
+      min-width: 85%; /* 手机端显示一张多一点，提示可以滑动 */
+      scroll-snap-align: start;
+    }
+    .blog-showcase-header h2 {
+      font-size: 28px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="blog-showcase-wrapper">
+  {% if section.settings.section_title != blank %}
+    <div class="blog-showcase-header">
+      <h2>{{ section.settings.section_title }}</h2>
+    </div>
+  {% endif %}
+
+  <div class="blog-showcase-grid">
+    {% for block in section.blocks %}
+      {%- assign article = block.settings.article -%}
+      
+      {% if article != blank %}
+        <a href="{{ article.url }}" class="blog-card" {{ block.shopify_attributes }}>
+          <div class="blog-card-image-wrapper">
+            {% if article.image != blank %}
+              <img src="{{ article.image | image_url: width: 600 }}" 
+                   alt="{{ article.image.alt | escape }}" 
+                   width="{{ article.image.width }}" 
+                   height="{{ article.image.height }}" 
+                   loading="lazy">
+            {% else %}
+              {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+            {% endif %}
+          </div>
+          
+          <div class="blog-card-content">
+            <h3 class="blog-card-title">{{ article.title }}</h3>
+            
+            <div class="blog-card-excerpt">
+              {% if block.settings.show_excerpt %}
+                {{ article.excerpt_or_content | strip_html | truncatewords: 25 }}
+              {% endif %}
+            </div>
+            
+            <span class="blog-card-readmore">Read More</span>
+          </div>
+        </a>
+      {% else %}
+        <!-- 后台未选择文章时的占位符 -->
+        <div class="blog-card">
+          <div class="blog-card-image-wrapper">
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
+          <div class="blog-card-content">
+            <h3 class="blog-card-title">Select a blog article in the theme editor</h3>
+            <div class="blog-card-excerpt">Click here to choose which article you want to display in this block.</div>
+            <span class="blog-card-readmore">Read More</span>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Blog Showcase",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "Style Inspiration & Tips"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "article",
+      "name": "Blog Article",
+      "settings": [
+        {
+          "type": "article",
+          "id": "article",
+          "label": "Select Article"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_excerpt",
+          "label": "Show Article Excerpt",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Blog Showcase",
+      "blocks": [
+        { "type": "article" },
+        { "type": "article" },
+        { "type": "article" },
+        { "type": "article" }
+      ]
+    }
+  ]
+}
+{% endschema %}

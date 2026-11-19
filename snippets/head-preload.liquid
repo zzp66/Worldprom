@@ -12,23 +12,10 @@
 	endif
 %}
 {%- endif %}
-{% if template contains 'collection' -%}
-{% liquid
-	if collection.featured_image
-		assign image = collection.featured_image
-		render 'responsive-preload', image: image, sizes: '375x0,600x0,900x0,1200x0'
-	endif
--%}
-{%- endif %}
 {% if settings.animations %}
 {{ 'animations.min.js' | asset_url | preload_tag: as: 'script' }}
 {% endif %}
 {{ 'header.js' | asset_url | preload_tag: as: 'script' }}
-{{ 'vendor.min.js' | asset_url | preload_tag: as: 'script' }}
-{{ 'app.js' | asset_url | preload_tag: as: 'script' }}
-{% if template contains 'index' %}
-{{ 'slideshow.js' | asset_url | preload_tag: as: 'script' }}
-{% endif %}
 
 <script>
 window.lazySizesConfig = window.lazySizesConfig || {};

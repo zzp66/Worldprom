@@ -17,6 +17,20 @@
 	assign disable_bottom_spacing = section.settings.disable_bottom_spacing
 
 	assign columns_tablet = columns_desktop | minus: 2 | at_most: 5 | at_least: 3
+
+	# Parse the custom color table (theme settings > Color swatches) once for the whole section.
+	# Same parsing as product-card-swatch, which would otherwise redo it for every card.
+	assign swatch_lines = settings.color_swatches | newline_to_br | split: '<br />'
+	assign swatch_keys = ''
+	assign swatch_vals = ''
+	for swatch_line in swatch_lines
+		assign swatch_key = swatch_line | split: ':' | first | rstrip
+		assign swatch_val = swatch_line | split: ':' | last | lstrip
+		assign swatch_keys = swatch_keys | append: ',' | append: swatch_key
+		assign swatch_vals = swatch_vals | append: ',' | append: swatch_val
+	endfor
+	assign swatch_keys = swatch_keys | remove_first: ',' | strip_newlines | downcase | split: ','
+	assign swatch_vals = swatch_vals | remove_first: ',' | split: ','
 -%}
 {%- if section.blocks.size > 0 -%}
 	<link id="PromotionStyle-{{ section.id }}" rel="stylesheet" href="{{ 'product-card-promotion.css' | asset_url }}" media="print" onload="this.media='all'">
@@ -53,7 +67,12 @@
 									{%- endif -%}
 								{%- endfor -%}
 								<div class="carousel__slide">
-									{% render 'product-card', product_card_product: product, collection_context: featured_collection %}
+									{% render 'product-card',
+										product_card_product: product,
+										collection_context: featured_collection,
+										swatch_keys: swatch_keys,
+										swatch_vals: swatch_vals
+									%}
 								</div>
 							{%- endfor -%}
 						{%- else -%}

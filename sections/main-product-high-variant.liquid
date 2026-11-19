@@ -10,6 +10,8 @@
   assign display_captions = section.settings.display_captions
   assign hide_variants = section.settings.hide_variants
   assign hv_gallery_mode = section.settings.hv_gallery_mode | default: 'per_color'
+  # The gallery shows every color's media in the admin order; picking a color jumps to that color's images
+  assign hv_all_colors = true
   assign featured_media = product.selected_or_first_available_variant.featured_media
 
   assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src'
@@ -182,6 +184,7 @@
             class="product-image-container product-image-container--{{ media_layout }}"
             data-hv-filter="1"
             data-hv-gallery-mode="{{ hv_gallery_mode }}"
+            data-hv-all-colors="{{ hv_all_colors }}"
           >
             <product-slider{{ slider_prefix }}
               id="Product-Slider"
@@ -194,7 +197,35 @@
                 assign image_index = -1
                 assign shown_media_ids = ''
               -%}
-              {%- if hv_gallery_mode == 'shared_detail' -%}
+              {%- if hv_all_colors -%}
+                {%- for media in product.media -%}
+                  {%- liquid
+                    if media.media_type == 'image'
+                      assign image_index = image_index | default: 0 | plus: 1
+                    endif
+                    assign priority = false
+                    if forloop.first or media.id == active_featured_media.id
+                      assign priority = 'high'
+                    endif
+                    assign hv_media_count = hv_media_count | plus: 1
+                  -%}
+                  {%- render 'product-media',
+                    product: product,
+                    section: section,
+                    forloop: forloop,
+                    media: media,
+                    sizes: sizes,
+                    variant_images: variant_images,
+                    media_aspect_ratio: media_aspect_ratio,
+                    hide_variants: false,
+                    priority: priority,
+                    display_captions: display_captions
+                  -%}
+                {%- endfor -%}
+                {%- liquid
+                  assign first_image = active_featured_media.preview_image | default: product.featured_media.preview_image
+                -%}
+              {%- elsif hv_gallery_mode == 'shared_detail' -%}
                 {%- if active_featured_media != null -%}
                   {%- liquid
                     assign image_index = image_index | plus: 1
@@ -300,6 +331,7 @@
                         assign first_image = media.preview_image
                         assign priority = 'high'
                       endif
+                      assign shown_media_ids = shown_media_ids | append: media.id | append: ','
                       assign hv_media_count = hv_media_count | plus: 1
                     -%}
                     {%- render 'product-media',
@@ -322,6 +354,19 @@
                 {%- render 'slideshow-arrows' -%}
               {%- endif -%}
             </product-slider{{ slider_prefix }}>
+            {%- if hv_all_colors and color_option -%}
+              <script type="application/json" data-hv-color-media>
+                {
+                  {%- for value in color_option.values -%}
+                    {{ value.name | json }}: {{ value.variant.featured_media.id | default: 'null' }}
+                    {%- unless forloop.last %},{% endunless -%}
+                  {%- endfor -%}
+                }
+              </script>
+            {%- endif -%}
+            <product-media-counter class="product-media-counter" aria-hidden="true" hidden>
+              <span data-current>1</span> / <span data-total>1</span>
+            </product-media-counter>
             {%- if media_layout == 'thumbnails' -%}
               <scroll-shadow>
                 <div
@@ -333,7 +378,18 @@
                   {%- liquid
                     assign thumb_shown_ids = ''
                   -%}
-                  {%- if hv_gallery_mode == 'shared_detail' -%}
+                  {%- if hv_all_colors -%}
+                    {%- for media in product.media -%}
+                      {%- render 'product-thumbnail',
+                        product: product,
+                        media: media,
+                        forloop: forloop,
+                        variant_images: variant_images,
+                        media_aspect_ratio: media_aspect_ratio,
+                        hide_variants: false
+                      -%}
+                    {%- endfor -%}
+                  {%- elsif hv_gallery_mode == 'shared_detail' -%}
                     {%- if active_featured_media != null -%}
                       {%- liquid
                         assign thumb_shown_ids = thumb_shown_ids | append: active_featured_media.id | append: ','
@@ -420,6 +476,14 @@
                   {%- endif -%}
                 </div>
               </scroll-shadow>
+              <div class="product-thumbnails-nav">
+                <button type="button" class="product-thumbnails-nav__button product-thumbnails-nav__button--prev" name="thumbs-prev" aria-label="Previous images" disabled>
+                  {%- render 'svg-icons' with 'carousel-prev' -%}
+                </button>
+                <button type="button" class="product-thumbnails-nav__button product-thumbnails-nav__button--next" name="thumbs-next" aria-label="More images">
+                  {%- render 'svg-icons' with 'carousel-next' -%}
+                </button>
+              </div>
             {%- else -%}
               {%- if display_slider_pagination -%}
                 {%- unless hv_media_count <= 1 -%}
@@ -1341,7 +1405,7 @@
   <link rel="stylesheet" href="{{ 'photoswipe.css' | asset_url }}" media="print" onload="this.media='all'">
 {%- endif -%}
 {%- if media_layout == 'thumbnails' -%}
-  {{ 'slideshow-vendor.js' | asset_url | script_tag }}
+  <script src="{{ 'slideshow-vendor.js' | asset_url }}" defer></script>
   <script src="{{ 'product-thumbnails.js' | asset_url }}" defer="defer"></script>
 {%- endif -%}
 <script src="{{ 'product.js' | asset_url }}" defer="defer"></script>

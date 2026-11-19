@@ -56,8 +56,9 @@
     });
     mo.observe(grid, { childList: true, subtree: true });
     // 同时尝试触发一次“加载更多”（如果按钮存在且可视）
+    // pagination.js 是 defer 加载的，等它绑定好点击事件再点。否则 a.load-more 会直接跳转到下一页
     const trigger = document.querySelector('button.load-more, a.load-more');
-    if (trigger && trigger.click) trigger.click();
+    if (trigger && trigger.click) customElements.whenDefined('pagination-theme').then(() => trigger.click());
     return;
   }
 

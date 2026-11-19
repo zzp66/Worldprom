@@ -158,6 +158,22 @@
   object-fit: cover;
 }
 
+.slideshow__slide-picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.slideshow__slide-picture img {
+  object-position: var(--slide-image-position-mobile, var(--slide-image-position));
+}
+
+@media only screen and (min-width: 768px) {
+  .slideshow__slide-picture img {
+    object-position: var(--slide-image-position);
+  }
+}
+
 .slideshow__slide-video-bg {
   position: absolute;
   top: 0;

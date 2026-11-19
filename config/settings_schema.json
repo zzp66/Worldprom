@@ -905,6 +905,13 @@
         "info": "Follow the format: <Color>: <HEX Color>. Example: Purple: #7000AA. Each custom color must be on a new line."
       },
       {
+        "type": "textarea",
+        "id": "collection_color_families",
+        "label": "Collection color families",
+        "default": "Red: Deep Burgundy, Burgundy, Crimson, Fuchsia, Coral\nGreen: Teal, Turquoise, Eucalyptus, Fluorescent\nPurple: Wisteria, Lilac, Lavender, Mauve, Grape, Plum\nPink: Cinnamon Rose, Dusty Rose, Desert Rose, Rose Gold\nBrown: Chocolate, Coffee, Taupe",
+        "info": "Used on color collections (e.g. Red Prom Dresses) when a product has no color containing the collection color. One family per line: <Family>: <Color>, <Color>. Colors listed first are preferred."
+      },
+      {
         "type": "header",
         "content": "Siblings"
       },

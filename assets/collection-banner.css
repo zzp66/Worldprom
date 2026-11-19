@@ -22,7 +22,7 @@
 
 .collection-banner--content {
   display: grid;
-  padding: 20px 0 10px;
+  padding: 4px 0;
   position: relative;
   z-index: 5;
   gap: 20px;
@@ -32,7 +32,7 @@
 
 @media only screen and (min-width: 768px) {
   .collection-banner--content {
-    padding: 20px 0;
+    padding: 8px 0;
     gap: 40px;
   }
 }
@@ -76,9 +76,15 @@
 
 .collection-banner .max-height {
   margin-top: 0;
+  margin-bottom: 0;
   padding: 0;
   background: none;
-  font-size: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.2;
+}
+
+.collection-banner .max-height p {
+  line-height: 1.2;
 }
 
 .collection-banner .max-height--active {
@@ -92,7 +98,15 @@
 }
 
 .collection-banner--title {
-  margin-bottom: 10px;
+  margin-bottom: 4px;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+@media only screen and (min-width: 768px) {
+  .collection-banner--title {
+    font-size: 28px;
+  }
 }
 
 .collection-banner--title span {

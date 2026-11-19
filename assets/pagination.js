@@ -3,7 +3,7 @@
  *  @function Pagination
  */
 
-if (!customElements.get('pagination')) {
+if (!customElements.get('pagination-theme')) {
   class Pagination extends HTMLElement {
     constructor() {
       super();
@@ -11,9 +11,13 @@ if (!customElements.get('pagination')) {
       this.button = this.querySelector('.load-more');
       this.grid = document.querySelector('[data-id=' + id + ']');
       this.animations_enabled = document.body.classList.contains('animations-true') && typeof gsap !== 'undefined';
-      this.i = 2;
+      this.i = 1;
     }
     connectedCallback() {
+      // No load-more link means this is the last page
+      if (!this.button) {
+        return;
+      }
       if (this.classList.contains('pagination-type--loadmore')) {
         this.loadMore();
       }
@@ -21,29 +25,12 @@ if (!customElements.get('pagination')) {
         this.infinite();
       }
     }
-    addUrlParam(search, key) {
-      var newParam = key + '=' + this.i,
-        params = '?' + newParam;
-
-      // If the "search" string exists, then build params from it
-      if (search) {
-        // Try to replace an existance instance
-        params = search.replace(new RegExp('([?&])' + key + '[^&]*'), '$1' + newParam);
-
-        // If nothing was replaced, then add the new param to the end
-        if (params === search) {
-          params += '&' + newParam;
-        }
-      }
-
-      return params;
-    }
     loadMore() {
       let base = this;
-      this.button.addEventListener('click', function () {
+      this.button.addEventListener('click', function (event) {
+        event.preventDefault();
         base.loadProducts();
         this.blur();
-        return false;
       });
     }
     infinite() {
@@ -58,56 +45,65 @@ if (!customElements.get('pagination')) {
       base.observer.observe(base);
     }
     loadProducts() {
-      let base = this,
-        url = document.location.pathname + base.addUrlParam(document.location.search, 'page');
-      if (base.getAttribute('loading')) {
+      let base = this;
+      if (base.getAttribute('loading') || !base.button) {
         return;
       }
-      base.i++;
+      // The link holds the next page URL. Fetch only the product grid section, not the whole page
+      let page_url = base.button.getAttribute('href'),
+        url = new URL(page_url, document.location.origin);
+      url.searchParams.set('section_id', base.dataset.section);
+
       base.setAttribute('loading', true);
-      fetch(url)
+      fetch(url.toString())
         .then(response => response.text())
         .then((responseText) => {
-          const html = responseText;
-          base.renderProducts(html, url);
-          base.removeAttribute('loading');
+          base.i++;
+          base.renderProducts(responseText);
 
           dispatchCustomEvent('pagination:page-changed', {
-            url: url
+            url: page_url
           });
+        })
+        .finally(() => {
+          base.removeAttribute('loading');
         });
     }
-    renderProducts(html, url) {
+    renderProducts(html) {
       let base = this,
-        grid_to_replace = new DOMParser().parseFromString(html, 'text/html').getElementById('product-grid');
+        doc = new DOMParser().parseFromString(html, 'text/html'),
+        grid_to_replace = doc.getElementById('product-grid'),
+        next_link = doc.querySelector('pagination-theme .load-more');
 
-      if (!grid_to_replace) {
+      if (grid_to_replace) {
+        let products = grid_to_replace.querySelectorAll('.products--column');
+
+        for (var i = 0; i < products.length; i++) {
+          products[i].dataset.pagination = base.i;
+          this.grid.appendChild(products[i]);
+          products[i].querySelectorAll('.lazyload').forEach((image) => {
+            lazySizes.loader.unveil(image);
+          });
+        }
+        if (this.animations_enabled) {
+          let added_columns = this.grid.querySelectorAll('[data-pagination="' + base.i + '"]'),
+            to_animate = [];
+          for (var j = 0; j < added_columns.length; j++) {
+            to_animate[j] = added_columns[j].querySelector('.product-card--image-primary');
+          }
+          gsap.to(to_animate, { scale: 1, opacity: 1, stagger: 0.15, ease: window.theme.settings.animation_easing });
+        }
+      }
+
+      // The fetched page has its own link only if there is a page after it
+      if (next_link) {
+        base.button.setAttribute('href', next_link.getAttribute('href'));
+      } else {
         if (base.observer) {
           base.observer.unobserve(base);
         }
-        if (base.button) {
-          base.button.classList.add('visually-hidden');
-        }
-        return;
-      }
-      let products = grid_to_replace.querySelectorAll('.products--column');
-
-      for (var i = 0; i < products.length; i++) {
-        products[i].dataset.pagination = base.i;
-        this.grid.appendChild(products[i]);
-        products[i].querySelectorAll('.lazyload').forEach((image) => {
-          lazySizes.loader.unveil(image);
-        });
-      }
-      if (this.animations_enabled) {
-        let added_columns = this.grid.querySelectorAll('[data-pagination="' + base.i + '"]'),
-          to_animate = [];
-        for (var j = 0; j < added_columns.length; j++) {
-          to_animate[j] = added_columns[j].querySelector('.product-card--image-primary');
-        }
-        gsap.to(to_animate, { scale: 1, opacity: 1, stagger: 0.15, ease: window.theme.settings.animation_easing });
-      } else {
-        base.removeAttribute('loading');
+        base.button.remove();
+        base.button = null;
       }
     }
   }

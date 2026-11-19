@@ -63,7 +63,7 @@
 		</div>
 	</div>
 </div>
-{{ 'slideshow-vendor.js' | asset_url | script_tag }}
+<script src="{{ 'slideshow-vendor.js' | asset_url }}" defer></script>
 <script src="{{ 'slideshow.js' | asset_url }}" defer></script>
 {% schema %}
   {

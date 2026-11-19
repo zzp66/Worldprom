@@ -26,6 +26,7 @@ if (!customElements.get('variant-selects')) {
       this.updateMasterId();
       this.setDisabled();
       this.setImageSet();
+      this._lastMediaId = this.currentVariant?.featured_media?.id;
       this.addEventListener('change', this.onVariantChange);
     }
 
@@ -116,6 +117,8 @@ if (!customElements.get('variant-selects')) {
       if (!this.productSlider) return;
       let mediaId = `#Slide-${this.dataset.section}-${this.currentVariant.featured_media.id}`;
       let activeMedia = this.productSlider.querySelector(mediaId);
+      let mediaChanged = this._lastMediaId !== this.currentVariant.featured_media.id;
+      this._lastMediaId = this.currentVariant.featured_media.id;
 
       if (this.thumbnails) {
         this.setActiveMediaSlider(mediaId, `#Thumb-${this.dataset.section}-${this.currentVariant.featured_media.id}`, this.productSlider);
@@ -123,6 +126,19 @@ if (!customElements.get('variant-selects')) {
         this.setActiveMedia(activeMedia);
       }
 
+      if (mediaChanged) {
+        this.scrollToGalleryOnMobile();
+      }
+    }
+    // Mobile: after a color switch, scroll back to the top of the page so the new featured image is visible
+    scrollToGalleryOnMobile() {
+      if (window.innerWidth > 1068 || !this.productSlider) return;
+      if (this.closest('#Product-Drawer-Content') || this.closest('.featured-product')) return;
+      window.setTimeout(() => {
+        if (window.scrollY > 0) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
     }
     setActiveMedia(activeMedia) {
 
@@ -192,7 +208,8 @@ if (!customElements.get('variant-selects')) {
         productSlider.reInit(this.imageSetIndex);
         productSlider.selectCell(mediaId);
 
-      } else if (flkty) {
+      } else if (flkty || productSlider.selectCell) {
+        // Without Flickity (mobile native swipe gallery) selectCell scrolls the slider to the slide
         productSlider.selectCell(mediaId);
       }
 
@@ -721,6 +738,77 @@ if (!customElements.get('product-slider')) {
     }
   }
   customElements.define('product-slider', ProductSlider);
+}
+
+/**
+ *  @class
+ *  @function ProductMediaCounter
+ *  Mobile "current / total" badge on the product gallery
+ */
+if (!customElements.get('product-media-counter')) {
+  class ProductMediaCounter extends HTMLElement {
+    connectedCallback() {
+      this.slider = this.parentElement.querySelector('.product-images');
+      if (!this.slider) return;
+      this.currentEl = this.querySelector('[data-current]');
+      this.totalEl = this.querySelector('[data-total]');
+      this.mobileQuery = window.matchMedia('(max-width: 1067px)');
+
+      this.requestUpdate = () => {
+        if (this.frame) return;
+        this.frame = requestAnimationFrame(() => {
+          this.frame = null;
+          this.update();
+        });
+      };
+      this.slider.addEventListener('scroll', this.requestUpdate, { passive: true });
+      window.addEventListener('resize', this.requestUpdate);
+      // Slides get hidden/shown when the color changes
+      this.observer = new MutationObserver(this.requestUpdate);
+      this.observer.observe(this.slider, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['hidden', 'style']
+      });
+
+      this.update();
+    }
+    disconnectedCallback() {
+      if (!this.slider) return;
+      this.slider.removeEventListener('scroll', this.requestUpdate);
+      window.removeEventListener('resize', this.requestUpdate);
+      this.observer.disconnect();
+    }
+    update() {
+      if (!this.mobileQuery.matches) return;
+
+      let slides = Array.from(this.slider.querySelectorAll('.product-images__slide')).filter(slide => slide.clientWidth > 0);
+      if (slides.length < 2) {
+        this.hidden = true;
+        return;
+      }
+
+      let sliderRect = this.slider.getBoundingClientRect(),
+        center = sliderRect.left + sliderRect.width / 2,
+        current = 0,
+        closest = Infinity;
+
+      slides.forEach((slide, i) => {
+        let rect = slide.getBoundingClientRect(),
+          distance = Math.abs(rect.left + rect.width / 2 - center);
+        if (distance < closest) {
+          closest = distance;
+          current = i;
+        }
+      });
+
+      this.currentEl.textContent = current + 1;
+      this.totalEl.textContent = slides.length;
+      this.hidden = false;
+    }
+  }
+  customElements.define('product-media-counter', ProductMediaCounter);
 }
 
 /**

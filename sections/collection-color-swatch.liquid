@@ -1,11 +1,16 @@
 <style>
-  .color-swatch-box {
-    width: 100%;
-    margin: 20px 0;
-  }
-
+  /* 宽度和左右留白与主题 .row + .columns 保持一致 */
   .color-swatch-scroll {
     position: relative;
+    width: calc(100% - 100px);
+    max-width: 1340px;
+    margin: var(--swatch-margin-top, 2px) auto var(--swatch-margin-bottom, 8px);
+  }
+
+  @media (max-width: 767px) {
+    .color-swatch-scroll {
+      width: calc(100% - 30px);
+    }
   }
 
   .color-swatch-scroll-btn {
@@ -103,10 +108,11 @@
 
   .color-swatch-wrapper {
     display: flex;
-    gap: 30px;
+    gap: var(--swatch-gap, 12px);
     overflow-x: auto;
     overflow-y: hidden;
-    padding: 10px 0;
+    /* 顶部留出悬停时放大和外圈的空间，避免被裁切 */
+    padding: 10px 0 4px;
     -webkit-overflow-scrolling: touch;
     justify-content: flex-start;
     align-items: flex-start;
@@ -123,44 +129,46 @@
 
   .color-family {
     flex: 0 0 auto;
-    min-width: 100px;
+    min-width: 80px;
     position: relative;
     cursor: pointer;
   }
 
-  .color-swatch-main-box {
-    height: 120px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+  .color-family.is-disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .color-family-count {
+    margin-left: 3px;
+    color: #888;
   }
 
   .color-swatch-main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    height: 100%;
+    text-align: center;
     transition: transform 0.3s ease;
   }
 
-  .color-swatch-main span {
-    margin-top: 8px;
+  .color-swatch-main .swatch-text {
+    margin-top: var(--swatch-label-gap, 6px);
     font-size: 16px;
     line-height: 18px;
   }
 
   .color-swatch-main img,
   .color-swatch-main .swatch {
-    width: 75px;
-    height: 75px;
+    width: var(--swatch-size, 40px);
+    height: var(--swatch-size, 40px);
     border-radius: 50%;
     object-fit: cover;
   }
 
   .family-img,
   .family-swatch {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -169,142 +177,163 @@
     transform: translateZ(0);
   }
 
+  /* 用 box-shadow 画外圈，不改变元素尺寸，文字不会跟着移动 */
   .color-family:hover .family-img,
-  .color-family:hover .family-swatch {
+  .color-family:hover .family-swatch,
+  .color-family.is-active .family-img,
+  .color-family.is-active .family-swatch {
     transform: scale(1.1);
-    border: 3px solid #e5b3ac;
-    padding: 3px;
+    box-shadow: 0 0 0 3px #fff, 0 0 0 6px #e5b3ac;
   }
 
-  /* 弹窗 */
-  .color-modal {
-    position: fixed;
-    top: 0;
+  /* 已筛选的色系：深色外圈；全选时再加对号 */
+  .color-family.is-selected .family-img,
+  .color-family.is-partial .family-img {
+    box-shadow: 0 0 0 3px #fff, 0 0 0 5px #222;
+  }
+
+  .color-family.is-selected .family-img::after,
+  .sub-color.is-selected::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    width: 8px;
+    height: 14px;
+    border: solid #fff;
+    border-width: 0 2.5px 2.5px 0;
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.7));
+    transform: translate(-50%, -60%) rotate(45deg);
+    pointer-events: none;
+  }
+
+  .color-family.is-selected .family-img::after {
+    top: 50%;
+  }
+
+  /* 子颜色浮层：放在滚动容器外面，避免被 overflow 裁切；left 和小三角位置由 JS 计算 */
+  .color-swatch-panel {
+    position: absolute;
+    top: calc(100% + 10px);
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 999;
-    padding: 20px;
-  }
-
-  .color-modal.active {
-    display: flex;
-  }
-
-  .color-modal-content {
+    /* 高于商品区吸顶筛选栏 .facets--bar-row（25），低于页头（50） */
+    z-index: 30;
+    width: max-content;
+    max-width: 100%;
+    padding: 16px 20px;
     background: #fff;
-    border-radius: 12px;
-    max-width: 700px;
-    width: 100%;
-    max-height: 90vh;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(4px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  }
+
+  .color-swatch-panel.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  /* 指向当前色块的小三角 */
+  .color-swatch-panel::before {
+    content: '';
+    position: absolute;
+    top: -7px;
+    left: var(--arrow-left, 50%);
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    border-left: 1px solid rgba(0, 0, 0, 0.08);
+    transform: translateX(-50%) rotate(45deg);
+  }
+
+  /* 透明桥接区，鼠标从色块移到浮层途中不会触发收起 */
+  .color-swatch-panel::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    height: 12px;
+  }
+
+  .color-swatch-panel-group {
     display: flex;
-    flex-direction: column;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
-    animation: modalFadeIn 0.3s ease;
-    overflow: hidden;
+    flex-wrap: wrap;
+    gap: 8px 16px;
   }
 
-  @keyframes modalFadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .color-swatch-panel-group[hidden] {
+    display: none;
   }
 
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #eee;
-    padding: 10px 20px;
-    background: #f9f9f9;
+  .color-swatch-select-all {
+    flex-basis: 100%;
+    font-size: 14px;
   }
 
-  .modal-header h3 {
-    font-size: 18px;
-    font-weight: bold;
+  .color-swatch-select-all label {
     margin: 0;
   }
 
-  .modal-close {
-    background: none;
-    border: none;
-    font-size: 30px;
-    cursor: pointer;
-    color: #555;
-    transition: color 0.2s ease;
-  }
-
-  .modal-close:hover {
-    color: #000;
-  }
-
-  .modal-body {
-    padding: 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 20px;
-    overflow-y: auto;
-  }
-
   .sub-color {
-    text-align: center;
+    --sub-swatch-size: 44px;
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-decoration: none;
+    min-width: 64px;
+    margin: 0;
+    padding: 4px;
+    border: 0;
+    background: none;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: none;
+    text-align: center;
     color: #333;
-    padding: 10px;
+    cursor: pointer;
   }
 
-  .sub-color:hover {
-    box-shadow: 0 12px 20px 6px rgba(96, 109, 128, 0.04), 0 8px 16px 4px rgba(96, 109, 128, 0.04),
-      0 4px 14px 0 rgba(98, 111, 131, 0.04);
+  .sub-color:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .sub-color.is-selected::after {
+    top: calc(4px + var(--sub-swatch-size) / 2);
   }
 
   .sub-color .swatch {
-    width: 60px;
-    height: 60px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-  }
-
-  /* 自动为浅色加边框 */
-  .sub-color .swatch[data-color='white'],
-  .sub-color .swatch[data-color='#fff'],
-  .sub-color .swatch[data-color='#ffffff'] {
-    border: 1px solid #999;
-  }
-
-  .sub-color img {
-    width: 60px;
-    height: 60px;
-    border-radius: 8px;
+    display: block;
+    width: var(--sub-swatch-size);
+    height: var(--sub-swatch-size);
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
     object-fit: cover;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .sub-color:not(:disabled):hover .swatch {
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #e5b3ac;
   }
 
   .sub-color .swatch-text {
+    margin-top: 8px;
     font-size: 14px;
     line-height: 16px;
-    margin-top: 10px;
+    white-space: nowrap;
   }
 
   @media (max-width: 768px) {
-    .color-swatch-box {
-      margin: 10px 0;
-    }
-
     .color-swatch-wrapper {
       gap: 25px;
-      padding: 10px 0;
+      padding: 10px 0 4px;
       padding-left: 0;
       padding-right: 0;
     }
@@ -339,110 +368,170 @@
       min-width: auto;
     }
 
-    .color-swatch-main-box {
-      height: 85px;
+    .color-swatch-panel {
+      padding: 12px 14px;
+      border-radius: 12px;
     }
-    .modal-body {
-      grid-template-columns: repeat(3, 1fr);
+    .color-swatch-panel-group {
+      gap: 6px 10px;
+    }
+    .sub-color {
+      --sub-swatch-size: 36px;
+      min-width: 52px;
+    }
+    .sub-color .swatch {
+      border-radius: 8px;
+    }
+    .sub-color .swatch-text {
+      margin-top: 6px;
+      font-size: 12px;
+      line-height: 14px;
     }
     .color-swatch-main img,
     .color-swatch-main .swatch {
-      width: 55px;
-      height: 55px;
+      width: var(--swatch-size-mobile, 34px);
+      height: var(--swatch-size-mobile, 34px);
     }
-    .color-swatch-main span {
+    .color-swatch-main .swatch-text {
       font-size: 12px;
       line-height: 14px;
     }
   }
 </style>
 
-<div class="row">
-  <div class="small-12 columns">
-    <div class="color-swatch-box">
-      <div class="color-swatch-scroll" data-color-swatch-scroll>
-        <button class="color-swatch-scroll-btn is-left" type="button" aria-label="Scroll left" data-dir="left">
-          <span aria-hidden="true">‹</span>
-        </button>
-        <button class="color-swatch-scroll-btn is-right" type="button" aria-label="Scroll right" data-dir="right">
-          <span aria-hidden="true">›</span>
-        </button>
-        <div class="color-swatch-mobile-hint" aria-hidden="true">›</div>
-        <div class="color-swatch-wrapper" data-color-swatch-scroll-el>
-          {% assign color_families = collection.metafields.custom.color_families.value %}
+<div
+  class="color-swatch-scroll"
+  data-color-swatch-scroll
+  style="--swatch-size: {{ section.settings.swatch_size }}px; --swatch-size-mobile: {{ section.settings.swatch_size_mobile }}px; --swatch-gap: {{ section.settings.swatch_gap }}px; --swatch-margin-top: {{ section.settings.margin_top }}px; --swatch-margin-bottom: {{ section.settings.margin_bottom }}px; --swatch-label-gap: {{ section.settings.label_gap }}px;"
+>
+  <button class="color-swatch-scroll-btn is-left" type="button" aria-label="Scroll left" data-dir="left">
+    <span aria-hidden="true">‹</span>
+  </button>
+  <button class="color-swatch-scroll-btn is-right" type="button" aria-label="Scroll right" data-dir="right">
+    <span aria-hidden="true">›</span>
+  </button>
+  <div class="color-swatch-mobile-hint" aria-hidden="true">›</div>
+  <div class="color-swatch-wrapper" data-color-swatch-scroll-el>
+    {%- liquid
+      # 色系统一用区块设置里选的这一套，所有集合共用
+      assign color_families = section.settings.color_families
 
-          {% if color_families != blank %}
-            {% for family in color_families %}
-              <div class="color-family" data-family="{{ family.name | escape }}">
-                <div class="color-swatch-main-box">
-                  <div class="color-swatch-main">
-                    {% if family.image != blank %}
-                      <div class="family-img">
-                        <img
-                          src="{{ family.image | image_url: width: 100 }}"
-                          alt="{{ family.name }}"
-                          width="75"
-                          height="75"
-                          loading="lazy"
-                        >
-                      </div>
-                    {% else %}
-                      <div class="swatch" style="background: #ccc;"></div>
-                    {% endif %}
-                    <span class="swatch-text">{{ family.name }}</span>
-                  </div>
-                </div>
+      # 找到集合筛选里的颜色筛选（和左侧 Filter 的 COLOR 是同一个），色块用它的参数和值来筛选
+      assign color_filter = nil
+      for filter in collection.filters
+        if filter.type != 'list'
+          continue
+        endif
+        assign filter_label_down = filter.label | downcase
+        assign filter_param_down = filter.param_name | downcase
+        if filter_label_down contains 'color' or filter_label_down contains 'colour' or filter_param_down contains 'color'
+          assign color_filter = filter
+          break
+        endif
+      endfor
+    -%}
 
-                <!-- 隐藏子色块 -->
-                <div class="subcolor-data" style="display:none;">
-                  {% for sub in family.sub_colors.value %}
-                    <a href="{{ sub.collection_link }}" class="sub-color">
-                      {% if sub.image != blank %}
-                        <img
-                          src="{{ sub.image | image_url: width: 80 }}"
-                          alt="{{ sub.name }}"
-                          class="swatch"
-                          width="60"
-                          height="60"
-                          loading="lazy"
-                        >
-                      {% else %}
-                        <span class="swatch" style="background: {{ sub.swatch_color }};"></span>
-                      {% endif %}
-                      <span class="swatch-text">{{ sub.name }}</span>
-                    </a>
-                  {% endfor %}
-                </div>
+    {% if color_families != blank %}
+      {% for family in color_families %}
+        <div
+          class="color-family"
+          data-family-index="{{ forloop.index }}"
+          role="button"
+          tabindex="0"
+          aria-pressed="false"
+        >
+          <div class="color-swatch-main">
+            {% if family.image != blank %}
+              <div class="family-img">
+                <img
+                  src="{{ family.image | image_url: width: 100 }}"
+                  alt="{{ family.name }}"
+                  width="75"
+                  height="75"
+                  loading="lazy"
+                >
               </div>
-            {% endfor %}
-          {% else %}
-            <p style="text-align:center;">No color families configured for this collection.</p>
-          {% endif %}
+            {% else %}
+              <div class="family-img swatch" style="background: #ccc;"></div>
+            {% endif %}
+            <span class="swatch-text">
+              {{- family.name -}}
+              <span class="color-family-count" data-family-count></span>
+            </span>
+          </div>
         </div>
-      </div>
-    </div>
+      {% endfor %}
+    {% elsif request.design_mode %}
+      <p style="text-align:center;">No color families selected. Choose them in this section's settings.</p>
+    {% endif %}
   </div>
-</div>
 
-<!-- 弹窗 -->
-<div class="color-modal" id="colorModal">
-  <div class="color-modal-content">
-    <div class="modal-header">
-      <h3 id="modalFamilyName">Color Family</h3>
-      <button class="modal-close" id="closeModal">&times;</button>
+  {%- if color_families != blank -%}
+    <div class="color-swatch-panel" data-color-swatch-panel>
+      {%- for family in color_families -%}
+        {%- assign select_all_id = 'ColorSwatchSelectAll-' | append: section.id | append: '-' | append: forloop.index -%}
+        <div class="color-swatch-panel-group" data-family-group="{{ forloop.index }}" hidden>
+          <div class="color-swatch-select-all">
+            <input type="checkbox" id="{{ select_all_id }}" data-select-all>
+            <label for="{{ select_all_id }}">Select all</label>
+          </div>
+          {%- for sub in family.sub_colors.value -%}
+            {%- liquid
+              assign sub_name = sub.name.value | default: sub.name | append: '' | strip
+              assign sub_key = sub_name | downcase
+
+              # 子颜色名字要和颜色筛选里的值一致（不区分大小写），匹配不到的显示为不可选
+              assign sub_filter_value = nil
+              for value in color_filter.values
+                assign value_key = value.label | downcase | strip
+                if value_key == sub_key
+                  assign sub_filter_value = value
+                  break
+                endif
+              endfor
+            -%}
+            <button
+              type="button"
+              class="sub-color{% if sub_filter_value.active %} is-selected{% endif %}"
+              {% if sub_filter_value %}
+                data-param="{{ sub_filter_value.param_name | escape }}"
+                data-value="{{ sub_filter_value.value | escape }}"
+              {% else %}
+                disabled
+              {% endif %}
+              aria-pressed="{% if sub_filter_value.active %}true{% else %}false{% endif %}"
+            >
+              {% if sub.image != blank %}
+                <img
+                  src="{{ sub.image | image_url: width: 100 }}"
+                  alt=""
+                  class="swatch"
+                  width="44"
+                  height="44"
+                  loading="lazy"
+                >
+              {% else %}
+                <span class="swatch" style="background: {{ sub.swatch_color }};"></span>
+              {% endif %}
+              <span class="swatch-text">{{ sub_name | escape }}</span>
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endfor -%}
     </div>
-    <div class="modal-body" id="modalBody"></div>
-  </div>
+  {%- endif -%}
+
+  {%- if request.design_mode and color_filter == nil -%}
+    <p style="text-align:center; color:#c00;">
+      No color filter found for this collection. Add a Color filter in Shopify Search &amp; Discovery so the swatches can
+      filter products.
+    </p>
+  {%- endif -%}
 </div>
 
 <script>
   (() => {
     const init = () => {
-      const modal = document.getElementById('colorModal');
-      const modalBody = document.getElementById('modalBody');
-      const modalTitle = document.getElementById('modalFamilyName');
-      const closeModal = document.getElementById('closeModal');
-
       // 横向滚动控制（按钮 + 悬停自动滚动）
       document.querySelectorAll('[data-color-swatch-scroll]').forEach((root) => {
         if (root.dataset.colorSwatchScrollInited === 'true') return;
@@ -451,6 +540,7 @@
         const scroller = root.querySelector('[data-color-swatch-scroll-el]');
         const btnLeft = root.querySelector('.color-swatch-scroll-btn.is-left');
         const btnRight = root.querySelector('.color-swatch-scroll-btn.is-right');
+        const panel = root.querySelector('[data-color-swatch-panel]');
 
         if (!scroller || !btnLeft || !btnRight) return;
 
@@ -559,6 +649,11 @@
         root.addEventListener('mousemove', (ev) => {
           // 只在桌面端启用
           if (window.matchMedia('(max-width: 768px)').matches) return;
+          // 鼠标在浮层上时不触发边缘自动滚动
+          if (panel && panel.contains(ev.target)) {
+            vel = 0;
+            return;
+          }
 
           const rect = root.getBoundingClientRect();
           const x = ev.clientX - rect.left;
@@ -583,30 +678,184 @@
         scroller.addEventListener('wheel', dismissHintOnce, { passive: true });
         window.addEventListener('resize', update);
         update();
-      });
 
-      // 弹窗 & 色系点击（避免重复绑定）
-      document.querySelectorAll('.color-family').forEach((family) => {
-        if (family.dataset.colorFamilyInited === 'true') return;
-        family.dataset.colorFamilyInited = 'true';
+        // 子颜色浮层 + 颜色筛选：鼠标悬停展开浮层，点击色块或子颜色在当前页筛选商品
+        if (!panel) return;
 
-        family.addEventListener('click', () => {
-          if (!modal || !modalBody || !modalTitle) return;
-          const name = family.dataset.family;
-          const subColors = family.querySelector('.subcolor-data')?.innerHTML || '';
-          modalTitle.textContent = name;
-          modalBody.innerHTML = subColors;
-          modal.classList.add('active');
+        const families = Array.from(root.querySelectorAll('.color-family'));
+        const groupOf = (family) => panel.querySelector(`[data-family-group="${family.dataset.familyIndex}"]`);
+        const optionsOf = (group) => (group ? Array.from(group.querySelectorAll('.sub-color[data-param]')) : []);
+
+        let activeFamily = null;
+        let closeTimer = null;
+
+        const closePanel = () => {
+          clearTimeout(closeTimer);
+          panel.classList.remove('is-open');
+          activeFamily?.classList.remove('is-active');
+          activeFamily = null;
+        };
+
+        const scheduleClose = () => {
+          clearTimeout(closeTimer);
+          closeTimer = setTimeout(closePanel, 150);
+        };
+
+        // 浮层以色块为中心，左右不超出容器；小三角始终指向色块
+        const positionPanel = () => {
+          if (!activeFamily) return;
+          const rootRect = root.getBoundingClientRect();
+          const famRect = activeFamily.getBoundingClientRect();
+          const center = famRect.left + famRect.width / 2 - rootRect.left;
+
+          // 色块被滚出可视区域时收起
+          if (center < 0 || center > rootRect.width) {
+            closePanel();
+            return;
+          }
+
+          const panelWidth = panel.offsetWidth;
+          const left = Math.max(0, Math.min(rootRect.width - panelWidth, center - panelWidth / 2));
+          const arrowLeft = Math.max(20, Math.min(panelWidth - 20, center - left));
+          panel.style.left = `${left}px`;
+          panel.style.setProperty('--arrow-left', `${arrowLeft}px`);
+        };
+
+        const openPanel = (family) => {
+          clearTimeout(closeTimer);
+          const group = groupOf(family);
+
+          // 没有子颜色的色系不展开
+          if (!group || !group.querySelector('.sub-color')) {
+            closePanel();
+            return;
+          }
+
+          if (activeFamily !== family) {
+            activeFamily?.classList.remove('is-active');
+            activeFamily = family;
+            family.classList.add('is-active');
+            panel.querySelectorAll('[data-family-group]').forEach((item) => {
+              item.hidden = item !== group;
+            });
+          }
+
+          positionPanel();
+          if (activeFamily) panel.classList.add('is-open');
+        };
+
+        // 选中状态以网址里的筛选参数为准，所以和左侧 Filter 的 COLOR 始终同步
+        const syncSelection = () => {
+          const params = new URLSearchParams(window.location.search);
+
+          panel.querySelectorAll('.sub-color[data-param]').forEach((option) => {
+            const selected = params.getAll(option.dataset.param).includes(option.dataset.value);
+            option.classList.toggle('is-selected', selected);
+            option.setAttribute('aria-pressed', selected);
+          });
+
+          families.forEach((family) => {
+            const group = groupOf(family);
+            const options = optionsOf(group);
+            const count = options.filter((option) => option.classList.contains('is-selected')).length;
+            const all = options.length > 0 && count === options.length;
+
+            family.classList.toggle('is-disabled', options.length === 0);
+            family.classList.toggle('is-selected', all);
+            family.classList.toggle('is-partial', count > 0 && !all);
+            family.setAttribute('aria-pressed', all);
+
+            const countEl = family.querySelector('[data-family-count]');
+            if (countEl) countEl.textContent = count ? `(${count})` : '';
+
+            const selectAll = group?.querySelector('[data-select-all]');
+            if (selectAll) {
+              selectAll.checked = all;
+              selectAll.closest('.color-swatch-select-all').hidden = options.length === 0;
+            }
+          });
+        };
+
+        // 改网址里的颜色参数，交给主题自带的筛选逻辑用 AJAX 刷新商品，不跳转页面
+        const applyFilters = (options, selected) => {
+          const params = new URLSearchParams(window.location.search);
+          options.forEach((option) => {
+            const { param, value } = option.dataset;
+            const rest = params.getAll(param).filter((item) => item !== value);
+            params.delete(param);
+            rest.forEach((item) => params.append(param, item));
+            if (selected) params.append(param, value);
+          });
+          params.delete('page');
+
+          const FacetFiltersForm = customElements.get('facet-filters-form');
+          if (FacetFiltersForm && document.getElementById('product-grid')) {
+            // 保持当前滚动位置，方便连续多选
+            FacetFiltersForm.keepScrollCount = (FacetFiltersForm.keepScrollCount || 0) + 1;
+            FacetFiltersForm.renderPage(params.toString());
+            syncSelection();
+          } else {
+            // 页面上没有主题筛选脚本时，退回整页刷新
+            window.location.search = params.toString();
+          }
+        };
+
+        families.forEach((family) => {
+          family.addEventListener('pointerenter', (e) => {
+            if (e.pointerType === 'mouse') openPanel(family);
+          });
+          family.addEventListener('focus', () => openPanel(family));
+          family.addEventListener('click', () => {
+            openPanel(family);
+            const options = optionsOf(groupOf(family));
+            if (!options.length) return;
+            // 已全选时取消这个色系，否则选中它下面所有颜色
+            applyFilters(options, !family.classList.contains('is-selected'));
+          });
+          family.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              family.click();
+            }
+          });
         });
-      });
 
-      if (modal && closeModal && modal.dataset.colorModalInited !== 'true') {
-        modal.dataset.colorModalInited = 'true';
-        closeModal.addEventListener('click', () => modal.classList.remove('active'));
-        modal.addEventListener('click', (e) => {
-          if (e.target === modal) modal.classList.remove('active');
+        panel.addEventListener('click', (e) => {
+          const option = e.target.closest('.sub-color[data-param]');
+          if (!option) return;
+          applyFilters([option], !option.classList.contains('is-selected'));
         });
-      }
+
+        panel.addEventListener('change', (e) => {
+          const selectAll = e.target.closest('[data-select-all]');
+          if (!selectAll) return;
+          applyFilters(optionsOf(selectAll.closest('[data-family-group]')), selectAll.checked);
+        });
+
+        root.addEventListener('pointerenter', (e) => {
+          if (e.pointerType === 'mouse') clearTimeout(closeTimer);
+        });
+        root.addEventListener('pointerleave', (e) => {
+          if (e.pointerType === 'mouse') scheduleClose();
+        });
+
+        // 点击外部或按 Esc 收起
+        document.addEventListener('click', (e) => {
+          if (activeFamily && !root.contains(e.target)) closePanel();
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') closePanel();
+        });
+
+        // 左侧 Filter 改动或浏览器前进后退后，商品网格会重新渲染，这时同步色块状态
+        const grid = document.getElementById('ProductGridContainer');
+        if (grid) new MutationObserver(syncSelection).observe(grid, { childList: true });
+        window.addEventListener('popstate', syncSelection);
+        syncSelection();
+
+        scroller.addEventListener('scroll', positionPanel, { passive: true });
+        window.addEventListener('resize', positionPanel);
+      });
     };
 
     // Shopify 主题里 section 可能在 DOMContentLoaded 之后才注入
@@ -622,7 +871,74 @@
 {% schema %}
 {
   "name": "Color Swatch Selector",
-  "settings": [],
+  "settings": [
+    {
+      "type": "metaobject_list",
+      "id": "color_families",
+      "label": "Color families",
+      "metaobject_type": "colorfamily"
+    },
+    {
+      "type": "range",
+      "id": "swatch_size",
+      "label": "Swatch size (desktop)",
+      "min": 30,
+      "max": 90,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "swatch_size_mobile",
+      "label": "Swatch size (mobile)",
+      "min": 28,
+      "max": 70,
+      "step": 2,
+      "unit": "px",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "swatch_gap",
+      "label": "Swatch spacing (desktop)",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "label_gap",
+      "label": "Swatch to label spacing",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Top spacing",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Bottom spacing",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    }
+  ],
   "presets": [
     {
       "name": "Color Swatch Selector",

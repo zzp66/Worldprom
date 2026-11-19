@@ -1,0 +1,548 @@
+{%- style -%}
+  .bsg-wrapper {
+    padding: 60px 20px;
+    font-family: var(--font-body-family, sans-serif);
+    color: #333;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .bsg-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .bsg-header h2 {
+    font-family: var(--font-heading-family, serif);
+    font-size: 32px;
+    font-weight: 400;
+    margin: 0;
+  }
+  /* 顶部 Tabs */
+  .bsg-tabs {
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 40px;
+    overflow-x: auto;
+    gap: 20px;
+  }
+  .bsg-tab-btn {
+    background: none;
+    border: none;
+    padding: 15px 20px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: #888;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .bsg-tab-btn:hover {
+    color: #333;
+  }
+  .bsg-tab-btn.active {
+    color: #333;
+    border-bottom: 2px solid #333;
+  }
+  .bsg-tab-btn img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+  }
+  
+  /* 内容区 */
+  .bsg-content-box {
+    display: none;
+    border: 1px solid #eee;
+    padding: 40px;
+    background: #fff;
+    animation: fadeIn 0.4s ease-in-out;
+  }
+  .bsg-content-box.active {
+    display: block;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* 顶部两列：图片 + 文字 */
+  .bsg-top-grid {
+    display: flex;
+    gap: 50px;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+  .bsg-image-col {
+    flex: 1;
+    text-align: center;
+  }
+  .bsg-image-col img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  .bsg-text-col {
+    flex: 1.2;
+  }
+  .bsg-text-col h3 {
+    font-family: var(--font-heading-family, serif);
+    font-size: 28px;
+    margin: 0 0 5px 0;
+    font-weight: 400;
+  }
+  .bsg-subtitle {
+    color: #b48c7f;
+    font-size: 14px;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+  .bsg-list {
+    padding-left: 15px;
+    margin-bottom: 30px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #555;
+  }
+  .bsg-list li {
+    margin-bottom: 8px;
+  }
+  
+  /* Do & Don't 卡片 */
+  .bsg-dodont-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .bsg-card {
+    padding: 20px;
+    border-radius: 4px;
+  }
+  .bsg-card.do {
+    background-color: #edf4f0;
+    border: 1px solid #d3e5da;
+  }
+  .bsg-card.dont {
+    background-color: #fcf1f1;
+    border: 1px solid #f2d6d6;
+  }
+  .bsg-card h4 {
+    margin: 0 0 15px 0;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .bsg-card.do h4 { color: #4a7c59; }
+  .bsg-card.dont h4 { color: #a35c5c; }
+  .bsg-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 13px;
+  }
+  .bsg-card li {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+  .bsg-card li:last-child { border-bottom: none; }
+
+  /* 标签区 */
+  .bsg-tags-section { margin-bottom: 30px; }
+  .bsg-tags-title, .bsg-recommend-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    color: #555;
+  }
+  .bsg-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .bsg-tag {
+    border: 1px solid #ddd;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    background: #fff;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .bsg-tag:hover { 
+    border-color: #333; 
+    background: #f9f9f9;
+  }
+
+  /* 商品推荐区 */
+  .bsg-products-area {
+    display: flex;
+    align-items: flex-end; /* 让按钮与底部对齐 */
+    justify-content: space-between;
+    gap: 30px;
+  }
+  .bsg-products-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    flex: 1;
+  }
+  .bsg-product-card img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    background: #f4f4f4;
+    transition: opacity 0.3s ease;
+  }
+  .bsg-product-card a:hover img {
+    opacity: 0.8;
+  }
+  
+  /* 右侧横排按钮 */
+  .bsg-shop-btn {
+    text-decoration: none;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #333;
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+    display: inline-block;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+    margin-bottom: 5px;
+  }
+  .bsg-shop-btn:hover { 
+    opacity: 0.6; 
+  }
+
+  /* 响应式 */
+  @media (max-width: 900px) {
+    .bsg-top-grid { flex-direction: column; }
+    .bsg-products-area { 
+      flex-direction: column; 
+      align-items: stretch; 
+    }
+    .bsg-shop-btn {
+      text-align: center;
+      margin-top: 20px;
+      border: 1px solid #333;
+      padding: 12px;
+    }
+  }
+  @media (max-width: 768px) {
+    .bsg-tabs { justify-content: flex-start; padding-bottom: 10px; }
+    .bsg-dodont-grid { grid-template-columns: 1fr; }
+    .bsg-products-grid {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 10px;
+    }
+    .bsg-product-card {
+      min-width: 60%;
+      scroll-snap-align: start;
+    }
+  }
+{%- endstyle -%}
+
+<div class="bsg-wrapper">
+  <div class="bsg-header">
+    <h2>{{ section.settings.main_title }}</h2>
+  </div>
+
+  <!-- Tab 导航 -->
+  <div class="bsg-tabs">
+    {%- for block in section.blocks -%}
+      <button class="bsg-tab-btn {% if forloop.first %}active{% endif %}" data-target="tab-{{ block.id }}">
+        {% if block.settings.tab_icon != blank %}
+          <img src="{{ block.settings.tab_icon | image_url: width: 40 }}" 
+               alt="{{ block.settings.shape_name }} icon" 
+               width="16" 
+               height="16" 
+               loading="lazy">
+        {% endif %}
+        {{ block.settings.shape_name }}
+      </button>
+    {%- endfor -%}
+  </div>
+
+  <!-- Tab 内容区 -->
+  {%- for block in section.blocks -%}
+    <div id="tab-{{ block.id }}" class="bsg-content-box {% if forloop.first %}active{% endif %}" {{ block.shopify_attributes }}>
+      <div class="bsg-top-grid">
+        
+        <!-- 左侧插画 -->
+        <div class="bsg-image-col">
+          {% if block.settings.illustration != blank %}
+            <img src="{{ block.settings.illustration | image_url: width: 600 }}" 
+                 alt="{{ block.settings.shape_name }} Illustration"
+                 width="{{ block.settings.illustration.width }}"
+                 height="{{ block.settings.illustration.height }}"
+                 loading="lazy">
+          {% else %}
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          {% endif %}
+        </div>
+
+        <!-- 右侧文字 -->
+        <div class="bsg-text-col">
+          <h3>{{ block.settings.shape_name }} Shape</h3>
+          <div class="bsg-subtitle">{{ block.settings.subtitle }}</div>
+          
+          <ul class="bsg-list">
+            {{ block.settings.features_list }}
+          </ul>
+
+          <!-- Do & Don't -->
+          <div class="bsg-dodont-grid">
+            <div class="bsg-card do">
+              <h4><span>✓</span> Do</h4>
+              <ul>
+                {{ block.settings.do_list }}
+              </ul>
+            </div>
+            <div class="bsg-card dont">
+              <h4><span>✕</span> Don't</h4>
+              <ul>
+                {{ block.settings.dont_list }}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 风格标签 -->
+      <div class="bsg-tags-section">
+        <div class="bsg-tags-title">Best Dress Styles for {{ block.settings.shape_name }} Shape</div>
+        <div class="bsg-tags">
+          
+          {% if block.settings.tag_1_text != blank %}
+            <a href="{{ block.settings.tag_1_link | default: '#' }}" class="bsg-tag">{{ block.settings.tag_1_text }}</a>
+          {% endif %}
+          
+          {% if block.settings.tag_2_text != blank %}
+            <a href="{{ block.settings.tag_2_link | default: '#' }}" class="bsg-tag">{{ block.settings.tag_2_text }}</a>
+          {% endif %}
+          
+          {% if block.settings.tag_3_text != blank %}
+            <a href="{{ block.settings.tag_3_link | default: '#' }}" class="bsg-tag">{{ block.settings.tag_3_text }}</a>
+          {% endif %}
+          
+          {% if block.settings.tag_4_text != blank %}
+            <a href="{{ block.settings.tag_4_link | default: '#' }}" class="bsg-tag">{{ block.settings.tag_4_text }}</a>
+          {% endif %}
+
+          {% if block.settings.tag_5_text != blank %}
+            <a href="{{ block.settings.tag_5_link | default: '#' }}" class="bsg-tag">{{ block.settings.tag_5_text }}</a>
+          {% endif %}
+
+        </div>
+      </div>
+
+      <!-- 推荐商品 -->
+      <div class="bsg-recommend-title">Recommended Styles</div>
+      <div class="bsg-products-area">
+        <div class="bsg-products-grid">
+          
+          {% assign collection = collections[block.settings.collection] %}
+          
+          {% if collection != blank and collection.products_count > 0 %}
+            {% for product in collection.products limit: 5 %}
+              <div class="bsg-product-card">
+                <a href="{{ product.url }}">
+                  <img src="{{ product.featured_image | image_url: width: 400 }}" 
+                       alt="{{ product.title }}" 
+                       width="{{ product.featured_image.width }}" 
+                       height="{{ product.featured_image.height }}" 
+                       loading="lazy">
+                </a>
+              </div>
+            {% endfor %}
+          {% else %}
+            {% for i in (1..5) %}
+              <div class="bsg-product-card">
+                {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+            {% endfor %}
+          {% endif %}
+
+        </div>
+        
+        <!-- 右侧横排跳转按钮 -->
+        <a href="{% if collection != blank %}{{ collection.url }}{% else %}#{% endif %}" class="bsg-shop-btn">
+          Shop {{ block.settings.shape_name }} Shape Styles →
+        </a>
+      </div>
+
+    </div>
+  {%- endfor -%}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const wrapper = document.querySelector('.bsg-wrapper');
+    if(!wrapper) return;
+    const buttons = wrapper.querySelectorAll('.bsg-tab-btn');
+    const contents = wrapper.querySelectorAll('.bsg-content-box');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        contents.forEach(c => c.classList.remove('active'));
+        
+        btn.classList.add('active');
+        const targetId = btn.getAttribute('data-target');
+        document.getElementById(targetId).classList.add('active');
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Body Shape Guide",
+  "settings": [
+    {
+      "type": "text",
+      "id": "main_title",
+      "label": "Section Title",
+      "default": "Discover Your Body Shape"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "shape",
+      "name": "Body Shape",
+      "settings": [
+        {
+          "type": "text",
+          "id": "shape_name",
+          "label": "Shape Name",
+          "default": "Pear"
+        },
+        {
+          "type": "image_picker",
+          "id": "tab_icon",
+          "label": "Tab Icon (Optional)"
+        },
+        {
+          "type": "image_picker",
+          "id": "illustration",
+          "label": "Illustration Image"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "Defined waist, Fuller hips"
+        },
+        {
+          "type": "textarea",
+          "id": "features_list",
+          "label": "Features List (HTML)",
+          "default": "<li>Shift visual weight upward</li><li>Your defined waist is one of your best features</li><li>Let the skirt flow freely</li>"
+        },
+        {
+          "type": "textarea",
+          "id": "do_list",
+          "label": "Do List (HTML)",
+          "default": "<li>Off-the-shoulder</li><li>Fit-and-flare</li><li>A-line & Flowing fabrics</li>"
+        },
+        {
+          "type": "textarea",
+          "id": "dont_list",
+          "label": "Don't List (HTML)",
+          "default": "<li>Tight-fitting skirts</li><li>Flared at the waist</li><li>Hip-level embellishments</li>"
+        },
+        {
+          "type": "header",
+          "content": "Style Tags (Max 5)"
+        },
+        {
+          "type": "text",
+          "id": "tag_1_text",
+          "label": "Tag 1 Text",
+          "default": "A-Line Dresses"
+        },
+        {
+          "type": "url",
+          "id": "tag_1_link",
+          "label": "Tag 1 Link"
+        },
+        {
+          "type": "text",
+          "id": "tag_2_text",
+          "label": "Tag 2 Text",
+          "default": "Off-the-Shoulder"
+        },
+        {
+          "type": "url",
+          "id": "tag_2_link",
+          "label": "Tag 2 Link"
+        },
+        {
+          "type": "text",
+          "id": "tag_3_text",
+          "label": "Tag 3 Text",
+          "default": "Midi Dresses"
+        },
+        {
+          "type": "url",
+          "id": "tag_3_link",
+          "label": "Tag 3 Link"
+        },
+        {
+          "type": "text",
+          "id": "tag_4_text",
+          "label": "Tag 4 Text",
+          "default": "Chiffon"
+        },
+        {
+          "type": "url",
+          "id": "tag_4_link",
+          "label": "Tag 4 Link"
+        },
+        {
+          "type": "text",
+          "id": "tag_5_text",
+          "label": "Tag 5 Text"
+        },
+        {
+          "type": "url",
+          "id": "tag_5_link",
+          "label": "Tag 5 Link"
+        },
+        {
+          "type": "header",
+          "content": "Recommended Styles"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Select Collection"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Body Shape Guide",
+      "blocks": [
+        {
+          "type": "shape"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

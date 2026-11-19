@@ -39,13 +39,17 @@
 						</a>
 					</li>
 				</ul>
-			{%- else -%}
-			<button class="load-more button" aria-label="{{ 'sections.collection_template.load_more' | t | escape }}">
+			{%- elsif paginate.next -%}
+			{%- comment -%}
+				用 <a> 指向下一页，Google 能顺着它抓到后面的商品。pagination.js 拦截点击，改成在当前页追加。
+				最后一页没有 paginate.next，不输出按钮。
+			{%- endcomment -%}
+			<a href="{{ paginate.next.url }}" class="load-more button" aria-label="{{ 'sections.collection_template.load_more' | t | escape }}">
 				<span>{{ 'sections.collection_template.load_more' | t }}</span>
 				<span class="loading-overlay">
 					{% render 'svg-icons' with 'thb-loading' %}
 				</span>
-			</button>
+			</a>
 			{%- endif -%}
 		</div>
 	</div>

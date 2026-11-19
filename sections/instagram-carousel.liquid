@@ -1,0 +1,1628 @@
+{% comment %}
+  Instagram Carousel Section
+  Homepage footer Instagram showcase
+{% endcomment %}
+
+<section
+  id="InstagramCarousel-{{ section.id }}"
+  class="instagram-carousel-section"
+>
+  <div class="instagram-carousel-wrapper">
+
+    {% if section.settings.heading != blank or section.settings.subheading != blank %}
+      <div class="instagram-carousel-header">
+
+        {% if section.settings.heading != blank %}
+          <h2 class="instagram-carousel-heading">
+            {{ section.settings.heading }}
+          </h2>
+        {% endif %}
+
+        {% if section.settings.subheading != blank %}
+          <div class="instagram-carousel-subheading">
+            {{ section.settings.subheading }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.instagram_handle != blank %}
+          <a
+            href="{{ section.settings.instagram_url }}"
+            class="instagram-follow-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ section.settings.instagram_handle }}
+          </a>
+        {% endif %}
+
+      </div>
+    {% endif %}
+
+    <div class="instagram-carousel-container">
+
+      <button
+        type="button"
+        class="instagram-carousel-arrow instagram-carousel-prev"
+        aria-label="Previous"
+      >
+        ‹
+      </button>
+
+      <div
+        class="instagram-carousel-track"
+        data-instagram-track
+      >
+
+        {% for block in section.blocks %}
+
+          {%- comment -%}
+            不用 autoplay：autoplay 会让所有视频在页面加载时一起开始下载（1080p 单个约 18 MB，手机上最明显）。
+            改成 preload="none"，进入可视区才播放、离开就暂停（见底部脚本）。
+            卡片只有 300px 左右宽，选宽度够用的最小 mp4（竖版视频对应 720p）。
+            弹窗里播放的也是同一个文件：卡片已经下载过的部分有缓存，点开后能马上出画面。
+            封面图写在 data-poster 里：poster 属性不会懒加载，8 张约 470 KB 会在打开首页时就下载，
+            和首屏 banner 抢带宽。底部脚本在区块接近可视区时再把它设成 poster。
+          {%- endcomment -%}
+          {%- liquid
+            assign media_type = ''
+            assign media_ratio = ''
+            assign video_src = ''
+            assign video_poster = nil
+            assign lightbox_image = nil
+
+            if block.type == 'image' and block.settings.image != blank
+              assign media_type = 'image'
+              assign lightbox_image = block.settings.image
+              assign media_ratio = block.settings.image.aspect_ratio
+            elsif block.type == 'video' and block.settings.video != blank
+              assign media_type = 'video'
+              assign video = block.settings.video
+              assign video_src_width = 100000
+              for source in video.sources
+                if source.mime_type == 'video/mp4' and source.width >= 400 and source.width < video_src_width
+                  assign video_src = source.url
+                  assign video_src_width = source.width
+                endif
+              endfor
+              if video_src == ''
+                for source in video.sources
+                  if source.mime_type == 'video/mp4'
+                    assign video_src = source.url
+                    break
+                  endif
+                endfor
+              endif
+              assign video_poster = block.settings.cover_image | default: video.preview_image
+              assign media_ratio = video.aspect_ratio
+            elsif block.type == 'video' and block.settings.cover_image != blank
+              assign media_type = 'cover'
+              assign lightbox_image = block.settings.cover_image
+              assign media_ratio = block.settings.cover_image.aspect_ratio
+            endif
+
+            # 从帖子链接里取作者，例如 instagram.com/dikraelkalai/reel/xxx 取到 dikraelkalai
+            assign post_user = ''
+            if block.settings.link contains 'instagram.com/'
+              assign post_user = block.settings.link | split: 'instagram.com/' | last | split: '/' | first | split: '?' | first
+              if post_user == 'p' or post_user == 'reel' or post_user == 'reels' or post_user == 'tv'
+                assign post_user = ''
+              endif
+            endif
+          -%}
+
+          <div
+            class="instagram-carousel-item"
+            {{ block.shopify_attributes }}
+          >
+
+            {% if media_type != '' %}
+
+              {%- comment -%} 点击在本页弹窗里打开，不再跳到 Instagram {%- endcomment -%}
+              <button
+                type="button"
+                class="instagram-carousel-card"
+                aria-haspopup="dialog"
+                aria-label="{{ block.settings.alt_text | default: 'Open Instagram post' | escape }}"
+                data-instagram-open
+                data-ratio="{{ media_ratio }}"
+                data-caption="{{ block.settings.alt_text | escape }}"
+                data-user="{{ post_user | escape }}"
+                data-link="{{ block.settings.link | escape }}"
+                {% if media_type == 'video' %}
+                  data-type="video"
+                  data-src="{{ video_src }}"
+                  data-full-poster="{{ video_poster | image_url: width: 900 }}"
+                {% else %}
+                  data-type="image"
+                  data-image="{{ lightbox_image | image_url: width: 1200 }}"
+                  data-srcset="{{ lightbox_image | image_url: width: 800 }} 800w, {{ lightbox_image | image_url: width: 1200 }} 1200w, {{ lightbox_image | image_url: width: 1600 }} 1600w"
+                {% endif %}
+              >
+
+                {% case media_type %}
+
+                  {% when 'image' %}
+
+                    <img
+                      src="{{ block.settings.image | image_url: width: 900 }}"
+                      srcset="
+                        {{ block.settings.image | image_url: width: 450 }} 450w,
+                        {{ block.settings.image | image_url: width: 700 }} 700w,
+                        {{ block.settings.image | image_url: width: 900 }} 900w
+                      "
+                      sizes="(max-width: 749px) 68vw, 23vw"
+                      alt="{{ block.settings.alt_text | escape }}"
+                      loading="lazy"
+                      width="{{ block.settings.image.width }}"
+                      height="{{ block.settings.image.height }}"
+                    >
+
+                  {% when 'video' %}
+
+                    <video
+                      class="instagram-carousel-video"
+                      muted
+                      loop
+                      playsinline
+                      preload="none"
+                      data-poster="{{ video_poster | image_url: width: 450 }}"
+                      data-instagram-video
+                    >
+                      <source src="{{ video_src }}" type="video/mp4">
+                    </video>
+
+                    <span class="instagram-video-overlay">
+                      <span class="instagram-play-icon">▶</span>
+                    </span>
+
+                  {% when 'cover' %}
+
+                    <img
+                      src="{{ block.settings.cover_image | image_url: width: 900 }}"
+                      alt="{{ block.settings.alt_text | escape }}"
+                      loading="lazy"
+                      width="{{ block.settings.cover_image.width }}"
+                      height="{{ block.settings.cover_image.height }}"
+                    >
+
+                    <span class="instagram-video-overlay">
+                      <span class="instagram-play-icon">▶</span>
+                    </span>
+
+                {% endcase %}
+
+              </button>
+
+              {%- comment -%}
+                关联产品（可选）。放在 template 里：页面加载时里面的图片不会下载，
+                弹窗切到这一条时才由脚本插入右侧信息栏。价格写法和 snippets/product-price.liquid 一致。
+              {%- endcomment -%}
+              {%- assign ig_product = block.settings.product -%}
+              {%- if ig_product != blank -%}
+                {%- liquid
+                  assign product_price = ig_product.price | money
+                  if settings.currency_code_enabled
+                    assign product_price = ig_product.price | money_with_currency
+                  endif
+                  if ig_product.price_varies
+                    assign product_price = 'products.product.price.from_price_html' | t: price: product_price
+                  endif
+
+                  assign product_compare = ''
+                  assign compare_at = ig_product.compare_at_price
+                  unless ig_product.price_varies == false and ig_product.compare_at_price_varies
+                    if compare_at != null and compare_at > ig_product.price
+                      assign product_compare = compare_at | money
+                      if settings.currency_code_enabled
+                        assign product_compare = compare_at | money_with_currency
+                      endif
+                    endif
+                  endunless
+
+                  assign product_media = ig_product.featured_media.preview_image
+                -%}
+                <template data-ig-product>
+                  <a
+                    class="ig-lightbox__product{% if product_media == blank %} ig-lightbox__product--no-image{% endif %}"
+                    href="{{ ig_product.url }}"
+                  >
+                    {%- if product_media != blank -%}
+                      <img
+                        class="ig-lightbox__product-image"
+                        src="{{ product_media | image_url: width: 240 }}"
+                        alt="{{ ig_product.title | escape }}"
+                        width="{{ product_media.width }}"
+                        height="{{ product_media.height }}"
+                      >
+                    {%- endif -%}
+                    <span class="ig-lightbox__product-info">
+                      <span class="ig-lightbox__product-title">{{ ig_product.title | escape }}</span>
+                      <span class="ig-lightbox__product-price">
+                        {%- if product_compare != '' -%}
+                          <del>{{ product_compare }}</del>
+                        {%- endif -%}
+                        <span>{{ product_price }}</span>
+                      </span>
+                    </span>
+                    <span class="ig-lightbox__product-cta">{{ 'sections.shop_the_look.view_product' | t }}</span>
+                  </a>
+                </template>
+              {%- endif -%}
+
+            {% else %}
+
+              <div class="instagram-carousel-card">
+                <div class="instagram-carousel-placeholder">
+                  {% if block.type == 'video' %}Add Video{% else %}Add Image{% endif %}
+                </div>
+              </div>
+
+            {% endif %}
+
+          </div>
+
+        {% endfor %}
+
+      </div>
+
+      <button
+        type="button"
+        class="instagram-carousel-arrow instagram-carousel-next"
+        aria-label="Next"
+      >
+        ›
+      </button>
+
+    </div>
+
+  </div>
+
+  {%- liquid
+    # 帖子链接里取不到作者时，弹窗顶部显示品牌账号（取自上面的 Instagram URL）
+    assign brand_user = ''
+    if section.settings.instagram_url contains 'instagram.com/'
+      assign brand_user = section.settings.instagram_url | split: 'instagram.com/' | last | split: '/' | first | split: '?' | first
+    endif
+  -%}
+
+  {%- comment -%}
+    卡片弹窗。关着的时候 dialog 是 display: none，里面的 img/video 没有地址，不产生任何请求。
+  {%- endcomment -%}
+  <dialog
+    class="ig-lightbox"
+    aria-label="{{ section.settings.heading | default: 'Instagram' | escape }}"
+    data-instagram-lightbox
+    data-brand-user="{{ brand_user | escape }}"
+  >
+    <button type="button" class="ig-lightbox__close" aria-label="Close" data-ig-close>
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+    </button>
+
+    <button type="button" class="ig-lightbox__nav ig-lightbox__nav--prev" aria-label="Previous" data-ig-prev>
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4l-8 8 8 8"/></svg>
+    </button>
+
+    <button type="button" class="ig-lightbox__nav ig-lightbox__nav--next" aria-label="Next" data-ig-next>
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4l8 8-8 8"/></svg>
+    </button>
+
+    {%- comment -%} autofocus：打开时焦点落在面板上，避免关闭按钮一打开就带着焦点框 {%- endcomment -%}
+    <div class="ig-lightbox__panel" tabindex="-1" autofocus>
+
+      <div class="ig-lightbox__media" data-ig-media>
+        <video class="ig-lightbox__video" loop playsinline hidden data-ig-video></video>
+        <img class="ig-lightbox__image" alt="" width="1200" height="1500" sizes="(max-width: 989px) 100vw, 50vw" hidden data-ig-image>
+
+        <span class="ig-lightbox__paused" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
+        </span>
+
+        <button type="button" class="ig-lightbox__sound" aria-label="Mute" hidden data-ig-sound>
+          <svg class="ig-lightbox__sound-on" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9.5a3.5 3.5 0 010 5M18 7a7 7 0 010 10"/></svg>
+          <svg class="ig-lightbox__sound-off" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M16 10l4 4M20 10l-4 4"/></svg>
+        </button>
+      </div>
+
+      <div class="ig-lightbox__info">
+        <div class="ig-lightbox__head" data-ig-head>
+          <span class="ig-lightbox__avatar" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/></svg>
+          </span>
+          <span class="ig-lightbox__user" data-ig-user></span>
+        </div>
+
+        <div class="ig-lightbox__body">
+          <p class="ig-lightbox__caption" data-ig-caption></p>
+
+          <div class="ig-lightbox__shop" hidden data-ig-shop>
+            <p class="ig-lightbox__shop-label">{{ 'general.shop_the_look' | t }}</p>
+            <div data-ig-product-slot></div>
+          </div>
+        </div>
+
+        <div class="ig-lightbox__foot" data-ig-foot>
+          <a class="ig-lightbox__link" href="#" target="_blank" rel="noopener noreferrer" data-ig-link>View on Instagram</a>
+        </div>
+      </div>
+
+    </div>
+  </dialog>
+</section>
+
+
+<style>
+
+  #InstagramCarousel-{{ section.id }} {
+    --instagram-gap: {{ section.settings.gap }}px;
+    --instagram-radius: {{ section.settings.border_radius }}px;
+    --instagram-bg: {{ section.settings.background_color }};
+    --instagram-heading-color: {{ section.settings.heading_color }};
+    --instagram-text-color: {{ section.settings.text_color }};
+  }
+
+  #InstagramCarousel-{{ section.id }} {
+    background: var(--instagram-bg);
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  #InstagramCarousel-{{ section.id }} .instagram-carousel-wrapper {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 40px;
+    box-sizing: border-box;
+  }
+
+  /* Header */
+
+  #InstagramCarousel-{{ section.id }} .instagram-carousel-header {
+    text-align: center;
+    margin-bottom: 35px;
+  }
+
+  #InstagramCarousel-{{ section.id }} .instagram-carousel-heading {
+    margin: 0 0 10px;
+    color: var(--instagram-heading-color);
+    font-size: {{ section.settings.heading_size }}px;
+    line-height: 1.2;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  #InstagramCarousel-{{ section.id }} .instagram-carousel-subheading {
+    color: var(--instagram-text-color);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+
+  #InstagramCarousel-{{ section.id }} .instagram-follow-link {
+    color: var(--instagram-heading-color);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+  }
+
+  #InstagramCarousel-{{ section.id }} .instagram-follow-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Carousel */
+
+  #InstagramCarousel-{{ section.id }} .instagram-carousel-container {
+    position: relative;
+    width: 100%;
+  }
+
+  #InstagramCarousel-{{ section.id }} .instagram-carousel-track {
+    display: flex;
+    gap: var(--instagram-gap);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 5px;
+  }
+
+  #InstagramCarousel-{{ section.id }} .instagram-carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Desktop */
+
+  #InstagramCarousel-{{ section.id }} .instagram-carousel-item {
+    flex: 0 0 calc((100% - (var(--instagram-gap) * 3)) / 4);
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+
+  #InstagramCarousel-{{ section.id }} .instagram-carousel-card {
+    display: block;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: var(--instagram-radius);
+    background: #f5f5f5;
+    text-decoration: none;
+  }
+
+  #InstagramCarousel-{{ section.id }} button.instagram-carousel-card {
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+  }
+
+  #InstagramCarousel-{{ section.id }} button.instagram-carousel-card:focus-visible {
+    outline: 2px solid var(--instagram-heading-color);
+    outline-offset: 2px;
+  }
+
+  #InstagramCarousel-{{ section.id }} .instagram-carousel-card img,
+  #InstagramCarousel-{{ section.id }} .instagram-carousel-video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  #InstagramCarousel-{{ section.id }} .instagram-carousel-card:hover img,
+  #InstagramCarousel-{{ section.id }} .instagram-carousel-card:hover video {
+    transform: scale(1.03);
+  }
+
+  /* Video */
+
+  #InstagramCarousel-{{ section.id }} .instagram-video-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 48px;
+    height: 48px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: rgba(255,255,255,0.88);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  #InstagramCarousel-{{ section.id }} .instagram-play-icon {
+    font-size: 17px;
+    color: #222;
+    margin-left: 3px;
+  }
+
+  /* Placeholder */
+
+  #InstagramCarousel-{{ section.id }} .instagram-carousel-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f4f4f4;
+    color: #888;
+    font-size: 13px;
+  }
+
+  /* Arrows */
+
+  #InstagramCarousel-{{ section.id }} .instagram-carousel-arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 5;
+
+    width: 44px;
+    height: 44px;
+
+    border: 0;
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.95);
+    color: #222;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    transform: translateY(-50%);
+
+    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+
+    font-size: 30px;
+    line-height: 1;
+
+    transition: all 0.2s ease;
+  }
+
+  #InstagramCarousel-{{ section.id }} .instagram-carousel-arrow:hover {
+    transform: translateY(-50%) scale(1.05);
+    background: #fff;
+  }
+
+  #InstagramCarousel-{{ section.id }} .instagram-carousel-prev {
+    left: -22px;
+  }
+
+  #InstagramCarousel-{{ section.id }} .instagram-carousel-next {
+    right: -22px;
+  }
+
+  /* Mobile */
+
+  @media screen and (max-width: 749px) {
+
+    #InstagramCarousel-{{ section.id }} {
+      padding-top: {{ section.settings.mobile_padding_top }}px;
+      padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+    }
+
+    #InstagramCarousel-{{ section.id }} .instagram-carousel-wrapper {
+      padding: 0 16px;
+    }
+
+    #InstagramCarousel-{{ section.id }} .instagram-carousel-header {
+      margin-bottom: 24px;
+    }
+
+    #InstagramCarousel-{{ section.id }} .instagram-carousel-heading {
+      font-size: {{ section.settings.mobile_heading_size }}px;
+    }
+
+    #InstagramCarousel-{{ section.id }} .instagram-carousel-subheading {
+      font-size: 13px;
+    }
+
+    #InstagramCarousel-{{ section.id }} .instagram-carousel-item {
+      flex: 0 0 68%;
+    }
+
+    #InstagramCarousel-{{ section.id }} .instagram-carousel-arrow {
+      display: none;
+    }
+
+    #InstagramCarousel-{{ section.id }} .instagram-carousel-track {
+      gap: 12px;
+      scroll-snap-type: x mandatory;
+    }
+
+  }
+
+  /* Lightbox：桌面端左边媒体、右边信息栏；990px 以下全屏，媒体在上、信息在下 */
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #222;
+    overflow: hidden;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox::backdrop {
+    background: rgba(0, 0, 0, 0.82);
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox [hidden] {
+    display: none !important;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__panel {
+    display: flex;
+    height: min(90vh, 900px);
+    max-width: calc(100vw - 160px);
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    outline: none;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__media {
+    position: relative;
+    flex: 0 0 auto;
+    height: 100%;
+    aspect-ratio: var(--ig-ratio, 0.5625);
+    max-width: calc(100vw - 160px - 360px);
+    background: #000;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__video,
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__video {
+    cursor: pointer;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__paused {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__media.is-paused .ig-lightbox__paused {
+    opacity: 1;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__sound {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__sound-off,
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__sound.is-muted .ig-lightbox__sound-on {
+    display: none;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__sound.is-muted .ig-lightbox__sound-off {
+    display: block;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__info {
+    flex: 0 0 360px;
+    width: 360px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #efefef;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__avatar {
+    flex: 0 0 36px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__user {
+    min-width: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #222;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__caption {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #333;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__caption:empty {
+    display: none;
+  }
+
+  /* 关联产品 */
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__shop {
+    margin-top: 24px;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__caption:empty + .ig-lightbox__shop {
+    margin-top: 0;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__shop-label {
+    margin: 0 0 10px;
+    font-size: 12px;
+    line-height: 1.4;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #888;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__product {
+    display: grid;
+    grid-template-columns: 80px minmax(0, 1fr);
+    align-items: center;
+    gap: 14px;
+    padding: 12px;
+    border: 1px solid #ececec;
+    border-radius: 8px;
+    color: #222;
+    text-decoration: none;
+    transition: border-color 0.2s ease;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__product:hover {
+    border-color: #cfcfcf;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__product--no-image {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__product-image {
+    display: block;
+    width: 80px;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 4px;
+    background: #f5f5f5;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__product-title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__product:hover .ig-lightbox__product-title {
+    text-decoration: underline;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__product-price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__product-price del {
+    color: #999;
+    font-size: 13px;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__product-cta {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    border-radius: 4px;
+    background: #222;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: background 0.2s ease;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__product:hover .ig-lightbox__product-cta {
+    background: #000;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__foot {
+    padding: 14px 20px;
+    border-top: 1px solid #efefef;
+    text-align: center;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__link {
+    font-size: 13px;
+    color: #666;
+    text-decoration: none;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__link:hover {
+    color: #222;
+    text-decoration: underline;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__close,
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__nav {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    cursor: pointer;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__close:hover,
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__nav:hover {
+    opacity: 1;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__close {
+    top: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__nav {
+    top: 50%;
+    width: 48px;
+    height: 48px;
+    margin-top: -24px;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__nav--prev {
+    left: 20px;
+  }
+
+  #InstagramCarousel-{{ section.id }} .ig-lightbox__nav--next {
+    right: 20px;
+  }
+
+  @media screen and (max-width: 989px) {
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox::backdrop {
+      background: #000;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__panel {
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      border-radius: 0;
+      background: #000;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__media {
+      flex: 1 1 auto;
+      width: 100%;
+      height: auto;
+      min-height: 0;
+      max-width: none;
+      aspect-ratio: auto;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__info {
+      flex: 0 0 auto;
+      width: 100%;
+      max-height: 42%;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__shop {
+      margin-top: 12px;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__shop-label {
+      display: none;
+    }
+
+    /* 手机上产品卡压成一行：缩略图、标题价格、按钮 */
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__product {
+      grid-template-columns: 56px minmax(0, 1fr) auto;
+      gap: 12px;
+      padding: 10px;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__product--no-image {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__product-image {
+      width: 56px;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__product-title,
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__product-price {
+      font-size: 13px;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__product-cta {
+      grid-column: auto;
+      height: 34px;
+      padding: 0 14px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__head {
+      padding: 12px 16px;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__avatar {
+      flex-basis: 32px;
+      width: 32px;
+      height: 32px;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__body {
+      padding: 12px 16px;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__caption {
+      font-size: 14px;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__foot {
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__close {
+      top: 10px;
+      right: 10px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.45);
+      opacity: 1;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__close svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__nav {
+      top: 40%;
+      width: 38px;
+      height: 38px;
+      margin-top: -19px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.35);
+      opacity: 1;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__nav svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__nav--prev {
+      left: 8px;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__nav--next {
+      right: 8px;
+    }
+
+    #InstagramCarousel-{{ section.id }} .ig-lightbox__sound {
+      top: 10px;
+      left: 10px;
+    }
+
+  }
+
+</style>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+
+    const section = document.getElementById(
+      'InstagramCarousel-{{ section.id }}'
+    );
+
+    if (!section) return;
+
+    const track = section.querySelector('[data-instagram-track]');
+    const prevButton = section.querySelector('.instagram-carousel-prev');
+    const nextButton = section.querySelector('.instagram-carousel-next');
+
+    if (!track) return;
+
+    const videos = track.querySelectorAll('[data-instagram-video]');
+
+    // 区块进入可视区上下 600px 范围时，一次性设置所有视频的封面图
+    function showPosters() {
+      videos.forEach(function (video) {
+        if (video.dataset.poster) {
+          video.poster = video.dataset.poster;
+          video.removeAttribute('data-poster');
+        }
+      });
+    }
+
+    if (videos.length) {
+      if ('IntersectionObserver' in window) {
+        const posterObserver = new IntersectionObserver(function (entries, observer) {
+          if (entries.some(function (entry) { return entry.isIntersecting; })) {
+            observer.disconnect();
+            showPosters();
+          }
+        }, { rootMargin: '600px 0px' });
+        posterObserver.observe(section);
+      } else {
+        showPosters();
+      }
+    }
+
+    // 弹窗打开期间卡片视频全部暂停，关闭后只恢复还在可视区里的
+    let lightboxOpen = false;
+    const visibleVideos = new Set();
+
+    if (videos.length && 'IntersectionObserver' in window) {
+      const videoObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          const video = entry.target;
+
+          if (entry.isIntersecting) {
+            visibleVideos.add(video);
+            if (lightboxOpen) return;
+            video.muted = true;
+            video.play().catch(function () {});
+          } else {
+            visibleVideos.delete(video);
+            video.pause();
+          }
+        });
+      }, { threshold: 0.25 });
+
+      videos.forEach(function (video) {
+        videoObserver.observe(video);
+      });
+    }
+
+    function getScrollAmount() {
+      const item = track.querySelector('.instagram-carousel-item');
+
+      if (!item) {
+        return 0;
+      }
+
+      return item.offsetWidth + {{ section.settings.gap }};
+    }
+
+    if (prevButton) {
+      prevButton.addEventListener('click', function () {
+
+        track.scrollBy({
+          left: -getScrollAmount() * 2,
+          behavior: 'smooth'
+        });
+
+      });
+    }
+
+    if (nextButton) {
+      nextButton.addEventListener('click', function () {
+
+        track.scrollBy({
+          left: getScrollAmount() * 2,
+          behavior: 'smooth'
+        });
+
+      });
+    }
+
+    /* ---------- Lightbox ---------- */
+
+    const cards = Array.prototype.slice.call(track.querySelectorAll('[data-instagram-open]'));
+    const lightbox = section.querySelector('[data-instagram-lightbox]');
+
+    if (!cards.length || !lightbox) return;
+
+    const canShowModal = typeof lightbox.showModal === 'function';
+    const media = lightbox.querySelector('[data-ig-media]');
+    const lbVideo = lightbox.querySelector('[data-ig-video]');
+    const lbImage = lightbox.querySelector('[data-ig-image]');
+    const soundButton = lightbox.querySelector('[data-ig-sound]');
+    const head = lightbox.querySelector('[data-ig-head]');
+    const userEl = lightbox.querySelector('[data-ig-user]');
+    const captionEl = lightbox.querySelector('[data-ig-caption]');
+    const foot = lightbox.querySelector('[data-ig-foot]');
+    const linkEl = lightbox.querySelector('[data-ig-link]');
+    const shop = lightbox.querySelector('[data-ig-shop]');
+    const productSlot = lightbox.querySelector('[data-ig-product-slot]');
+    const lbPrev = lightbox.querySelector('[data-ig-prev]');
+    const lbNext = lightbox.querySelector('[data-ig-next]');
+    const brandUser = lightbox.dataset.brandUser || '';
+
+    let current = 0;
+    let opener = null;
+    let soundOn = true;
+
+    function updateSoundButton() {
+      soundButton.classList.toggle('is-muted', lbVideo.muted);
+      soundButton.setAttribute('aria-label', lbVideo.muted ? 'Unmute' : 'Mute');
+    }
+
+    // 点击本身是用户操作，浏览器一般允许带声音播放；被拦下时退回静音播放，用户可以点喇叭打开声音
+    function playLightboxVideo() {
+      lbVideo.muted = !soundOn;
+      updateSoundButton();
+
+      const playing = lbVideo.play();
+      if (playing && playing.catch) {
+        playing.catch(function (error) {
+          if (error && error.name === 'NotAllowedError' && !lbVideo.muted) {
+            lbVideo.muted = true;
+            updateSoundButton();
+            lbVideo.play().catch(function () {});
+          }
+        });
+      }
+    }
+
+    // 去掉 src 才会停止继续下载
+    function stopLightboxVideo() {
+      lbVideo.pause();
+      if (lbVideo.hasAttribute('src')) {
+        lbVideo.removeAttribute('src');
+        lbVideo.load();
+      }
+      media.classList.remove('is-paused');
+    }
+
+    function showItem(index) {
+      current = (index + cards.length) % cards.length;
+      const data = cards[current].dataset;
+
+      media.style.setProperty('--ig-ratio', data.ratio || '0.5625');
+
+      if (data.type === 'video') {
+        lbImage.hidden = true;
+        lbImage.removeAttribute('srcset');
+        lbImage.removeAttribute('src');
+
+        lbVideo.hidden = false;
+        soundButton.hidden = false;
+        if (lbVideo.getAttribute('src') !== data.src) {
+          media.classList.remove('is-paused');
+          lbVideo.poster = data.fullPoster || '';
+          lbVideo.src = data.src;
+        }
+        playLightboxVideo();
+      } else {
+        stopLightboxVideo();
+        lbVideo.hidden = true;
+        soundButton.hidden = true;
+
+        lbImage.hidden = false;
+        lbImage.alt = data.caption || '';
+        if (data.srcset) {
+          lbImage.srcset = data.srcset;
+        } else {
+          lbImage.removeAttribute('srcset');
+        }
+        lbImage.src = data.image;
+      }
+
+      const user = data.user || brandUser;
+      userEl.textContent = user ? '@' + user : '';
+      head.hidden = !user;
+
+      captionEl.textContent = data.caption || '';
+
+      // 关联产品：卡片旁边的 template 是服务端渲染好的产品卡，没选产品就没有 template
+      const productTemplate = cards[current].parentNode.querySelector('template[data-ig-product]');
+      productSlot.textContent = '';
+      if (productTemplate) {
+        productSlot.appendChild(productTemplate.content.cloneNode(true));
+        shop.hidden = false;
+      } else {
+        shop.hidden = true;
+      }
+
+      if (data.link) {
+        linkEl.href = data.link;
+        foot.hidden = false;
+      } else {
+        foot.hidden = true;
+      }
+    }
+
+    function openLightbox(index) {
+      opener = cards[index];
+      lightboxOpen = true;
+      videos.forEach(function (video) { video.pause(); });
+      document.body.classList.add('overflow-hidden');
+      lightbox.showModal();
+      showItem(index);
+    }
+
+    cards.forEach(function (card, index) {
+      card.addEventListener('click', function () {
+        if (canShowModal) {
+          openLightbox(index);
+        } else if (card.dataset.link) {
+          // 不支持 <dialog> 的老浏览器才会走这里
+          window.open(card.dataset.link, '_blank', 'noopener');
+        }
+      });
+    });
+
+    if (!canShowModal) return;
+
+    const single = cards.length < 2;
+    lbPrev.hidden = single;
+    lbNext.hidden = single;
+
+    lbPrev.addEventListener('click', function () { showItem(current - 1); });
+    lbNext.addEventListener('click', function () { showItem(current + 1); });
+
+    lightbox.querySelector('[data-ig-close]').addEventListener('click', function () {
+      lightbox.close();
+    });
+
+    // 点遮罩（弹窗内容以外的区域）关闭
+    lightbox.addEventListener('click', function (event) {
+      if (event.target === lightbox) lightbox.close();
+    });
+
+    lightbox.addEventListener('keydown', function (event) {
+      if (single) return;
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        showItem(current - 1);
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        showItem(current + 1);
+      }
+    });
+
+    // ESC、关闭按钮、点遮罩最后都会走到这里
+    lightbox.addEventListener('close', function () {
+      stopLightboxVideo();
+      lbImage.removeAttribute('srcset');
+      lbImage.removeAttribute('src');
+      document.body.classList.remove('overflow-hidden');
+      lightboxOpen = false;
+
+      visibleVideos.forEach(function (video) {
+        video.muted = true;
+        video.play().catch(function () {});
+      });
+
+      if (opener) opener.focus({ preventScroll: true });
+    });
+
+    soundButton.addEventListener('click', function () {
+      soundOn = lbVideo.muted;
+      lbVideo.muted = !soundOn;
+      updateSoundButton();
+      if (lbVideo.paused) lbVideo.play().catch(function () {});
+    });
+
+    lbVideo.addEventListener('click', function () {
+      if (lbVideo.paused) {
+        lbVideo.play().catch(function () {});
+      } else {
+        lbVideo.pause();
+      }
+    });
+
+    lbVideo.addEventListener('play', function () { media.classList.remove('is-paused'); });
+    lbVideo.addEventListener('pause', function () {
+      if (lbVideo.hasAttribute('src')) media.classList.add('is-paused');
+    });
+
+    // 手机上左右滑动切换
+    let touchStartX = null;
+    let touchStartY = 0;
+
+    media.addEventListener('touchstart', function (event) {
+      if (event.touches.length !== 1) {
+        touchStartX = null;
+        return;
+      }
+      touchStartX = event.touches[0].clientX;
+      touchStartY = event.touches[0].clientY;
+    }, { passive: true });
+
+    media.addEventListener('touchend', function (event) {
+      if (touchStartX === null || single) return;
+      const touch = event.changedTouches[0];
+      const dx = touch.clientX - touchStartX;
+      const dy = touch.clientY - touchStartY;
+      touchStartX = null;
+
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        showItem(current + (dx < 0 ? 1 : -1));
+      }
+    }, { passive: true });
+
+  });
+</script>
+
+
+{% schema %}
+{
+  "name": "Instagram Carousel",
+  "tag": "section",
+  "class": "section-instagram-carousel",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "REAL GIRLS, REAL MOMENTS"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "See how our dresses look in real life."
+    },
+    {
+      "type": "text",
+      "id": "instagram_handle",
+      "label": "Instagram Handle",
+      "default": "@yourinstagram"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "header",
+      "content": "Desktop Settings"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "min": 18,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 26
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Card Spacing",
+      "min": 5,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Image Corner Radius",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#222222"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Desktop Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top Padding",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom Padding",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Mobile Settings"
+    },
+    {
+      "type": "range",
+      "id": "mobile_heading_size",
+      "label": "Mobile Heading Size",
+      "min": 16,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 21
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "label": "Mobile Top Padding",
+      "min": 15,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "label": "Mobile Bottom Padding",
+      "min": 15,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Instagram Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "alt_text",
+          "label": "Image Alt Text",
+          "default": "Instagram post"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Instagram Post URL"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product",
+          "info": "Optional. Shown in the popup with a link to the product page."
+        }
+      ]
+    },
+    {
+      "type": "video",
+      "name": "Instagram Video",
+      "settings": [
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video"
+        },
+        {
+          "type": "image_picker",
+          "id": "cover_image",
+          "label": "Cover Image"
+        },
+        {
+          "type": "text",
+          "id": "alt_text",
+          "label": "Video Alt Text",
+          "default": "Instagram video"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Instagram Post URL"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product",
+          "info": "Optional. Shown in the popup with a link to the product page."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Instagram Carousel",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 12
+}
+{% endschema %}

@@ -73,9 +73,6 @@
         >{% render 'svg-icons' with 'zoom' %}</a>
         {%- endif -%}
         {%- render 'responsive-image', image: media.preview_image, sizes: sizes, priority: priority -%}
-        {%- if alt != blank and display_captions -%}
-        <span class="figcaption"><span class="inline-badge">{{ alt }}</span></span>
-        {%- endif -%}
       </div>
     {% when 'external_video' %}
       <div class="product-single__media product-single__media-external-video" data-provider="{{ media.host }}" data-media-id="{{ media.id }}" id="Media-Thumbnails-{{ section.id }}-{{ media.id }}" style="--aspect-ratio: {{ media.aspect_ratio }}">
@@ -86,7 +83,19 @@
         {{ media | external_video_tag: loading: "lazy", loop: section.settings.enable_video_looping, muted: 1 }}
       </div>
     {% when 'video' %}
-      <div class="product-single__media product-single__media-native-video" data-media-id="{{ media.id }}" style="--aspect-ratio: {{ media.aspect_ratio }}" id="Media-Thumbnails-{{ section.id }}-{{ media.id }}">
+      {%- liquid
+        # Fixed gallery ratios frame the video like the images; 'adapt' keeps the video's own ratio
+        assign video_frame_ratio = nil
+        case media_aspect_ratio
+          when 'square'
+            assign video_frame_ratio = '1 / 1'
+          when 'portrait'
+            assign video_frame_ratio = '4 / 5'
+          when 'landscape'
+            assign video_frame_ratio = '4 / 3'
+        endcase
+      -%}
+      <div class="product-single__media product-single__media-native-video{% if video_frame_ratio %} product-single__media-native-video--framed{% endif %}" data-media-id="{{ media.id }}" style="--aspect-ratio: {{ media.aspect_ratio }}{% if video_frame_ratio %}; --frame-aspect-ratio: {{ video_frame_ratio }}{% endif %}" id="Media-Thumbnails-{{ section.id }}-{{ media.id }}">
         {{ media | video_tag: controls: true, loading: "lazy", loop: section.settings.enable_video_looping, image_size: '610x' }}
       </div>
     {% when 'model' %}
