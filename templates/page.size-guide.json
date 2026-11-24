@@ -301,6 +301,7 @@
         "media_kYJtb6",
         "media_ARnffg"
       ],
+      "disabled": true,
       "name": "Media grid",
       "settings": {
         "section_width": "grid",
@@ -443,6 +444,36 @@
         "main_title": "Discover Your Body Shape"
       }
     },
+    "size_guide_pro_CjgTYz": {
+      "type": "size-guide-pro",
+      "blocks": {
+        "category_Az8wYK": {
+          "type": "category",
+          "settings": {
+            "tab_title": "Dresses",
+            "col1": "SIZE",
+            "col2": "BUST",
+            "col3": "WAIST",
+            "col4": "HIPS",
+            "col5": "Hollow to Floor",
+            "col6": "",
+            "table_rows": "US0|32|25.5|35.5|57\nUS2|33|26.5|36.5|58\nUS4|34|27.5|37.5|58\nUS6|35|28.5|38.5|59\nUS8|36|29.5|39.5|59\nUS10|37.5|31|41|60\nUS12|39|32.5|42.5|60\nUS14|41|34.75|44.75|61\nUS16|43.25|37.25|46.25|61\nUS18|45.5|39.75|49|61\nUS20|47.75|42.5|51.25|61\nUS22|50|44.75|53.5|61\nUS24|53|48|56.5|61\nUS26|56|51.25|59.5|61\nUS28|59|54.5|62.5|61\nUS30|63|58.75|66.5|61"
+          }
+        }
+      },
+      "block_order": [
+        "category_Az8wYK"
+      ],
+      "name": "Pro Size Guide",
+      "settings": {
+        "heading": "Find Your Best Fit",
+        "description": "This size chart serves as a helpful reference. To get the ideal fit, match your body measurements to our size chart and follow the measuring guide.",
+        "how_to_title": "How to Measure",
+        "measure_image": "shopify://shop_images/size-1.jpg",
+        "measure_text": "<p><strong>Bust:</strong> Measure under your arms around the fullest part of your bust. Keep the measuring tape level.</p><p><strong>Waist:</strong> Measure around the narrowest part of your natural waist. Keep the tape comfortably fitted, not too tight.</p><p><strong>Hips:</strong> Stand with your feet together and measure around the widest part of your hips.</p><p><strong>Hollow to Floor: </strong>Stand straight with your feet together and measure barefoot from the hollow space between your collarbones straight down to the floor.</p><p><strong>Height, Barefoot:</strong> Stand straight with your feet together and measure barefoot from the top of your head straight down to the floor.</p><p><strong>Armhole: </strong>Down the front of the shoulder, under the armpit, and up the back of the shoulder.</p><p><strong>Arm Length: </strong>Measure from your shoulder point to the wrist.<br/></p>",
+        "footer_note": "<p><strong>Note:</strong> This guide is a general reference. Sizing and fit vary with dress styles. If you have questions about a specific product measurements, please feel free to <a href=\"/pages/contact\">contact us</a>.</p>"
+      }
+    },
     "blog_showcase_DRfij9": {
       "type": "blog-showcase",
       "blocks": {
@@ -495,6 +526,7 @@
     "text_with_icons_KxMyDR",
     "media_grid_Mxd4Mq",
     "body_shape_guide_WipaNn",
+    "size_guide_pro_CjgTYz",
     "blog_showcase_DRfij9"
   ]
 }

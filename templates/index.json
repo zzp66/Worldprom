@@ -558,6 +558,7 @@
     },
     "email_signup_wh6BTw": {
       "type": "email-signup",
+      "disabled": true,
       "name": "Newsletter",
       "settings": {
         "subheading": "",
@@ -571,6 +572,7 @@
     },
     "spacer_p7XFHT": {
       "type": "spacer",
+      "disabled": true,
       "name": "Spacer",
       "settings": {
         "spacer_mobile": 10,

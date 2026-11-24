@@ -202,6 +202,30 @@
         "section_width": "full-width-row"
       }
     },
+    "spacer_77rFzk": {
+      "type": "spacer",
+      "name": "Spacer",
+      "settings": {
+        "spacer_mobile": 25,
+        "spacer_desktop": 50,
+        "border_separator": false,
+        "section_width": "full-width-row"
+      }
+    },
+    "recently_viewed_products_AwnRPV": {
+      "type": "recently-viewed-products",
+      "name": "Recently viewed products",
+      "settings": {
+        "subheading": "",
+        "heading": "Recently Viewed",
+        "heading_left": false,
+        "description": "",
+        "full_width": true,
+        "columns_desktop": 5,
+        "disable_top_spacing": false,
+        "disable_bottom_spacing": false
+      }
+    },
     "17549592591dfa9272": {
       "type": "apps",
       "blocks": {
@@ -224,17 +248,14 @@
         "disable_bottom_spacing": true
       }
     },
-    "email_signup_GmPpH3": {
-      "type": "email-signup",
-      "name": "Newsletter",
+    "spacer_4BpPAU": {
+      "type": "spacer",
+      "name": "Spacer",
       "settings": {
-        "subheading": "",
-        "heading": "10% Off New Styles Awaits!",
-        "description": "<p>Unlock 10% off! First access to prom & homecoming dresses. Enter email.</p>",
-        "color_bg": "#faf7ff",
-        "color_text": "#151515",
-        "disable_top_spacing": false,
-        "disable_bottom_spacing": false
+        "spacer_mobile": 25,
+        "spacer_desktop": 50,
+        "border_separator": false,
+        "section_width": "full-width-row"
       }
     }
   },
@@ -244,7 +265,9 @@
     "spacer_MVWGLV",
     "product-recommendations",
     "spacer_VntMbm",
+    "recently_viewed_products_AwnRPV",
+    "spacer_77rFzk",
     "17549592591dfa9272",
-    "email_signup_GmPpH3"
+    "spacer_4BpPAU"
   ]
 }

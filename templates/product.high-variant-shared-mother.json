@@ -184,7 +184,7 @@
     "product-recommendations": {
       "type": "product-recommendations",
       "settings": {
-        "collection": "new-arrival-long",
+        "collection": "",
         "subheading": "",
         "heading": "Perfect For You",
         "heading_left": false,
@@ -193,6 +193,30 @@
         "columns_desktop": 5,
         "disable_top_spacing": true,
         "disable_bottom_spacing": true
+      }
+    },
+    "spacer_YxrYPy": {
+      "type": "spacer",
+      "name": "Spacer",
+      "settings": {
+        "spacer_mobile": 25,
+        "spacer_desktop": 50,
+        "border_separator": false,
+        "section_width": "full-width-row"
+      }
+    },
+    "recently_viewed_products_Yni8fn": {
+      "type": "recently-viewed-products",
+      "name": "Recently viewed products",
+      "settings": {
+        "subheading": "",
+        "heading": "Recently Viewed",
+        "heading_left": false,
+        "description": "",
+        "full_width": true,
+        "columns_desktop": 5,
+        "disable_top_spacing": false,
+        "disable_bottom_spacing": false
       }
     },
     "spacer_VntMbm": {
@@ -227,17 +251,14 @@
         "disable_bottom_spacing": true
       }
     },
-    "email_signup_GmPpH3": {
-      "type": "email-signup",
-      "name": "Newsletter",
+    "spacer_yqxnTp": {
+      "type": "spacer",
+      "name": "Spacer",
       "settings": {
-        "subheading": "",
-        "heading": "10% Off New Styles Awaits!",
-        "description": "<p>Unlock 10% off! First access to prom & homecoming dresses. Enter email.</p>",
-        "color_bg": "#faf7ff",
-        "color_text": "#151515",
-        "disable_top_spacing": false,
-        "disable_bottom_spacing": false
+        "spacer_mobile": 50,
+        "spacer_desktop": 100,
+        "border_separator": false,
+        "section_width": "full-width-row"
       }
     }
   },
@@ -246,8 +267,10 @@
     "main-product",
     "spacer_MVWGLV",
     "product-recommendations",
+    "spacer_YxrYPy",
+    "recently_viewed_products_Yni8fn",
     "spacer_VntMbm",
     "17549592591dfa9272",
-    "email_signup_GmPpH3"
+    "spacer_yqxnTp"
   ]
 }

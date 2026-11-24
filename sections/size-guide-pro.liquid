@@ -1,0 +1,497 @@
+{%- style -%}
+  .sg-pro-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    font-family: var(--font-body-family, sans-serif);
+    color: #333;
+  }
+  
+  /* 顶部标题区 */
+  .sg-pro-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .sg-pro-header h2 {
+    font-family: var(--font-heading-family, serif);
+    font-size: 38px;
+    font-weight: 400;
+    margin: 0 0 15px 0;
+  }
+  .sg-pro-header p {
+    font-size: 14px;
+    color: #555;
+    margin: 0 auto;
+    max-width: 600px;
+    line-height: 1.6;
+  }
+
+  /* 分类 Tabs */
+  .sg-pro-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 40px;
+    overflow-x: auto;
+  }
+  .sg-pro-tab-btn {
+    background: none;
+    border: none;
+    padding: 15px 0;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .sg-pro-tab-btn.active {
+    color: #1a1a1a;
+    font-weight: 700;
+    border-bottom: 2px solid #1a1a1a;
+  }
+  .sg-pro-tab-btn:hover {
+    color: #1a1a1a;
+  }
+
+  /* =========================================
+     表格样式：浅色外框 + 内部浅色横线 + 舒适间距
+     ========================================= */
+  .sg-pro-table-container {
+    display: none;
+    margin-bottom: 30px;
+    max-width: 850px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .sg-pro-table-container.active {
+    display: block;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .sg-pro-table-container table {
+    width: 100%;
+    max-width: 700px; /* 限制表格最大宽度，让整体变窄居中 */
+    margin: 0 auto 25px auto; /* 居中显示 */
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 13px;
+    color: #333;
+    border: 1px solid #ebebeb;
+    table-layout: fixed; /* 强制所有列等宽 */
+  }
+  
+  .sg-pro-table-container table th {
+    padding: 12px 12px; 
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    color: #1a1a1a;
+    border-bottom: 1px solid #ebebeb; /* 表头下划线 */
+    background: transparent;
+  }
+  
+  .sg-pro-table-container table td {
+    padding: 8px 12px; 
+    border-bottom: 1px solid #ebebeb; /* 内部只有横线 */
+  }
+
+  /* 消除最后一行的下划线 */
+  .sg-pro-table-container table tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* 单位切换 */
+  .sg-pro-unit-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin: 30px 0 50px 0;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: #888;
+  }
+  .sg-pro-unit-toggle label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s ease;
+  }
+  .sg-pro-unit-toggle input[type="radio"] {
+    display: none;
+  }
+  .sg-pro-unit-toggle .custom-radio {
+    width: 14px;
+    height: 14px;
+    border: 1px solid #999;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    transition: all 0.2s;
+  }
+  .sg-pro-unit-toggle input:checked + .custom-radio + span {
+    color: #1a1a1a; 
+  }
+  .sg-pro-unit-toggle input:checked + .custom-radio {
+    border-color: #1a1a1a;
+  }
+  .sg-pro-unit-toggle input:checked + .custom-radio::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #1a1a1a;
+  }
+
+  /* 测量说明 (Accordion) */
+  .sg-pro-accordion {
+    border-top: 1px solid #eee;
+    max-width: 850px;
+    margin: 0 auto;
+  }
+  .sg-pro-accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 0;
+    cursor: pointer;
+  }
+  .sg-pro-accordion-header h3 {
+    font-family: var(--font-heading-family, serif);
+    font-size: 24px;
+    font-weight: 400;
+    margin: 0;
+  }
+  .sg-pro-accordion-icon {
+    font-size: 20px;
+    font-weight: 300;
+    transition: transform 0.3s;
+  }
+  .sg-pro-accordion.open .sg-pro-accordion-icon {
+    transform: rotate(45deg);
+  }
+  .sg-pro-accordion-content {
+    display: none;
+    padding-bottom: 40px;
+  }
+  .sg-pro-accordion.open .sg-pro-accordion-content {
+    display: flex;
+    gap: 40px;
+    animation: slideDown 0.3s ease;
+  }
+
+  .sg-pro-measure-img {
+    flex: 0 0 35%;
+  }
+  .sg-pro-measure-img img {
+    width: 100%;
+    height: auto;
+  }
+  .sg-pro-measure-text {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .sg-pro-measure-text p {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #555;
+  }
+  .sg-pro-measure-text strong {
+    color: #333;
+  }
+
+  .sg-pro-footer-note {
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+    margin-top: 40px;
+    line-height: 1.6;
+    max-width: 850px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .sg-pro-footer-note a {
+    color: #333;
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .sg-pro-tabs { justify-content: flex-start; }
+    .sg-pro-accordion.open .sg-pro-accordion-content {
+      flex-direction: column;
+    }
+    .sg-pro-table-container th, .sg-pro-table-container td {
+      padding: 12px 5px;
+      font-size: 11px;
+    }
+  }
+  
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+{%- endstyle -%}
+
+<div class="sg-pro-wrapper">
+  <div class="sg-pro-header">
+    <h2>{{ section.settings.heading }}</h2>
+    <p>{{ section.settings.description }}</p>
+  </div>
+
+  <div class="sg-pro-tabs">
+    {%- for block in section.blocks -%}
+      <button class="sg-pro-tab-btn {% if forloop.first %}active{% endif %}" data-target="sg-tab-{{ block.id }}">
+        {{ block.settings.tab_title }}
+      </button>
+    {%- endfor -%}
+  </div>
+
+  {%- for block in section.blocks -%}
+    <div id="sg-tab-{{ block.id }}" class="sg-pro-table-container {% if forloop.first %}active{% endif %}" {{ block.shopify_attributes }}>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>{{ block.settings.col1 }}</th>
+            <th>{{ block.settings.col2 }}</th>
+            <th>{{ block.settings.col3 }}</th>
+            <th>{{ block.settings.col4 }}</th>
+            <th>{{ block.settings.col5 }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%- assign rows = block.settings.table_rows | newline_to_br | split: '<br />' -%}
+          {%- for row in rows -%}
+            {%- if row != blank -%}
+              <tr>
+                {%- assign cells = row | split: '|' -%}
+                {%- for cell in cells -%}
+                  <td>{{ cell | strip }}</td>
+                {%- endfor -%}
+              </tr>
+            {%- endif -%}
+          {%- endfor -%}
+        </tbody>
+      </table>
+
+      <div class="sg-pro-unit-toggle">
+        <label>
+          <input type="radio" name="unit-{{ block.id }}" value="in" checked onchange="toggleUnit(this, '{{ block.id }}')">
+          <span class="custom-radio"></span>
+          <span>INCHES</span>
+        </label>
+        <label>
+          <input type="radio" name="unit-{{ block.id }}" value="cm" onchange="toggleUnit(this, '{{ block.id }}')">
+          <span class="custom-radio"></span>
+          <span>CENTIMETERS</span>
+        </label>
+      </div>
+    </div>
+  {%- endfor -%}
+
+  <div class="sg-pro-accordion">
+    <div class="sg-pro-accordion-header">
+      <h3>{{ section.settings.how_to_title }}</h3>
+      <div class="sg-pro-accordion-icon">+</div>
+    </div>
+    <div class="sg-pro-accordion-content">
+      <div class="sg-pro-measure-img">
+        {% if section.settings.measure_image != blank %}
+          <img src="{{ section.settings.measure_image | image_url: width: 600 }}" 
+               alt="How to measure" 
+               width="{{ section.settings.measure_image.width }}" 
+               height="{{ section.settings.measure_image.height }}" 
+               loading="lazy">
+        {% else %}
+          {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+        {% endif %}
+      </div>
+      <div class="sg-pro-measure-text">
+        {{ section.settings.measure_text }}
+      </div>
+    </div>
+  </div>
+
+  <div class="sg-pro-footer-note">
+    {{ section.settings.footer_note }}
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const tabs = document.querySelectorAll('.sg-pro-tab-btn');
+    const contents = document.querySelectorAll('.sg-pro-table-container');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        contents.forEach(c => c.classList.remove('active'));
+        
+        tab.classList.add('active');
+        document.getElementById(tab.getAttribute('data-target')).classList.add('active');
+      });
+    });
+
+    const accHeader = document.querySelector('.sg-pro-accordion-header');
+    if(accHeader) {
+      accHeader.addEventListener('click', () => {
+        accHeader.parentElement.classList.toggle('open');
+      });
+    }
+  });
+
+  function toggleUnit(radio, blockId) {
+    const container = document.getElementById('sg-tab-' + blockId);
+    const tableBody = container.querySelector('tbody');
+    if(!tableBody) return;
+    
+    const rows = tableBody.querySelectorAll('tr');
+    const isCm = radio.value === 'cm';
+
+    rows.forEach(row => {
+      for (let i = 1; i < row.cells.length; i++) {
+        let cell = row.cells[i];
+        if (!cell.hasAttribute('data-original')) {
+          cell.setAttribute('data-original', cell.innerText);
+        }
+        
+        let originalVal = cell.getAttribute('data-original');
+        
+        if (isCm) {
+          let calcStr = originalVal.replace(/\s*1\/2/g, '.5');
+          let num = parseFloat(calcStr);
+          if (!isNaN(num)) {
+            cell.innerText = (num * 2.54).toFixed(1);
+          }
+        } else {
+          cell.innerText = originalVal;
+        }
+      }
+    });
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Pro Size Guide",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Main Heading",
+      "default": "Find Your Best Fit"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Subtitle Text",
+      "default": "Use the chart below as a general guide. For the most accurate fit, compare your measurements with the size chart and review the measuring instructions below."
+    },
+    {
+      "type": "header",
+      "content": "How to Measure Section"
+    },
+    {
+      "type": "text",
+      "id": "how_to_title",
+      "label": "Accordion Title",
+      "default": "How to Measure"
+    },
+    {
+      "type": "image_picker",
+      "id": "measure_image",
+      "label": "Measurement Graphic"
+    },
+    {
+      "type": "richtext",
+      "id": "measure_text",
+      "label": "Measurement Instructions",
+      "default": "<p><strong>Bust:</strong> Measure under your arms around the fullest part of your bust. Keep the measuring tape level.</p><p><strong>Waist:</strong> Measure around the narrowest part of your natural waist. Keep the tape comfortably fitted, not too tight.</p><p><strong>Hips:</strong> Stand with your feet together and measure around the widest part of your hips.</p><p><strong>Waist to Floor:</strong> Stand straight with your feet together and measure barefoot from your natural waist straight down to the floor.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Footer Note"
+    },
+    {
+      "type": "richtext",
+      "id": "footer_note",
+      "label": "Footer Text",
+      "default": "<p><strong>Note:</strong> This guide provides general sizing information only. Fit may vary depending on the style and brand. For more specific sizing information about a product, please feel free to <a href='/pages/contact'>contact us</a>.</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Size Category",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_title",
+          "label": "Tab Title (e.g., Dresses)",
+          "default": "Dresses"
+        },
+        {
+          "type": "header",
+          "content": "Table Headers"
+        },
+        {
+          "type": "text",
+          "id": "col1",
+          "label": "Column 1",
+          "default": "SIZE"
+        },
+        {
+          "type": "text",
+          "id": "col2",
+          "label": "Column 2",
+          "default": "BUST"
+        },
+        {
+          "type": "text",
+          "id": "col3",
+          "label": "Column 3",
+          "default": "WAIST"
+        },
+        {
+          "type": "text",
+          "id": "col4",
+          "label": "Column 4",
+          "default": "HIPS"
+        },
+        {
+          "type": "text",
+          "id": "col5",
+          "label": "Column 5",
+          "default": "WAIST TO FLOOR"
+        },
+        {
+          "type": "header",
+          "content": "Table Data Format"
+        },
+        {
+          "type": "textarea",
+          "id": "table_rows",
+          "label": "Table Rows (Use | for columns)",
+          "default": "US 00 | 31.25 | 23.5 | 34 | 41.5\nUS 0 | 32 | 24 | 35 | 41.5\nUS 2 | 32.75 | 24.5 | 35.5 | 41.5\nUS 4 | 33.75 | 25.25 | 36 | 41.5\nUS 6 | 34.75 | 26.25 | 37 | 41.5\nUS 8 | 35.75 | 27.25 | 38 | 41.5\nUS 10 | 36.75 | 28.25 | 39 | 41.5\nUS 12 | 38.25 | 29.5 | 40.5 | 41.5\nUS 14 | 39.25 | 31.25 | 42 | 41.5\nUS 16 | 41.25 | 32.75 | 43.5 | 41.5\nUS 18 | 43.25 | 34.75 | 45.5 | 41.5\nUS 20 | 45.25 | 36.75 | 47.5 | 41.5\nUS 22 | 47.25 | 38.75 | 49.5 | 41.5\nUS 24 | 49.25 | 41.75 | 51.5 | 41.5\nUS 26 | 51.25 | 44.75 | 53.5 | 41.5"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pro Size Guide",
+      "blocks": [
+        { "type": "category" }
+      ]
+    }
+  ]
+}
+{% endschema %}

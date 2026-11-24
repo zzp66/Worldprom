@@ -1,4 +1,15 @@
 <style>
+  .template-collection #shopify-section-{{ section.id }} {
+    --swatch-surface-rgb: 247, 245, 243;
+    display: flow-root;
+    padding-bottom: 0;
+    background-color: rgb(var(--swatch-surface-rgb));
+  }
+
+  .template-collection #shopify-section-{{ section.id }} + .shopify-section .facets--bar-inner {
+    border-top: 0;
+  }
+
   /* 宽度和左右留白与主题 .row + .columns 保持一致 */
   .color-swatch-scroll {
     position: relative;
@@ -71,12 +82,12 @@
 
   .color-swatch-scroll::before {
     left: 0;
-    background: linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+    background: linear-gradient(to right, rgba(var(--swatch-surface-rgb, 255, 255, 255), 1), rgba(var(--swatch-surface-rgb, 255, 255, 255), 0));
   }
 
   .color-swatch-scroll::after {
     right: 0;
-    background: linear-gradient(to left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+    background: linear-gradient(to left, rgba(var(--swatch-surface-rgb, 255, 255, 255), 1), rgba(var(--swatch-surface-rgb, 255, 255, 255), 0));
   }
 
   .color-swatch-scroll.has-left::before {

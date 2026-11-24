@@ -1,0 +1,18 @@
+{%- liquid
+  if guide_image != blank
+    assign thumbnail_url = guide_image | image_url: width: 640
+    assign full_url = guide_image | image_url: width: guide_image.width
+  else
+    assign full_url = 'worldprom-custom-size.webp' | asset_url
+    assign thumbnail_url = full_url
+  endif
+-%}
+<div class="custom-size-guide-viewer">
+  <button type="button" class="custom-size-guide-open" aria-label="Enlarge custom size measurement guide" aria-haspopup="dialog">
+    <img class="custom-size-guide" src="{{ thumbnail_url | escape }}" alt="Custom size measurement guide" loading="lazy">
+  </button>
+  <dialog class="custom-size-guide-dialog" aria-label="Custom size measurement guide">
+    <button type="button" aria-label="{{ 'accessibility.close' | t | escape }}" autofocus>&times;</button>
+    <img data-src="{{ full_url | escape }}" alt="Custom size measurement guide">
+  </dialog>
+</div>

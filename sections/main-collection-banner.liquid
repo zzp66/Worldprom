@@ -40,9 +40,23 @@
 <div class="collection-banner">
 	<div class="row full-width-row">
 		<div class="small-12 columns">
-			<div class="collection-banner--content collection-banner--content-width-{{ collection_image_width }}">
+			<div class="collection-banner--content collection-banner--content-width-{{ collection_image_width }}{% unless show_collection_image and image %} collection-banner--content--no-image{% endunless %}">
 				<div class="collection-banner--content-inner">
+					<div class="collection-banner--heading{% if template.name == 'collection' %} collection-banner--heading--inline{% endif %}">
 					<h1 class="collection-banner--title h2"><span>{{ title }}</span></h1>
+					{%- if show_collection_description and description != '' -%}
+					<max-height class="max-height collection-banner--description"{% if template.name == 'collection' %} data-line-clamp{% endif %} data-max="{{ seo_text_max_height }}" style="--max-height: {{ seo_text_max_height | append: 'px'}};">
+						<div class="max-height--inner" id="CollectionDescription-{{ section.id }}">
+							<div class="max-height--inner-content rte">
+								{{ description }}
+							</div>
+						</div>
+						<button type="button" class="max-height--toggle" aria-expanded="false" aria-controls="CollectionDescription-{{ section.id }}"><span class="text-button text-button--read-more">{{ seo_text_read_more }}</span><span class="text-button text-button--read-less">{{ seo_text_read_less }}</span></button>
+					</max-height>
+					<link rel="stylesheet" href="{{ 'max-height.css' | asset_url }}" media="print" onload="this.media='all'">
+					<script src="{{ 'max-height.js' | asset_url }}" defer="defer"></script>
+					{%- endif -%}
+					</div>
 					{%- if show_subcollections and linklists[collection_handle] != empty -%}
 						{%- capture subcollection_links -%}
 						{%- for link in linklists[collection_handle].links -%}
@@ -59,18 +73,6 @@
 							</div>
 						</scroll-shadow>
 						{%- endif -%}
-					{%- endif -%}
-					{%- if show_collection_description and description != '' -%}
-					<max-height class="max-height collection-banner--description" data-max="{{ seo_text_max_height }}" style="--max-height: {{ seo_text_max_height | append: 'px'}};">
-						<div class="max-height--inner">
-							<div class="max-height--inner-content rte">
-								{{ description }}
-							</div>
-						</div>
-						<button class="max-height--toggle"><span class="text-button text-button--read-more">{{ seo_text_read_more }}</span><span class="text-button text-button--read-less">{{ seo_text_read_less }}</span></button>
-					</max-height>
-					<link rel="stylesheet" href="{{ 'max-height.css' | asset_url }}" media="print" onload="this.media='all'">
-					<script src="{{ 'max-height.js' | asset_url }}" defer="defer"></script>
 					{%- endif -%}
 					
 				</div>

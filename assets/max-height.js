@@ -17,14 +17,35 @@ if (!customElements.get('max-height')) {
 
 
       this.checkVisible();
+      if (this.hasAttribute('data-line-clamp') && document.fonts) {
+        document.fonts.ready.then(() => {
+          if (this.isConnected) this.checkVisible();
+        });
+      }
     }
 
     checkVisible() {
+      if (this.hasAttribute('data-line-clamp')) {
+        this.checkLineClamp();
+        return;
+      }
       if (this.content.offsetHeight > this.max) {
         this.showToggle();
       } else {
         this.hideToggle();
       }
+    }
+    checkLineClamp() {
+      // Measure at the full available width, before reserving room for the toggle.
+      this.hideToggle();
+      const lines = parseInt(getComputedStyle(this).getPropertyValue('--collapsed-lines'), 10) || 2;
+      const lineHeight = parseFloat(getComputedStyle(this.content).lineHeight);
+      if (this.content.scrollHeight > lineHeight * lines + 1) {
+        this.showToggle();
+      } else {
+        this.classList.remove('max-height--enabled');
+      }
+      this.toggle.setAttribute('aria-expanded', String(this.classList.contains('max-height--enabled')));
     }
     showToggle() {
       this.classList.add('max-height--active');
@@ -34,6 +55,7 @@ if (!customElements.get('max-height')) {
     }
     onClick() {
       this.classList.toggle('max-height--enabled');
+      this.toggle.setAttribute('aria-expanded', String(this.classList.contains('max-height--enabled')));
     }
   }
   customElements.define('max-height', MaxHeight);

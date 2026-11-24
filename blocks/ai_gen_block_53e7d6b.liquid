@@ -3,8 +3,40 @@
     This component serves as a button bar on website category pages, designed to guide users to other related categories. The order of the buttons is fully customizable, and users are free to adjust the number of buttons displayed per row (ranging from 1 to 16); the layout automatically adjusts to fill the entire row based on the specified count. On mobile devices, the interface utilizes a horizontal scrolling mode. The spacing between buttons, as well as the top, bottom, left, and right margins of the entire module, are all adjustable; these spacing settings can be configured independently for mobile and desktop environments. Users can select their preferred button styles and border designs, and can individually set the text and background colors for each specific button. Furthermore, the text font and font size are also fully customizable. Additionally, the button colors can be customized to change dynamically when a user hovers their mouse over them. Finally, when a user is currently browsing the category corresponding to a specific button, that button becomes disabled (non-selectable) and is highlighted using a user-defined accent color.
 {% enddoc %}
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+{% liquid
+  assign nav_menu = block.settings.default_menu
+  assign series_menu = nil
+
+  # Match the collection family rules and priority in sections/breadcrumbs.liquid.
+  if request.page_type == 'collection'
+    if collection.handle contains 'prom'
+      assign series_menu = block.settings.prom_menu
+    elsif collection.handle contains 'homecoming'
+      assign series_menu = block.settings.homecoming_menu
+    elsif collection.handle contains 'bridesmaid'
+      assign series_menu = block.settings.bridesmaid_menu
+    endif
+  endif
+
+  if series_menu.links.size > 0
+    assign nav_menu = series_menu
+  endif
+
+  assign use_menu = false
+  assign button_count = 16
+  if nav_menu.links.size > 0
+    assign use_menu = true
+    assign button_count = nav_menu.links.size
+  endif
+%}
 
 {% style %}
+  .template-collection #shopify-section-{{ section.id }} {
+    display: flow-root;
+    padding-top: 8px;
+    background-color: #f7f5f3;
+  }
+
   .ai-category-nav-{{ ai_gen_id }} {
     display: block;
     width: 100%;
@@ -24,7 +56,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 6px 12px;
+    padding: 4px 12px;
     text-decoration: none;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -43,6 +75,7 @@
   }
 
   .ai-category-nav__button--active-{{ ai_gen_id }} {
+    font-weight: 700;
     cursor: default;
     pointer-events: none;
   }
@@ -71,6 +104,7 @@
     .ai-category-nav__button-{{ ai_gen_id }} {
       flex-shrink: 0;
       min-width: fit-content;
+      padding: 6px 12px;
       font-size: {{ block.settings.font_size_mobile }}px;
     }
   }
@@ -78,17 +112,21 @@
 
 <category-nav-{{ ai_gen_id }} class="ai-category-nav-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
   <div class="ai-category-nav__container-{{ ai_gen_id }}">
-    {% for i in (1..16) %}
+    {% for i in (1..button_count) %}
       {% liquid
+        assign style_index = i
+        if use_menu
+          assign style_index = 1
+        endif
         assign button_enabled_key = 'button_' | append: i | append: '_enabled'
         assign button_text_key = 'button_' | append: i | append: '_text'
         assign button_link_key = 'button_' | append: i | append: '_link'
-        assign button_text_color_key = 'button_' | append: i | append: '_text_color'
-        assign button_bg_color_key = 'button_' | append: i | append: '_bg_color'
-        assign button_border_color_key = 'button_' | append: i | append: '_border_color'
-        assign button_hover_text_color_key = 'button_' | append: i | append: '_hover_text_color'
-        assign button_hover_bg_color_key = 'button_' | append: i | append: '_hover_bg_color'
-        assign button_hover_border_color_key = 'button_' | append: i | append: '_hover_border_color'
+        assign button_text_color_key = 'button_' | append: style_index | append: '_text_color'
+        assign button_bg_color_key = 'button_' | append: style_index | append: '_bg_color'
+        assign button_border_color_key = 'button_' | append: style_index | append: '_border_color'
+        assign button_hover_text_color_key = 'button_' | append: style_index | append: '_hover_text_color'
+        assign button_hover_bg_color_key = 'button_' | append: style_index | append: '_hover_bg_color'
+        assign button_hover_border_color_key = 'button_' | append: style_index | append: '_hover_border_color'
 
         assign button_enabled = block.settings[button_enabled_key]
         assign button_text = block.settings[button_text_key]
@@ -99,12 +137,21 @@
         assign button_hover_text_color = block.settings[button_hover_text_color_key]
         assign button_hover_bg_color = block.settings[button_hover_bg_color_key]
         assign button_hover_border_color = block.settings[button_hover_border_color_key]
+
+        if use_menu
+          assign menu_link = nav_menu.links[forloop.index0]
+          assign button_enabled = true
+          assign button_text = menu_link.title
+          assign button_link = menu_link.url
+        endif
       %}
 
       {% if button_enabled and button_text != blank %}
         {% liquid
           assign is_active = false
-          if button_link != blank
+          if use_menu
+            assign is_active = menu_link.current
+          elsif button_link != blank
             assign current_url = request.path
             assign button_url = button_link | split: request.host | last
             if current_url == button_url
@@ -114,7 +161,8 @@
         %}
 
         <a
-          href="{{ button_link }}"
+          href="{{ button_link | escape }}"
+          {% if is_active %}aria-current="page"{% endif %}
           class="ai-category-nav__button-{{ ai_gen_id }} {% if is_active %}ai-category-nav__button--active-{{ ai_gen_id }}{% endif %}"
           data-button-index="{{ i }}"
           style="
@@ -135,7 +183,7 @@
           data-hover-bg-color="{{ button_hover_bg_color }}"
           data-hover-border-color="{{ button_hover_border_color }}"
         >
-          {{ button_text }}
+          {{ button_text | escape }}
         </a>
       {% endif %}
     {% endfor %}
@@ -187,6 +235,31 @@
   "name": "Category navigation bar",
   "tag": null,
   "settings": [
+    {
+      "type": "header",
+      "content": "Collection menus"
+    },
+    {
+      "type": "link_list",
+      "id": "default_menu",
+      "label": "Default menu",
+      "info": "Used for other collections and when a series menu is empty."
+    },
+    {
+      "type": "link_list",
+      "id": "prom_menu",
+      "label": "Prom menu"
+    },
+    {
+      "type": "link_list",
+      "id": "homecoming_menu",
+      "label": "Homecoming menu"
+    },
+    {
+      "type": "link_list",
+      "id": "bridesmaid_menu",
+      "label": "Bridesmaid menu"
+    },
     {
       "type": "header",
       "content": "Layout"

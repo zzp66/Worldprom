@@ -41,6 +41,48 @@
   margin-bottom: 0;
 }
 
+.collection-banner--content-inner {
+  min-width: 0;
+}
+
+.template-collection .section-breadcrumbs .breadcrumbs {
+  padding-bottom: 8px;
+}
+
+.template-collection .collection-banner--content {
+  padding-top: 0;
+}
+
+.template-collection .collection-banner--content--no-image {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media only screen and (min-width: 768px) {
+  .collection-banner--heading--inline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 20px;
+  }
+
+  .collection-banner--heading--inline .collection-banner--title {
+    flex: 0 1 auto;
+    max-width: 100%;
+    margin-bottom: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .collection-banner--heading--inline .collection-banner--title span {
+    margin-right: 0;
+  }
+
+  .collection-banner--heading--inline .collection-banner--description {
+    flex: 1 1 320px;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
 @media only screen and (min-width: 768px) {
   .collection-banner--content {
     grid-template-columns: 1fr 1fr;
@@ -95,6 +137,58 @@
   left: 0;
   right: 0;
   padding-bottom: 0;
+}
+
+.collection-banner--description[data-line-clamp] {
+  --collapsed-lines: 2;
+}
+
+.collection-banner--description[data-line-clamp].max-height--active {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  column-gap: 12px;
+  padding-bottom: 0;
+}
+
+.collection-banner--description[data-line-clamp] .max-height--inner {
+  min-width: 0;
+  max-height: none;
+}
+
+.collection-banner--description[data-line-clamp] .max-height--inner-content,
+.collection-banner--description[data-line-clamp] .max-height--inner-content p {
+  line-height: 1.4;
+}
+
+.collection-banner--description[data-line-clamp]:not(.max-height--enabled) .max-height--inner-content {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--collapsed-lines);
+  overflow: hidden;
+}
+
+.collection-banner--description[data-line-clamp]:not(.max-height--enabled) .max-height--inner-content > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.collection-banner--description[data-line-clamp] .max-height--toggle {
+  position: static;
+  align-self: baseline;
+  padding: 0;
+  white-space: nowrap;
+  background: none;
+}
+
+.collection-banner--description[data-line-clamp] .max-height--toggle:after {
+  display: none;
+}
+
+@media only screen and (min-width: 768px) {
+  .collection-banner--description[data-line-clamp] {
+    --collapsed-lines: 1;
+  }
 }
 
 .collection-banner--title {

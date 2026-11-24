@@ -1491,7 +1491,8 @@
   (function () {
     const SIZE_TARGET = 'Free Custom';
     const FORM_ID = '{{ product_form_id }}';
-    const CUSTOM_SIZE_GUIDE_IMAGE = {% if section.settings.custom_size_guide_image %}{{ section.settings.custom_size_guide_image | image_url: width: 640 | json }}{% else %}''{% endif %};
+    {% capture custom_size_guide %}{% render 'custom-size-guide', guide_image: section.settings.custom_size_guide_image %}{% endcapture %}
+    const guideHtml = {{ custom_size_guide | json }};
     const CUSTOM_SIZE_CONFIG = {
       bust: {
         min: {{ section.settings.custom_size_bust_min | default: 31 | json }},
@@ -1624,22 +1625,27 @@
         `;
         }).join('');
 
-        const imageHtml = CUSTOM_SIZE_GUIDE_IMAGE
-          ? `
-            <div class="custom-size-guide-image">
-              <img src="${CUSTOM_SIZE_GUIDE_IMAGE}" alt="Measurement guide">
-            </div>
-          `
-          : '';
-
         container.innerHTML = `
         <p class="custom-size-title">Custom Size Measurements</p>
-        <div class="custom-size-content${CUSTOM_SIZE_GUIDE_IMAGE ? '' : ' no-guide-image'}">
+        <div class="custom-size-content">
           <div class="custom-size-fields">${fieldsHtml}</div>
-          <div class="custom-size-guide">${imageHtml}</div>
+          ${guideHtml}
         </div>
         <p id="custom-error-msg" class="custom-error-message">Please select all measurements.</p>
       `;
+
+        const dialog = container.querySelector('.custom-size-guide-dialog');
+        const opener = container.querySelector('.custom-size-guide-open');
+        opener.addEventListener('click', () => {
+          const image = dialog.querySelector('img');
+          if (!image.hasAttribute('src')) image.src = image.dataset.src;
+          dialog.showModal();
+        });
+        dialog.querySelector('button').addEventListener('click', () => dialog.close());
+        dialog.addEventListener('click', (event) => {
+          if (event.target === dialog) dialog.close();
+        });
+        dialog.addEventListener('close', () => opener.focus({ preventScroll: true }));
 
         const variantPicker = document.querySelector('variant-selects-hv');
         const buyButtons = mainForm.querySelector('.product-form__buttons');

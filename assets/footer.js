@@ -27,7 +27,7 @@ if (!customElements.get('theme-footer')) {
 
     onResize() {
       this.accordions.forEach((accordion) => {
-        if (window.innerWidth > 768) {
+        if (window.innerWidth >= 768) {
           accordion.setAttribute('open', '');
         } else {
           accordion.removeAttribute('open');
